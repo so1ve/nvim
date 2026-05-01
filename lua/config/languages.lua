@@ -46,16 +46,7 @@ M.lsp_servers = {
   eslint = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     settings = {
-      codeActionOnSave = {
-        enable = false,
-        mode = "all",
-      },
       format = false,
-      run = "onType",
-      validate = "on",
-      workingDirectory = {
-        mode = "auto",
-      },
     },
   },
   vue_ls = {},
@@ -76,8 +67,6 @@ M.lsp_servers = {
     settings = {
       basedpyright = {
         analysis = {
-          autoSearchPaths = true,
-          diagnosticMode = "openFilesOnly",
           diagnosticSeverityOverrides = {
             reportUnusedImport = "none",
             reportUnusedVariable = "none",

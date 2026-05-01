@@ -8,7 +8,6 @@ return {
     local languages = require("config.languages")
 
     vim.diagnostic.config({
-      underline = true,
       update_in_insert = true,
       severity_sort = true,
       virtual_text = {
