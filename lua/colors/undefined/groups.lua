@@ -80,6 +80,19 @@ function M.get(p)
     DiagnosticUnderlineInfo = { sp = p.blue, undercurl = true },
     DiagnosticUnderlineHint = { sp = p.green, undercurl = true },
 
+    TreesitterContext = { bg = p.bg_alt },
+    TreesitterContextLineNumber = { fg = p.subtle, bg = p.bg_alt },
+    TreesitterContextSeparator = { fg = p.border, bg = p.bg },
+    TreesitterContextBottom = { sp = p.border, underline = true },
+
+    RainbowDelimiterRed = { fg = p.red },
+    RainbowDelimiterYellow = { fg = p.yellow },
+    RainbowDelimiterBlue = { fg = p.blue },
+    RainbowDelimiterOrange = { fg = p.orange },
+    RainbowDelimiterGreen = { fg = p.green },
+    RainbowDelimiterViolet = { fg = p.magenta },
+    RainbowDelimiterCyan = { fg = p.cyan },
+
     DiffAdd = { fg = p.diff_add_fg, bg = p.diff_add_bg },
     DiffChange = { fg = p.diff_change_fg, bg = p.diff_change_bg },
     DiffDelete = { fg = p.diff_delete_fg, bg = p.diff_delete_bg },

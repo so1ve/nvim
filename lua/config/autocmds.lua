@@ -1,4 +1,4 @@
-local group = vim.api.nvim_create_augroup("MikuConfig", { clear = true })
+local group = vim.api.nvim_create_augroup("RayConfig", { clear = true })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = group,

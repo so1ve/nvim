@@ -9,6 +9,10 @@ return {
     input = { enabled = true },
     notifier = { enabled = true },
     dashboard = { enabled = true },
+    indent = { enabled = true },
+    scroll = { enabled = true },
+    statuscolumn = { enabled = true },
+    words = { enabled = true },
   },
   keys = {
     { "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
