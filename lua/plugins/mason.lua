@@ -12,13 +12,16 @@ return {
   },
   {
     "mason-org/mason-lspconfig.nvim",
-    event = { "BufReadPre", "BufNewFile" },
+    lazy = false,
     dependencies = {
       "mason-org/mason.nvim",
       "neovim/nvim-lspconfig",
     },
-    opts = {
-      automatic_enable = false,
-    },
+    opts = function()
+      return {
+        ensure_installed = require("config.languages").lsp_server_names(),
+        automatic_enable = false,
+      }
+    end,
   },
 }
