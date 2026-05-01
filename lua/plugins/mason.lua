@@ -18,9 +18,11 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = function()
+      local servers = require("config.languages").lsp_server_names()
+
       return {
-        ensure_installed = require("config.languages").lsp_server_names(),
-        automatic_enable = false,
+        ensure_installed = servers,
+        -- automatic_enable = servers,
       }
     end,
   },

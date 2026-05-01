@@ -9,7 +9,7 @@ return {
 
     vim.diagnostic.config({
       underline = true,
-      update_in_insert = false,
+      update_in_insert = true,
       severity_sort = true,
       virtual_text = {
         prefix = "●",
@@ -26,8 +26,6 @@ return {
     for server_name, server_config in pairs(languages.lsp_configs(capabilities)) do
       vim.lsp.config(server_name, server_config)
     end
-
-    vim.lsp.enable(languages.lsp_server_names())
 
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("RayLsp", { clear = true }),

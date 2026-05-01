@@ -2,61 +2,59 @@ local M = {}
 
 M.lsp_servers = {
   rust_analyzer = {
-    config = function(capabilities)
-      return {
-        capabilities = capabilities,
-        settings = {
-          ["rust-analyzer"] = {
-            cargo = {
-              features = "all",
-            },
-            check = {
-              command = "clippy",
-            },
-            rustfmt = {
-              rangeFormatting = {
-                enable = true,
-              },
-            },
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          features = "all",
+        },
+        check = {
+          command = "clippy",
+        },
+        rustfmt = {
+          rangeFormatting = {
+            enable = true,
           },
         },
-      }
-    end,
+      },
+    },
   },
   vtsls = {
-    config = function(capabilities)
-      return {
-        capabilities = capabilities,
-        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-        settings = {
-          vtsls = {
-            tsserver = {
-              globalPlugins = {
-                {
-                  name = "@vue/typescript-plugin",
-                  location = vim.fs.joinpath(
-                    vim.fn.stdpath("data"),
-                    "mason",
-                    "packages",
-                    "vue-language-server",
-                    "node_modules",
-                    "@vue",
-                    "language-server"
-                  ),
-                  languages = { "vue" },
-                  configNamespace = "typescript",
-                },
-              },
+    filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+    settings = {
+      vtsls = {
+        tsserver = {
+          globalPlugins = {
+            {
+              name = "@vue/typescript-plugin",
+              location = vim.fs.joinpath(
+                vim.fn.stdpath("data"),
+                "mason",
+                "packages",
+                "vue-language-server",
+                "node_modules",
+                "@vue",
+                "language-server"
+              ),
+              languages = { "vue" },
+              configNamespace = "typescript",
             },
           },
         },
-      }
-    end,
+      },
+    },
   },
-  vue_ls = {
-    config = function(capabilities)
-      return { capabilities = capabilities }
-    end,
+  vue_ls = {},
+  jsonls = {},
+  taplo = {},
+  yamlls = {},
+  html = {},
+  cssls = {},
+  gopls = {
+    settings = {
+      gopls = {
+        gofumpt = true,
+      },
+    },
   },
 }
 
@@ -82,12 +80,56 @@ M.languages = {
     treesitter = "javascript",
     lsp = { "vtsls" },
   },
+  json = {
+    treesitter = "json",
+    lsp = { "jsonls" },
+  },
+  jsonc = {
+    treesitter = "json",
+    lsp = { "jsonls" },
+  },
+  toml = {
+    treesitter = "toml",
+    lsp = { "taplo" },
+  },
+  yaml = {
+    treesitter = "yaml",
+    lsp = { "yamlls" },
+  },
+  html = {
+    treesitter = "html",
+    lsp = { "html" },
+  },
+  css = {
+    treesitter = "css",
+    lsp = { "cssls" },
+  },
+  scss = {
+    treesitter = "scss",
+    lsp = { "cssls" },
+  },
   vue = {
     treesitter = "vue",
     lsp = { "vtsls", "vue_ls" },
   },
-  jsonc = {
-    treesitter = "json",
+  go = {
+    treesitter = "go",
+    lsp = { "gopls" },
+  },
+  gomod = {
+    treesitter = "gomod",
+    lsp = { "gopls" },
+  },
+  gowork = {
+    treesitter = "gowork",
+    lsp = { "gopls" },
+  },
+  gotmpl = {
+    treesitter = "gotmpl",
+    lsp = { "gopls" },
+  },
+  gosum = {
+    treesitter = "gosum",
   },
 }
 
@@ -122,7 +164,7 @@ function M.lsp_configs(capabilities)
   local configs = {}
 
   for server_name, server in pairs(M.lsp_servers) do
-    configs[server_name] = server.config(capabilities)
+    configs[server_name] = vim.tbl_deep_extend("force", { capabilities = capabilities }, server)
   end
 
   return configs
