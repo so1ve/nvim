@@ -16,6 +16,7 @@ return {
     require("mini.splitjoin").setup()
     require("mini.bracketed").setup({
       buffer = { suffix = "" },
+      comment = { suffix = "" },
     })
 
     local hipatterns = require("mini.hipatterns")

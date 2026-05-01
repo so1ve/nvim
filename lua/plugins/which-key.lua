@@ -14,6 +14,7 @@ return {
       { "<leader>c", group = "code" },
       { "<leader>f", group = "find" },
       { "<leader>g", group = "git" },
+      { "<leader>gh", group = "hunk" },
       { "<leader>o", group = "opencode" },
       { "<leader>s", group = "search" },
     })
