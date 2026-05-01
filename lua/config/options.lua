@@ -2,6 +2,7 @@ local opt = vim.opt
 
 opt.termguicolors = true
 opt.mouse = "a"
+opt.mousemoveevent = true
 opt.clipboard = "unnamedplus"
 
 opt.number = true
