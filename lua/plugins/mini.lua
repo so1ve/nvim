@@ -1,3 +1,91 @@
+local function statusline_escape(text)
+  return tostring(text):gsub("%%", "%%%%")
+end
+
+local function statusline_section(section)
+  if section == "" then
+    return ""
+  end
+
+  return statusline_escape(section)
+end
+
+local function statusline_lsp()
+  if MiniStatusline.is_truncated(90) then
+    return ""
+  end
+
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients == 0 then
+    return ""
+  end
+
+  local names = {}
+  for _, client in ipairs(clients) do
+    table.insert(names, client.name)
+  end
+  table.sort(names)
+
+  return statusline_escape(" " .. table.concat(names, ","))
+end
+
+local function statusline_macro()
+  local register = vim.fn.reg_recording()
+  if register == "" then
+    return ""
+  end
+
+  return statusline_escape("recording @" .. register)
+end
+
+local function statusline_active()
+  local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+  local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
+  local diff = MiniStatusline.section_diff({ trunc_width = 75, icon = "Δ" })
+  local diagnostics = MiniStatusline.section_diagnostics({
+    trunc_width = 75,
+    signs = {
+      ERROR = "",
+      WARN = "",
+      INFO = "",
+      HINT = "󰌵",
+    },
+  })
+  local filename = MiniStatusline.section_filename({ trunc_width = 140 })
+  local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
+  local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
+  local location = MiniStatusline.section_location({ trunc_width = 75 })
+
+  return MiniStatusline.combine_groups({
+    { hl = mode_hl, strings = { mode } },
+    {
+      hl = "MiniStatuslineDevinfo",
+      strings = {
+        statusline_section(git),
+        statusline_section(diff),
+        statusline_section(diagnostics),
+        statusline_lsp(),
+        statusline_macro(),
+      },
+    },
+    "%<",
+    { hl = "MiniStatuslineFilename", strings = { filename } },
+    "%=",
+    { hl = "MiniStatuslineFileinfo", strings = { statusline_section(fileinfo) } },
+    { hl = mode_hl, strings = { statusline_section(search), location } },
+  })
+end
+
+local function statusline_inactive()
+  return "%#MiniStatuslineInactive# %F %="
+end
+
+local function redraw_statusline()
+  vim.schedule(function()
+    vim.cmd.redrawstatus()
+  end)
+end
+
 return {
   "nvim-mini/mini.nvim",
   version = false,
@@ -11,7 +99,25 @@ return {
     require("mini.surround").setup()
     require("mini.pairs").setup()
     require("mini.comment").setup()
-    require("mini.statusline").setup()
+    require("mini.statusline").setup({
+      content = {
+        active = statusline_active,
+        inactive = statusline_inactive,
+      },
+    })
+    local statusline_group = vim.api.nvim_create_augroup("RayStatusline", { clear = true })
+
+    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+      group = statusline_group,
+      desc = "Redraw statusline when macro recording changes",
+      callback = redraw_statusline,
+    })
+    vim.api.nvim_create_autocmd("User", {
+      group = statusline_group,
+      pattern = "GitSignsUpdate",
+      desc = "Redraw statusline when Git signs data changes",
+      callback = redraw_statusline,
+    })
     require("mini.move").setup()
     require("mini.splitjoin").setup()
     require("mini.bracketed").setup({

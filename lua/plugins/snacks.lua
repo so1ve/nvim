@@ -10,6 +10,16 @@ local function toggle_explorer()
   Snacks.explorer()
 end
 
+local function open_explorer_on_startup()
+  if #vim.api.nvim_list_uis() == 0 then
+    return
+  end
+
+  vim.schedule(function()
+    Snacks.explorer()
+  end)
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -35,6 +45,16 @@ return {
     statuscolumn = {},
     words = {},
   },
+  config = function(_, opts)
+    require("snacks").setup(opts)
+
+    vim.api.nvim_create_autocmd("VimEnter", {
+      group = vim.api.nvim_create_augroup("RaySnacksExplorer", { clear = true }),
+      desc = "Open Snacks explorer on startup",
+      once = true,
+      callback = open_explorer_on_startup,
+    })
+  end,
   keys = {
     { "<leader>e", toggle_explorer, desc = "Toggle explorer" },
     { "<leader>E", function() Snacks.explorer.reveal() end, desc = "Reveal current file" },
