@@ -1,39 +1,7 @@
-local function buffer_last_used(buffer)
-  local info = vim.fn.getbufinfo(buffer.id)[1]
-
-  if not info then
-    return 0
-  end
-
-  return info.lastused or 0
-end
-
-local function buffer_id(buffer)
-  return buffer.id or 0
-end
-
-local function mru_first(buffer_a, buffer_b)
-  local a_pinned = buffer_a.pinned == true
-  local b_pinned = buffer_b.pinned == true
-
-  if a_pinned ~= b_pinned then
-    return a_pinned
-  end
-
-  local a_last_used = buffer_last_used(buffer_a)
-  local b_last_used = buffer_last_used(buffer_b)
-
-  if a_last_used == b_last_used then
-    return buffer_id(buffer_a) < buffer_id(buffer_b)
-  end
-
-  return a_last_used > b_last_used
-end
-
 return {
   "akinsho/bufferline.nvim",
   version = "*",
-  event = "VeryLazy",
+  event = { "BufReadPost", "BufNewFile" },
   dependencies = {
     "nvim-mini/mini.nvim",
   },
@@ -50,24 +18,17 @@ return {
   opts = {
     options = {
       mode = "buffers",
-      sort_by = mru_first,
-      persist_buffer_sort = false,
 
       offsets = {
         {
-          filetype = "neo-tree",
-          text = "Files",
+          filetype = "snacks_layout_box",
+          text = "Explorer",
           text_align = "left",
           highlight = "Directory",
           separator = true,
         },
       },
 
-      indicator = {
-        icon = "▎",
-        style = "icon",
-      },
-      separator_style = "thin",
       always_show_bufferline = true,
       show_buffer_icons = true,
       show_buffer_close_icons = true,
