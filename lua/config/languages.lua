@@ -72,6 +72,35 @@ M.lsp_servers = {
       },
     },
   },
+  basedpyright = {
+    settings = {
+      basedpyright = {
+        analysis = {
+          autoSearchPaths = true,
+          diagnosticMode = "openFilesOnly",
+          diagnosticSeverityOverrides = {
+            reportUnusedImport = "none",
+            reportUnusedVariable = "none",
+          },
+          typeCheckingMode = "standard",
+        },
+      },
+    },
+  },
+  ruff = {
+    init_options = {
+      settings = {
+        fixAll = true,
+        lint = {
+          extendSelect = { "I" },
+        },
+        organizeImports = true,
+      },
+    },
+    on_attach = function(client)
+      client.server_capabilities.hoverProvider = false
+    end,
+  },
   gopls = {
     settings = {
       gopls = {
@@ -130,6 +159,11 @@ M.languages = {
   scss = {
     treesitter = "scss",
     lsp = { "cssls", "stylelint_lsp" },
+  },
+  python = {
+    treesitter = "python",
+    lsp = { "basedpyright", "ruff" },
+    formatters = { "ruff_organize_imports", "ruff_format" },
   },
   vue = {
     treesitter = "vue",
