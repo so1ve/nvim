@@ -43,12 +43,35 @@ M.lsp_servers = {
       },
     },
   },
+  eslint = {
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+    settings = {
+      codeActionOnSave = {
+        enable = false,
+        mode = "all",
+      },
+      format = false,
+      run = "onType",
+      validate = "on",
+      workingDirectory = {
+        mode = "auto",
+      },
+    },
+  },
   vue_ls = {},
   jsonls = {},
   taplo = {},
   yamlls = {},
   html = {},
   cssls = {},
+  stylelint_lsp = {
+    filetypes = { "css", "scss", "vue", "html" },
+    settings = {
+      stylelint = {
+        validate = { "css", "scss", "vue", "html" },
+      },
+    },
+  },
   gopls = {
     settings = {
       gopls = {
@@ -66,19 +89,19 @@ M.languages = {
   },
   typescript = {
     treesitter = "typescript",
-    lsp = { "vtsls" },
+    lsp = { "vtsls", "eslint" },
   },
   javascript = {
     treesitter = "javascript",
-    lsp = { "vtsls" },
+    lsp = { "vtsls", "eslint" },
   },
   typescriptreact = {
     treesitter = "tsx",
-    lsp = { "vtsls" },
+    lsp = { "vtsls", "eslint" },
   },
   javascriptreact = {
     treesitter = "javascript",
-    lsp = { "vtsls" },
+    lsp = { "vtsls", "eslint" },
   },
   json = {
     treesitter = "json",
@@ -98,19 +121,19 @@ M.languages = {
   },
   html = {
     treesitter = "html",
-    lsp = { "html" },
+    lsp = { "html", "stylelint_lsp" },
   },
   css = {
     treesitter = "css",
-    lsp = { "cssls" },
+    lsp = { "cssls", "stylelint_lsp" },
   },
   scss = {
     treesitter = "scss",
-    lsp = { "cssls" },
+    lsp = { "cssls", "stylelint_lsp" },
   },
   vue = {
     treesitter = "vue",
-    lsp = { "vtsls", "vue_ls" },
+    lsp = { "vtsls", "vue_ls", "eslint", "stylelint_lsp" },
   },
   go = {
     treesitter = "go",
