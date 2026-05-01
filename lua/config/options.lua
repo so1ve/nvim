@@ -6,11 +6,9 @@ opt.mousemoveevent = true
 opt.clipboard = "unnamedplus"
 
 opt.number = true
-opt.relativenumber = false
 opt.signcolumn = "yes"
 opt.cursorline = true
 
-opt.wrap = true
 opt.linebreak = true
 opt.breakindent = true
 
@@ -42,5 +40,3 @@ opt.completeopt = { "menu", "menuone", "noselect" }
 
 opt.fileformat = "unix"
 opt.shortmess:append("I")
-
-opt.autoread = true

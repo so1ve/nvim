@@ -25,11 +25,7 @@ require("lazy").setup({
     lazy = true,
   },
   install = {
-    missing = true,
     colorscheme = { "undefined" },
-  },
-  checker = {
-    enabled = false,
   },
   change_detection = {
     notify = false,

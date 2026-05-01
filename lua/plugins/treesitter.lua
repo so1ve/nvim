@@ -10,7 +10,6 @@ return {
     local group = vim.api.nvim_create_augroup("RayTreesitter", { clear = true })
     local parsers = languages.treesitter_parsers()
 
-    treesitter.setup()
     treesitter.install(parsers)
 
     for parser, filetypes in pairs(languages.treesitter_aliases()) do

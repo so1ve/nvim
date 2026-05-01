@@ -4,7 +4,6 @@ return {
     lazy = false,
     cmd = { "Mason", "MasonInstall", "MasonLog", "MasonUninstall", "MasonUpdate" },
     opts = {
-      PATH = "prepend",
       ui = {
         border = "rounded",
       },
@@ -22,7 +21,7 @@ return {
 
       return {
         ensure_installed = servers,
-        -- automatic_enable = servers,
+        automatic_enable = servers,
       }
     end,
   },

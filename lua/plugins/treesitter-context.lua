@@ -5,11 +5,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   opts = {
-    enable = true,
     max_lines = 3,
-    mode = "cursor",
     multiline_threshold = 3,
-    trim_scope = "outer",
   },
   keys = {
     {

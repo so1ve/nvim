@@ -15,11 +15,10 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
-    bigfile = { enabled = true },
-    explorer = { enabled = true },
-    quickfile = { enabled = true },
+    bigfile = {},
+    explorer = {},
+    quickfile = {},
     picker = {
-      enabled = true,
       sources = {
         explorer = {
           git_status = false,
@@ -28,13 +27,13 @@ return {
         },
       },
     },
-    input = { enabled = true },
-    notifier = { enabled = true },
-    dashboard = { enabled = true },
-    indent = { enabled = true },
-    scroll = { enabled = true },
-    statuscolumn = { enabled = true },
-    words = { enabled = true },
+    input = {},
+    notifier = {},
+    dashboard = {},
+    indent = {},
+    scroll = {},
+    statuscolumn = {},
+    words = {},
   },
   keys = {
     { "<leader>e", toggle_explorer, desc = "Toggle explorer" },
