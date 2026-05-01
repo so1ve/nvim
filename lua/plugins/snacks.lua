@@ -15,6 +15,10 @@ local function open_explorer_on_startup()
     return
   end
 
+  if vim.bo.buftype ~= "" or vim.fn.expand("%") == "" then
+    return
+  end
+
   vim.schedule(function()
     Snacks.explorer()
   end)
@@ -48,9 +52,9 @@ return {
   config = function(_, opts)
     require("snacks").setup(opts)
 
-    vim.api.nvim_create_autocmd("VimEnter", {
+    vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
       group = vim.api.nvim_create_augroup("RaySnacksExplorer", { clear = true }),
-      desc = "Open Snacks explorer on startup",
+      desc = "Open Snacks explorer after opening a file",
       once = true,
       callback = open_explorer_on_startup,
     })
