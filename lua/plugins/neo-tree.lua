@@ -34,7 +34,7 @@ return {
     { "<leader>E", "<cmd>Neotree reveal<cr>", desc = "Reveal current file" },
   },
   opts = {
-    close_if_last_window = true,
+    close_if_last_window = false,
     enable_git_status = false,
     hide_root_node = true,
     retain_hidden_root_indent = true,

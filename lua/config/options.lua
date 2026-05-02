@@ -11,6 +11,8 @@ opt.cursorline = true
 opt.laststatus = 3
 opt.cmdheight = 0
 opt.showmode = false
+opt.confirm = true
+opt.hidden = false
 
 opt.linebreak = true
 opt.breakindent = true
@@ -44,3 +46,4 @@ opt.completeopt = { "menu", "menuone", "noselect" }
 
 opt.fileformat = "unix"
 opt.shortmess:append("I")
+opt.messagesopt = "wait:1000,history:500,progress:c"

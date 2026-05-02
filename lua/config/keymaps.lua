@@ -2,7 +2,8 @@ local map = vim.keymap.set
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
-map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit window" })
+map("n", "<leader>q", "<cmd>confirm quit<CR>", { desc = "Quit window" })
+map("n", "<leader>Q", "<cmd>confirm qall<CR>", { desc = "Quit all" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
