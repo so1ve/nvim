@@ -15,6 +15,11 @@ function M.setup()
 
   local palette = require("colors.undefined.palette")
   local groups = require("colors.undefined.groups").get(palette)
+  local integrations = require("colors.undefined.integrations").get(palette)
+
+  for group, spec in pairs(integrations) do
+    groups[group] = spec
+  end
 
   for group, spec in pairs(groups) do
     vim.api.nvim_set_hl(0, group, spec)
