@@ -10,25 +10,6 @@ local function statusline_section(section)
   return statusline_escape(section)
 end
 
-local function statusline_lsp()
-  if MiniStatusline.is_truncated(90) then
-    return ""
-  end
-
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients == 0 then
-    return ""
-  end
-
-  local names = {}
-  for _, client in ipairs(clients) do
-    table.insert(names, client.name)
-  end
-  table.sort(names)
-
-  return statusline_escape(" " .. table.concat(names, ","))
-end
-
 local function statusline_macro()
   local register = vim.fn.reg_recording()
   if register == "" then
@@ -46,12 +27,13 @@ local function statusline_active()
   local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
   local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
   local diagnostics = MiniStatusline.section_diagnostics({
+    icon = "",
     trunc_width = 75,
     signs = {
-      ERROR = "",
-      WARN = "",
-      INFO = "",
-      HINT = "󰌵",
+      ERROR = " ",
+      WARN = " ",
+      INFO = " ",
+      HINT = "󰌵 ",
     },
   })
   local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
@@ -65,7 +47,6 @@ local function statusline_active()
       strings = {
         statusline_section(git),
         statusline_section(diagnostics),
-        statusline_lsp(),
         statusline_macro(),
       },
     },
