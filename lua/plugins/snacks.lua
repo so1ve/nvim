@@ -47,6 +47,8 @@ return {
     indent = {},
     scroll = {},
     statuscolumn = {},
+    terminal = {},
+    rename = {},
     words = {},
   },
   config = function(_, opts)
@@ -67,5 +69,8 @@ return {
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent files" },
     { "<leader>fn", function() Snacks.picker.notifications() end, desc = "Notifications" },
+    { "<leader>tt", function() Snacks.terminal() end, desc = "Toggle terminal" },
+    { "<leader>tT", function() Snacks.terminal(nil, { win = { position = "float" } }) end, desc = "Toggle floating terminal" },
+    { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename file" },
   },
 }

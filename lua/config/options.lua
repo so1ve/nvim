@@ -9,6 +9,7 @@ opt.number = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.laststatus = 3
+opt.cmdheight = 0
 opt.showmode = false
 
 opt.linebreak = true

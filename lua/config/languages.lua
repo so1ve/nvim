@@ -179,6 +179,16 @@ M.languages = {
   },
 }
 
+-- noice.nvim
+M.extra_treesitter_parsers = {
+  "bash",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "regex",
+  "vim",
+}
+
 function M.treesitter_language(filetype)
   if filetype == "" then
     return nil
@@ -243,6 +253,13 @@ function M.treesitter_parsers()
   for filetype, language in pairs(M.languages) do
     local parser = language.treesitter or vim.treesitter.language.get_lang(filetype)
     if parser and not seen[parser] then
+      seen[parser] = true
+      table.insert(parsers, parser)
+    end
+  end
+
+  for _, parser in ipairs(M.extra_treesitter_parsers) do
+    if not seen[parser] then
       seen[parser] = true
       table.insert(parsers, parser)
     end
