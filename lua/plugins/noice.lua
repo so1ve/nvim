@@ -3,6 +3,7 @@ return {
   event = "VeryLazy",
   dependencies = {
     "MunifTanjim/nui.nvim",
+    "rcarriga/nvim-notify",
   },
   opts = {
     messages = {
@@ -11,7 +12,8 @@ return {
       view_warn = "mini",
     },
     notify = {
-      enabled = false,
+      enabled = true,
+      view = "notify",
     },
     lsp = {
       override = {
@@ -27,9 +29,7 @@ return {
     },
   },
   keys = {
-    { "<leader>nl", function() require("noice").cmd("last") end, desc = "Noice last message" },
-    { "<leader>nh", function() require("noice").cmd("history") end, desc = "Noice history" },
-    { "<leader>na", function() require("noice").cmd("all") end, desc = "Noice all messages" },
-    { "<leader>nd", function() require("noice").cmd("dismiss") end, desc = "Dismiss Noice messages" },
+    { "<leader>nh", "<cmd>Noice pick<cr>", desc = "Notification history" },
+    { "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss notifications" },
   },
 }
