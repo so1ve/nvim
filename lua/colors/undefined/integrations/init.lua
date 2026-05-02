@@ -5,6 +5,8 @@ local modules = {
   "snacks",
   "gitsigns",
   "bufferline",
+  "incline",
+  "navic",
   "blink",
   "noice",
   "neo-tree",

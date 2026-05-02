@@ -3,6 +3,7 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "saghen/blink.cmp",
+    "SmiteshP/nvim-navic",
   },
   config = function()
     local languages = require("config.languages")
@@ -33,7 +34,14 @@ return {
         local bufnr = event.buf
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         local inlay_hint_method = vim.lsp.protocol.Methods.textDocument_inlayHint
+        local symbol_method = vim.lsp.protocol.Methods.textDocument_documentSymbol
         local supports_inlay_hints = client and client:supports_method(inlay_hint_method, bufnr)
+        local supports_document_symbols = client and client:supports_method(symbol_method, bufnr)
+
+        local navic = require("nvim-navic")
+        if supports_document_symbols and not navic.is_available(bufnr) then
+          navic.attach(client, bufnr)
+        end
 
         local function map(lhs, rhs, desc)
           vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
