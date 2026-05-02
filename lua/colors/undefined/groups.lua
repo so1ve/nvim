@@ -136,7 +136,7 @@ function M.get(p)
 
     ["@variable"] = { fg = p.variable },
     ["@variable.builtin"] = { fg = p.constant },
-    ["@variable.parameter"] = { fg = p.fg },
+    ["@variable.parameter"] = { fg = p.variable },
     ["@variable.member"] = { fg = p.property },
     ["@property"] = { fg = p.property },
     ["@field"] = { fg = p.property },
@@ -194,7 +194,7 @@ function M.get(p)
     ["@lsp.type.method"] = { fg = p.entity },
     ["@lsp.type.macro"] = { fg = p.entity },
     ["@lsp.type.variable"] = { fg = p.variable },
-    ["@lsp.type.parameter"] = { fg = p.fg },
+    ["@lsp.type.parameter"] = { fg = p.variable },
     ["@lsp.type.decorator"] = { fg = p.attribute },
     ["@lsp.type.const"] = { fg = p.constant },
     ["@lsp.type.enumMember"] = { fg = p.constant },
