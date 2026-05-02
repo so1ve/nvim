@@ -10,6 +10,12 @@ return {
       preset = "super-tab",
       ["<Tab>"] = {
         function(cmp)
+          local has_sidekick, sidekick = pcall(require, "sidekick")
+
+          if has_sidekick and sidekick.nes_jump_or_apply() then
+            return true
+          end
+
           local has_copilot, suggestion = pcall(require, "copilot.suggestion")
 
           if has_copilot and suggestion.is_visible() then
@@ -33,7 +39,7 @@ return {
     completion = {
       documentation = {
         auto_show = true,
-        auto_show_delay_ms = 250,
+        auto_show_delay_ms = 0,
       },
     },
   },

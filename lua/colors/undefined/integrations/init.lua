@@ -13,6 +13,7 @@ local modules = {
   "treesitter-context",
   "rainbow-delimiters",
   "opencode",
+  "sidekick",
 }
 
 function M.get(p)
