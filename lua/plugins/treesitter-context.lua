@@ -5,8 +5,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   opts = {
-    max_lines = 3,
-    multiline_threshold = 3,
+    max_lines = 4,
+    multiline_threshold = 4,
   },
   keys = {
     {

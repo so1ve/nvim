@@ -38,10 +38,13 @@ local function statusline_macro()
   return statusline_escape("recording @" .. register)
 end
 
+local function statusline_location()
+  return "%l/%L:%v"
+end
+
 local function statusline_active()
   local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
   local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
-  local diff = MiniStatusline.section_diff({ trunc_width = 75, icon = "Δ" })
   local diagnostics = MiniStatusline.section_diagnostics({
     trunc_width = 75,
     signs = {
@@ -54,7 +57,7 @@ local function statusline_active()
   local filename = MiniStatusline.section_filename({ trunc_width = 140 })
   local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
   local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
-  local location = MiniStatusline.section_location({ trunc_width = 75 })
+  local location = statusline_location()
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
@@ -62,7 +65,6 @@ local function statusline_active()
       hl = "MiniStatuslineDevinfo",
       strings = {
         statusline_section(git),
-        statusline_section(diff),
         statusline_section(diagnostics),
         statusline_lsp(),
         statusline_macro(),
