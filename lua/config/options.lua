@@ -12,7 +12,6 @@ opt.laststatus = 3
 opt.cmdheight = 0
 opt.showmode = false
 opt.confirm = true
-opt.hidden = false
 
 opt.linebreak = true
 opt.breakindent = true

@@ -1,3 +1,7 @@
+local function delete_buffer(buffer)
+  Snacks.bufdelete(buffer)
+end
+
 return {
   "akinsho/bufferline.nvim",
   version = "*",
@@ -41,8 +45,8 @@ return {
         return " " .. (icons[level] or "• ") .. count
       end,
 
-      close_command = "bdelete %d",
-      right_mouse_command = "bdelete %d",
+      close_command = delete_buffer,
+      right_mouse_command = delete_buffer,
 
       hover = {
         enabled = true,
