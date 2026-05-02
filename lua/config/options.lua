@@ -37,6 +37,7 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.undofile = true
+opt.autoread = true
 opt.updatetime = 250
 opt.timeoutlen = 400
 opt.completeopt = { "menu", "menuone", "noselect" }
