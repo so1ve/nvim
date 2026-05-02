@@ -10,7 +10,6 @@ function M.get(p)
     MiniStatuslineModeCommand = { fg = p.bg_dark, bg = p.yellow, bold = true },
     MiniStatuslineModeOther = { fg = p.bg_dark, bg = p.cyan, bold = true },
     MiniStatuslineDevinfo = { fg = p.fg_dim, bg = p.bg_dark },
-    MiniStatuslineFilename = { fg = p.fg, bg = p.bg_alt },
     MiniStatuslineFileinfo = { fg = p.fg_dim, bg = p.bg_dark },
     MiniStatuslineInactive = { fg = p.subtle, bg = p.bg_dark },
     MiniHipatternsFixme = { fg = p.bg, bg = p.red, bold = true },

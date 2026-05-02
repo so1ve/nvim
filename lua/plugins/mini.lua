@@ -54,7 +54,6 @@ local function statusline_active()
       HINT = "󰌵",
     },
   })
-  local filename = MiniStatusline.section_filename({ trunc_width = 140 })
   local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
   local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
   local location = statusline_location()
@@ -71,7 +70,6 @@ local function statusline_active()
       },
     },
     "%<",
-    { hl = "MiniStatuslineFilename", strings = { filename } },
     "%=",
     { hl = "MiniStatuslineFileinfo", strings = { statusline_section(fileinfo) } },
     { hl = mode_hl, strings = { statusline_section(search), location } },
@@ -79,7 +77,7 @@ local function statusline_active()
 end
 
 local function statusline_inactive()
-  return "%#MiniStatuslineInactive# %F %="
+  return "%#MiniStatuslineInactive#%="
 end
 
 local function redraw_statusline()
