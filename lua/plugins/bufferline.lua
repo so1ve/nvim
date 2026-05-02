@@ -19,7 +19,7 @@ return {
     options = {
       offsets = {
         {
-          filetype = "snacks_layout_box",
+          filetype = "neo-tree",
           text = "Explorer",
           text_align = "left",
           highlight = "Directory",

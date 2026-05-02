@@ -7,6 +7,7 @@ local modules = {
   "bufferline",
   "blink",
   "noice",
+  "neo-tree",
   "treesitter-context",
   "rainbow-delimiters",
   "opencode",
