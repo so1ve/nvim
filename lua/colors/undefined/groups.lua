@@ -85,7 +85,7 @@ function M.get(p)
     DiffDelete = { fg = p.diff_delete_fg, bg = p.diff_delete_bg },
     DiffText = { fg = p.diff_header, bg = p.bg_alt },
 
-    Directory = { fg = p.green },
+    Directory = { fg = p.fg },
     Title = { fg = p.green, bold = true },
     ErrorMsg = { fg = p.red },
     WarningMsg = { fg = p.orange },
