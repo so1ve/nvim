@@ -1,44 +1,86 @@
 local map = vim.keymap.set
 
+local function listed_buffers()
+  return vim.tbl_filter(function(buf)
+    return vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted
+  end, vim.api.nvim_list_bufs())
+end
+
+local function is_layout_placeholder(buf)
+  if vim.bo[buf].buftype ~= "" or vim.bo[buf].modified or vim.api.nvim_buf_get_name(buf) ~= "" then
+    return false
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, 2, false)
+  return #lines == 1 and lines[1] == ""
+end
+
+local function should_quit_from_placeholder()
+  local buf = vim.api.nvim_get_current_buf()
+  local listed = listed_buffers()
+
+  return #listed == 1 and listed[1] == buf and is_layout_placeholder(buf)
+end
+
+local function quit_from_placeholder(force)
+  if force then
+    vim.cmd.qall({ bang = true })
+  else
+    vim.cmd("confirm qall")
+  end
+end
+
+local function close_buffer(opts)
+  opts = opts or {}
+
+  if should_quit_from_placeholder() then
+    quit_from_placeholder(opts.force)
+
+    return
+  end
+
+  Snacks.bufdelete(opts.force and { force = true } or nil)
+end
+
 -- override default close commands to route through Snacks.bufdelete, which prevents neo-tree layout from being full-screened
 local close_commands = {
   close = function()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   ["close!"] = function()
-    Snacks.bufdelete({ force = true })
+    close_buffer({ force = true })
   end,
   exit = function()
     vim.cmd.update()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   q = function()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   ["q!"] = function()
-    Snacks.bufdelete({ force = true })
+    close_buffer({ force = true })
   end,
   quit = function()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   ["quit!"] = function()
-    Snacks.bufdelete({ force = true })
+    close_buffer({ force = true })
   end,
   wq = function()
     vim.cmd.write()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   ["wq!"] = function()
     vim.cmd("write!")
-    Snacks.bufdelete({ force = true })
+    close_buffer({ force = true })
   end,
   x = function()
     vim.cmd.update()
-    Snacks.bufdelete()
+    close_buffer()
   end,
   xit = function()
     vim.cmd.update()
-    Snacks.bufdelete()
+    close_buffer()
   end,
 }
 
@@ -60,14 +102,14 @@ end, { expr = true, desc = "Route close-window commands through Snacks.bufdelete
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", function()
-  Snacks.bufdelete()
+  close_buffer()
 end, { desc = "Close buffer" })
 map("n", "<leader>Q", "<cmd>confirm qall<CR>", { desc = "Quit all" })
 map("n", "<C-w>c", function()
-  Snacks.bufdelete()
+  close_buffer()
 end, { desc = "Close buffer" })
 map("n", "<C-w>q", function()
-  Snacks.bufdelete()
+  close_buffer()
 end, { desc = "Close buffer" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
