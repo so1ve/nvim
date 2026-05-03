@@ -8,21 +8,17 @@ local function register_treesitter_aliases(languages)
   end
 end
 
-local function start_treesitter_for_buffer(languages, event)
-  local filetype = vim.bo[event.buf].filetype
-  local parser = languages.treesitter_language(filetype)
-
-  if parser and vim.treesitter.language.add(parser) == true then
-    vim.treesitter.start(event.buf, parser)
-  end
-end
-
 local function register_treesitter_autocmd(languages)
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("RayTreesitter", { clear = true }),
     desc = "Start Tree-sitter for configured parsers",
     callback = function(event)
-      start_treesitter_for_buffer(languages, event)
+      local filetype = vim.bo[event.buf].filetype
+      local parser = languages.treesitter_language(filetype)
+
+      if parser and vim.treesitter.language.add(parser) == true then
+        vim.treesitter.start(event.buf, parser)
+      end
     end,
   })
 end

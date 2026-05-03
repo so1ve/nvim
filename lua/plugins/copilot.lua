@@ -1,12 +1,3 @@
-local function hide_copilot_suggestions()
-  require("copilot.suggestion").dismiss()
-  vim.b.copilot_suggestion_hidden = true
-end
-
-local function restore_copilot_suggestions()
-  vim.b.copilot_suggestion_hidden = false
-end
-
 local function register_copilot_blink_autocmds()
   local group = vim.api.nvim_create_augroup("RayCopilotBlink", { clear = true })
 
@@ -14,14 +5,19 @@ local function register_copilot_blink_autocmds()
     group = group,
     pattern = "BlinkCmpMenuOpen",
     desc = "Hide Copilot inline suggestions while blink menu is open",
-    callback = hide_copilot_suggestions,
+    callback = function()
+      require("copilot.suggestion").dismiss()
+      vim.b.copilot_suggestion_hidden = true
+    end,
   })
 
   vim.api.nvim_create_autocmd("User", {
     group = group,
     pattern = "BlinkCmpMenuClose",
     desc = "Restore Copilot inline suggestions after blink menu closes",
-    callback = restore_copilot_suggestions,
+    callback = function()
+      vim.b.copilot_suggestion_hidden = false
+    end,
   })
 end
 
