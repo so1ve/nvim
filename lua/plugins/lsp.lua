@@ -11,10 +11,8 @@ return {
     vim.diagnostic.config({
       update_in_insert = true,
       severity_sort = true,
-      virtual_text = {
-        prefix = "●",
-        spacing = 2,
-      },
+      virtual_text = false,
+      virtual_lines = false,
       float = {
         border = "rounded",
         source = true,
