@@ -7,7 +7,6 @@ return {
   config = function()
     local languages = require("config.languages")
     local treesitter = require("nvim-treesitter")
-    local group = vim.api.nvim_create_augroup("RayTreesitter", { clear = true })
     local parsers = languages.treesitter_parsers()
 
     treesitter.install(parsers)
@@ -17,7 +16,7 @@ return {
     end
 
     vim.api.nvim_create_autocmd("FileType", {
-      group = group,
+      group = vim.api.nvim_create_augroup("RayTreesitter", { clear = true }),
       desc = "Start Tree-sitter for configured parsers",
       callback = function(event)
         local filetype = vim.bo[event.buf].filetype

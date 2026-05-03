@@ -51,29 +51,24 @@ local function gitsigns_on_attach(bufnr)
   map({ "o", "x" }, "ih", gitsigns.select_hunk, "Git hunk")
 end
 
-local function restore_current_line_blame_on_insert_leave()
-  local group = vim.api.nvim_create_augroup("RayGitSignsBlame", { clear = true })
-
-  vim.api.nvim_create_autocmd("InsertLeave", {
-    group = group,
-    desc = "Restore gitsigns current line blame after leaving insert mode",
-    callback = function(event)
-      vim.schedule(function()
-        if vim.api.nvim_buf_is_valid(event.buf) then
-          require("gitsigns.current_line_blame").update(event.buf)
-        end
-      end)
-    end,
-  })
-end
-
 return {
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function(_, opts)
       require("gitsigns").setup(opts)
-      restore_current_line_blame_on_insert_leave()
+
+      vim.api.nvim_create_autocmd("InsertLeave", {
+        group = vim.api.nvim_create_augroup("RayGitSignsBlame", { clear = true }),
+        desc = "Restore gitsigns current line blame after leaving insert mode",
+        callback = function(event)
+          vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(event.buf) then
+              require("gitsigns.current_line_blame").update(event.buf)
+            end
+          end)
+        end,
+      })
     end,
     opts = {
       on_attach = gitsigns_on_attach,
