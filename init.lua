@@ -10,3 +10,4 @@ require("config.keymaps")
 vim.cmd.colorscheme("undefined")
 
 require("config.lazy")
+require("config.menus")

@@ -1,3 +1,5 @@
+local lsp_navigation = require("config.lsp_navigation")
+
 local function set_lsp_keymap(bufnr, lhs, rhs, desc)
   vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
 end
@@ -22,10 +24,11 @@ local function configure_lsp_buffer(event)
   end
 
   set_lsp_keymap(bufnr, "K", vim.lsp.buf.hover, "Hover documentation")
-  set_lsp_keymap(bufnr, "gd", vim.lsp.buf.definition, "Go to definition")
-  set_lsp_keymap(bufnr, "gD", vim.lsp.buf.declaration, "Go to declaration")
-  set_lsp_keymap(bufnr, "gI", vim.lsp.buf.implementation, "Go to implementation")
-  set_lsp_keymap(bufnr, "gr", vim.lsp.buf.references, "References")
+  set_lsp_keymap(bufnr, "gd", lsp_navigation.definitions, "Go to definition")
+  set_lsp_keymap(bufnr, "gD", lsp_navigation.declarations, "Go to declaration")
+  set_lsp_keymap(bufnr, "gI", lsp_navigation.implementations, "Go to implementation")
+  set_lsp_keymap(bufnr, "gr", lsp_navigation.references, "References")
+  set_lsp_keymap(bufnr, "gy", lsp_navigation.type_definitions, "Go to type definition")
   set_lsp_keymap(bufnr, "<leader>ca", vim.lsp.buf.code_action, "Code action")
 
   if supports_inlay_hints then
