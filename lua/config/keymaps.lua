@@ -30,8 +30,26 @@ local function quit_from_placeholder(force)
   end
 end
 
+local function should_close_window_natively()
+  return vim.bo.buftype ~= "" or not vim.bo.buflisted or vim.bo.filetype == "neo-tree"
+end
+
+local function close_window(force)
+  local ok = pcall(vim.cmd, force and "close!" or "close")
+
+  if not ok then
+    vim.cmd(force and "quit!" or "quit")
+  end
+end
+
 local function close_buffer(opts)
   opts = opts or {}
+
+  if should_close_window_natively() then
+    close_window(opts.force)
+
+    return
+  end
 
   if should_quit_from_placeholder() then
     quit_from_placeholder(opts.force)
@@ -42,7 +60,7 @@ local function close_buffer(opts)
   Snacks.bufdelete(opts.force and { force = true } or nil)
 end
 
--- override default close commands to route through Snacks.bufdelete, which prevents neo-tree layout from being full-screened
+-- route normal file close commands through Snacks.bufdelete without stealing native special-window close behavior
 local close_commands = {
   close = function()
     close_buffer()
@@ -91,7 +109,7 @@ map("c", "<CR>", function()
 
   local command = close_commands[vim.trim(vim.fn.getcmdline())]
 
-  if command and vim.bo.filetype ~= "neo-tree" then
+  if command and not should_close_window_natively() then
     vim.schedule(command)
     return "<C-c>"
   end
