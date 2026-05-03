@@ -11,9 +11,6 @@ return {
     top_down = true,
   },
   config = function(_, opts)
-    local notify = require("notify")
-
-    notify.setup(opts)
-    vim.notify = notify
+    require("notify").setup(opts)
   end,
 }

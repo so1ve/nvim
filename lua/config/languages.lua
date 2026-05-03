@@ -1,19 +1,5 @@
 local M = {}
 
-local function configure_eslint_workspace(_, config)
-  local root_dir = config.root_dir
-
-  if not root_dir then
-    return
-  end
-
-  config.settings = config.settings or {}
-  config.settings.workspaceFolder = {
-    name = vim.fn.fnamemodify(root_dir, ":t"),
-    uri = vim.uri_from_fname(root_dir),
-  }
-end
-
 M.lsp_servers = {
   rust_analyzer = {
     settings = {
@@ -58,7 +44,17 @@ M.lsp_servers = {
     },
   },
   eslint = {
-    before_init = configure_eslint_workspace,
+    before_init = function(_, config)
+      if not config.root_dir then
+        return
+      end
+
+      config.settings = config.settings or {}
+      config.settings.workspaceFolder = {
+        name = vim.fn.fnamemodify(config.root_dir, ":t"),
+        uri = vim.uri_from_fname(config.root_dir),
+      }
+    end,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     settings = {
       format = false,

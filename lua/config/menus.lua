@@ -1,15 +1,11 @@
 local group = vim.api.nvim_create_augroup("RayMenu", { clear = true })
 
-local function lsp_menu_rhs(action)
-  return ("<Cmd>lua require('config.lsp_navigation').%s()<CR>"):format(action)
-end
-
 local lsp_menu_items = {
-  { priority = "1.30", path = "PopUp.Go\\ to\\ definition", rhs = lsp_menu_rhs("definitions") },
-  { priority = "1.31", path = "PopUp.Go\\ to\\ declaration", rhs = lsp_menu_rhs("declarations") },
-  { priority = "1.32", path = "PopUp.Go\\ to\\ implementation", rhs = lsp_menu_rhs("implementations") },
-  { priority = "1.33", path = "PopUp.Go\\ to\\ type\\ definition", rhs = lsp_menu_rhs("type_definitions") },
-  { priority = "1.34", path = "PopUp.References", rhs = lsp_menu_rhs("references") },
+  { priority = "1.30", path = "PopUp.Go\\ to\\ definition", rhs = "<Cmd>lua Snacks.picker.lsp_definitions()<CR>" },
+  { priority = "1.31", path = "PopUp.Go\\ to\\ declaration", rhs = "<Cmd>lua Snacks.picker.lsp_declarations()<CR>" },
+  { priority = "1.32", path = "PopUp.Go\\ to\\ implementation", rhs = "<Cmd>lua Snacks.picker.lsp_implementations()<CR>" },
+  { priority = "1.33", path = "PopUp.Go\\ to\\ type\\ definition", rhs = "<Cmd>lua Snacks.picker.lsp_type_definitions()<CR>" },
+  { priority = "1.34", path = "PopUp.References", rhs = "<Cmd>lua Snacks.picker.lsp_references()<CR>" },
 }
 
 local popup_menu_items = {
@@ -34,12 +30,6 @@ for _, item in ipairs({
     path = "PopUp.Show\\ All\\ Diagnostics",
     rhs = "<Cmd>lua vim.diagnostic.setqflist()<CR>",
   },
-  {
-    command = "anoremenu",
-    priority = "1.42",
-    path = "PopUp.Configure\\ Diagnostics",
-    rhs = "<Cmd>help vim.diagnostic.config()<CR>",
-  },
   { command = "anoremenu", priority = "1.50", path = "PopUp.-1-", rhs = "<Nop>" },
   { command = "vnoremenu", priority = "1.60", path = "PopUp.Cut", rhs = '"+x' },
   { command = "vnoremenu", priority = "1.61", path = "PopUp.Copy", rhs = '"+y' },
@@ -49,8 +39,6 @@ for _, item in ipairs({
   { command = "nnoremenu", priority = "1.64", path = "PopUp.Select\\ All", rhs = "ggVG" },
   { command = "vnoremenu", priority = "1.64", path = "PopUp.Select\\ All", rhs = "gg0oG$" },
   { command = "inoremenu", priority = "1.64", path = "PopUp.Select\\ All", rhs = "<C-Home><C-O>VG" },
-  { command = "anoremenu", priority = "1.70", path = "PopUp.-2-", rhs = "<Nop>" },
-  { command = "anoremenu", priority = "1.80", path = "PopUp.How-to\\ disable\\ mouse", rhs = "<Cmd>help disable-mouse<CR>" },
 }) do
   table.insert(popup_menu_items, item)
 end
@@ -78,26 +66,16 @@ local function define_popup_menu_items()
   end
 end
 
-local function has_lsp_client()
-  return vim.lsp.get_clients({ bufnr = 0 })[1] ~= nil
-end
-
-local function set_lsp_menu_items_enabled(enabled)
-  local command = enabled and "anoremenu enable" or "amenu disable"
-
-  for _, item in ipairs(lsp_menu_items) do
-    run_menu_command(("%s %s"):format(command, item.path))
-  end
-end
-
-local function update_lsp_menu_items()
-  set_lsp_menu_items_enabled(has_lsp_client())
-end
-
 define_popup_menu_items()
 
 vim.api.nvim_create_autocmd("MenuPopup", {
   group = group,
   desc = "Toggle LSP popup menu items",
-  callback = update_lsp_menu_items,
+  callback = function()
+    local command = vim.lsp.get_clients({ bufnr = 0 })[1] and "anoremenu enable" or "amenu disable"
+
+    for _, item in ipairs(lsp_menu_items) do
+      run_menu_command(("%s %s"):format(command, item.path))
+    end
+  end,
 })

@@ -1,16 +1,12 @@
 local map = vim.keymap.set
 
-local function has_modified_buffers()
-  return vim.iter(vim.api.nvim_list_bufs()):any(function(buf)
-    return vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].modified
-  end)
-end
-
 local function quit_all()
   Snacks.bufdelete.all()
 
-  if has_modified_buffers() then
-    return
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].modified then
+      return
+    end
   end
 
   vim.cmd.qall()
