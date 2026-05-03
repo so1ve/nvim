@@ -1,25 +1,5 @@
 local M = {}
 
-local function start_eslint_language_server(dispatchers, config)
-  local command = "vscode-eslint-language-server"
-  local root_dir = config and config.root_dir
-
-  if root_dir then
-    local local_command = vim.fs.joinpath(root_dir, "node_modules", ".bin", command)
-
-    if vim.fn.executable(local_command) == 1 then
-      command = local_command
-    end
-  end
-
-  local spawn_options = root_dir and { cwd = root_dir } or nil
-
-  -- ESLint flat configs can evaluate process.cwd() while building parserOptions.
-  -- Start the server from the resolved project root so cwd-sensitive typed linting
-  -- matches terminal and editor integrations that open the frontend as a workspace.
-  return vim.lsp.rpc.start({ command, "--stdio" }, dispatchers, spawn_options)
-end
-
 local function configure_eslint_workspace(_, config)
   local root_dir = config.root_dir
 
@@ -78,7 +58,6 @@ M.lsp_servers = {
     },
   },
   eslint = {
-    cmd = start_eslint_language_server,
     before_init = configure_eslint_workspace,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     settings = {
