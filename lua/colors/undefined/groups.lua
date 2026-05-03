@@ -165,6 +165,7 @@ function M.get(p)
     ["@lsp.type.interface"] = { fg = p.interface },
     ["@lsp.type.type"] = { fg = p.interface },
     ["@lsp.type.class"] = { fg = p.class },
+    ["@lsp.type.component.vue"] = { fg = p.class },
     ["@lsp.type.enum"] = { fg = p.class },
     ["@lsp.type.struct"] = { fg = p.class },
     ["@lsp.type.function"] = { fg = p.entity },
@@ -175,8 +176,6 @@ function M.get(p)
     ["@lsp.type.decorator"] = { fg = p.attribute },
     ["@lsp.type.const"] = { fg = p.constant },
     ["@lsp.type.enumMember"] = { fg = p.constant },
-
-    ["@lsp.typemod.variable.readonly"] = { fg = p.constant },
   }
 end
 
