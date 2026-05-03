@@ -10,6 +10,23 @@ local terminal_opts = {
   },
 }
 
+local function start_opencode_server()
+  Snacks.terminal.open(opencode_cmd, terminal_opts)
+end
+
+local function stop_opencode_server()
+  local opts = vim.tbl_deep_extend("force", {}, terminal_opts, { create = false })
+  local terminal = Snacks.terminal.get(opencode_cmd, opts)
+
+  if terminal then
+    terminal:close()
+  end
+end
+
+local function toggle_opencode_terminal()
+  Snacks.terminal.toggle(opencode_cmd, terminal_opts)
+end
+
 return {
   "nickjvandyke/opencode.nvim",
   version = "*",
@@ -44,20 +61,9 @@ return {
   config = function()
     vim.g.opencode_opts = {
       server = {
-        start = function()
-          Snacks.terminal.open(opencode_cmd, terminal_opts)
-        end,
-        stop = function()
-          local opts = vim.tbl_deep_extend("force", {}, terminal_opts, { create = false })
-          local terminal = Snacks.terminal.get(opencode_cmd, opts)
-
-          if terminal then
-            terminal:close()
-          end
-        end,
-        toggle = function()
-          Snacks.terminal.toggle(opencode_cmd, terminal_opts)
-        end,
+        start = start_opencode_server,
+        stop = stop_opencode_server,
+        toggle = toggle_opencode_terminal,
       },
     }
   end,

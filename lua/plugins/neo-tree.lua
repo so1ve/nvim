@@ -12,6 +12,15 @@ local function open_neo_tree_on_startup()
   end)
 end
 
+local function register_neo_tree_startup_autocmd()
+  vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+    group = vim.api.nvim_create_augroup("RayNeoTree", { clear = true }),
+    desc = "Open neo-tree after opening a file",
+    once = true,
+    callback = open_neo_tree_on_startup,
+  })
+end
+
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
@@ -22,12 +31,7 @@ return {
     "nvim-mini/mini.nvim",
   },
   init = function()
-    vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-      group = vim.api.nvim_create_augroup("RayNeoTree", { clear = true }),
-      desc = "Open neo-tree after opening a file",
-      once = true,
-      callback = open_neo_tree_on_startup,
-    })
+    register_neo_tree_startup_autocmd()
   end,
   keys = {
     { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle explorer" },

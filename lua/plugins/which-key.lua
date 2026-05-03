@@ -1,3 +1,16 @@
+local leader_groups = {
+  { "<leader>b", group = "buffer" },
+  { "<leader>c", group = "code" },
+  { "<leader>d", group = "diagnostics" },
+  { "<leader>f", group = "find" },
+  { "<leader>g", group = "git" },
+  { "<leader>gh", group = "hunk" },
+  { "<leader>n", group = "noice" },
+  { "<leader>o", group = "opencode" },
+  { "<leader>s", group = "search" },
+  { "<leader>t", group = "terminal" },
+}
+
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
@@ -8,18 +21,6 @@ return {
   config = function(_, opts)
     local wk = require("which-key")
     wk.setup(opts)
-
-    wk.add({
-      { "<leader>b", group = "buffer" },
-      { "<leader>c", group = "code" },
-      { "<leader>d", group = "diagnostics" },
-      { "<leader>f", group = "find" },
-      { "<leader>g", group = "git" },
-      { "<leader>gh", group = "hunk" },
-      { "<leader>n", group = "noice" },
-      { "<leader>o", group = "opencode" },
-      { "<leader>s", group = "search" },
-      { "<leader>t", group = "terminal" },
-    })
+    wk.add(leader_groups)
   end,
 }

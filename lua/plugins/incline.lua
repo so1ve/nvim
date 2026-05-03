@@ -64,6 +64,20 @@ local function breadcrumbs(bufnr)
   return items
 end
 
+local function refresh_incline()
+  vim.schedule(function()
+    require("incline").refresh()
+  end)
+end
+
+local function register_incline_diagnostics_autocmd()
+  vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    group = vim.api.nvim_create_augroup("RayInclineDiagnostics", { clear = true }),
+    desc = "Refresh incline when diagnostics change",
+    callback = refresh_incline,
+  })
+end
+
 return {
   "b0o/incline.nvim",
   event = "VeryLazy",
@@ -73,16 +87,7 @@ return {
   },
   config = function(_, opts)
     require("incline").setup(opts)
-
-    vim.api.nvim_create_autocmd("DiagnosticChanged", {
-      group = vim.api.nvim_create_augroup("RayInclineDiagnostics", { clear = true }),
-      desc = "Refresh incline when diagnostics change",
-      callback = function()
-        vim.schedule(function()
-          require("incline").refresh()
-        end)
-      end,
-    })
+    register_incline_diagnostics_autocmd()
   end,
   opts = {
     hide = {

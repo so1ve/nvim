@@ -56,6 +56,23 @@ local function redraw_statusline()
   end)
 end
 
+local function register_statusline_autocmds()
+  local statusline_group = vim.api.nvim_create_augroup("RayStatusline", { clear = true })
+
+  vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+    group = statusline_group,
+    desc = "Redraw statusline when macro recording changes",
+    callback = redraw_statusline,
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    group = statusline_group,
+    pattern = "GitSignsUpdate",
+    desc = "Redraw statusline when Git signs data changes",
+    callback = redraw_statusline,
+  })
+end
+
 return {
   "nvim-mini/mini.nvim",
   version = false,
@@ -75,19 +92,7 @@ return {
         inactive = statusline_inactive,
       },
     })
-    local statusline_group = vim.api.nvim_create_augroup("RayStatusline", { clear = true })
-
-    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
-      group = statusline_group,
-      desc = "Redraw statusline when macro recording changes",
-      callback = redraw_statusline,
-    })
-    vim.api.nvim_create_autocmd("User", {
-      group = statusline_group,
-      pattern = "GitSignsUpdate",
-      desc = "Redraw statusline when Git signs data changes",
-      callback = redraw_statusline,
-    })
+    register_statusline_autocmds()
     require("mini.move").setup()
     require("mini.splitjoin").setup()
     require("mini.bracketed").setup({
