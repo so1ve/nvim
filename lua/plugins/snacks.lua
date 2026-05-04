@@ -25,6 +25,7 @@ return {
     { "<leader>fg", function() Snacks.picker.grep() end, desc = "Live grep" },
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent files" },
+    { "<leader>fu", function() Snacks.picker.undo() end, desc = "Undo history" },
     { "<leader>tt", function() Snacks.terminal() end, desc = "Toggle terminal" },
     { "<leader>tT", function() Snacks.terminal(nil, { win = { position = "float" } }) end, desc = "Toggle floating terminal" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename file" },

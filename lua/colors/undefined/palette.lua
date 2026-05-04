@@ -54,7 +54,6 @@ return {
   diff_add_fg = "#85e89d",
   diff_add_bg = "#144620",
   diff_change_fg = "#ffab70",
-  diff_change_bg = "#c24e00",
   diff_header = "#79b8ff",
   diff_range = "#b392f0",
 }

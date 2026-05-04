@@ -83,7 +83,7 @@ function M.get(p)
     DiagnosticUnderlineHint = { sp = p.green, undercurl = true },
 
     DiffAdd = { fg = p.diff_add_fg, bg = p.diff_add_bg },
-    DiffChange = { fg = p.diff_change_fg, bg = p.diff_change_bg },
+    DiffChange = { fg = p.diff_change_fg, bg = p.bg },
     DiffDelete = { fg = p.diff_delete_fg, bg = p.diff_delete_bg },
     DiffText = { fg = p.diff_header, bg = p.bg_alt },
 
