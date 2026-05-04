@@ -8,6 +8,8 @@ opt.cursorline = true
 opt.laststatus = 3
 opt.cmdheight = 0
 opt.showmode = false
+opt.title = true
+opt.titlestring = "nvim: %t"
 
 -- interaction
 opt.mouse = "a"
