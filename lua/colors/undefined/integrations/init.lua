@@ -4,6 +4,7 @@ local modules = {
   "mini",
   "snacks",
   "gitsigns",
+  "satellite",
   "bufferline",
   "incline",
   "navic",
