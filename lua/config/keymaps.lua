@@ -3,14 +3,17 @@ local map = vim.keymap.set
 local function close_properly()
   local bufnr = vim.api.nvim_get_current_buf()
   local is_special_buffer = vim.bo[bufnr].buftype ~= "" or not vim.bo[bufnr].buflisted
+  local current_tab_wins = vim.api.nvim_tabpage_list_wins(0)
+
+  -- With multiple windows, close the current view instead of deleting its buffer.
+  -- This keeps split editing predictable, even when another window shows the same buffer.
+  if #current_tab_wins > 1 then
+    vim.cmd.close()
+
+    return
+  end
 
   if is_special_buffer then
-    if #vim.api.nvim_tabpage_list_wins(0) > 1 then
-      vim.cmd.close()
-
-      return
-    end
-
     vim.cmd.bdelete()
 
     return
