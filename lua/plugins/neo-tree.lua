@@ -38,21 +38,17 @@ return {
     { "<leader>E", "<cmd>Neotree reveal<cr>", desc = "Reveal current file" },
   },
   opts = {
-    close_if_last_window = false,
     enable_git_status = false,
     hide_root_node = true,
     retain_hidden_root_indent = true,
     default_component_configs = {
       indent = {
         with_expanders = true,
-        expander_collapsed = "",
-        expander_expanded = "",
       },
     },
     filesystem = {
       follow_current_file = {
         enabled = true,
-        leave_dirs_open = false,
       },
       window = {
         mappings = {
@@ -60,10 +56,22 @@ return {
         },
       },
       filtered_items = {
-        hide_gitignored = true,
+        visible = true,
+        hide_dotfiles = false,
+        hide_ignored = false,
+        hide_hidden = false,
+        show_hidden_count = false,
         never_show = {
+          ".git",
+          ".svn",
+          ".hg",
+          "CVS",
           ".DS_Store",
+          "Thumbs.db",
           "thumbs.db",
+        },
+        never_show_by_pattern = {
+          "%.tsbuildinfo$",
         },
       },
     },
