@@ -12,12 +12,6 @@ return {
     },
     dashboard = {},
     indent = {},
-    scroll = {
-      animate = {
-        duration = { step = 10, total = 100 },
-        easing = "linear",
-      },
-    },
     statuscolumn = {},
     terminal = {},
     rename = {},
