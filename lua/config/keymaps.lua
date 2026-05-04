@@ -5,6 +5,7 @@ map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", function()
   if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neo-tree-popup" then
     vim.cmd("Neotree close")
+
     return
   end
 
@@ -21,3 +22,6 @@ map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location list" })
+
+map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
+map("i", "<C-y>", "<C-o><C-r>", { desc = "Redo" })
