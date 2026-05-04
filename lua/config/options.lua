@@ -58,7 +58,7 @@ opt.autoread = true
 
 -- responsiveness
 opt.updatetime = 250
-opt.timeoutlen = 400
+opt.timeoutlen = 300
 opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- messages
