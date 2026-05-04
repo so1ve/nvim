@@ -82,10 +82,10 @@ function M.get(p)
     DiagnosticUnderlineInfo = { sp = p.blue, undercurl = true },
     DiagnosticUnderlineHint = { sp = p.green, undercurl = true },
 
-    DiffAdd = { fg = p.diff_add_fg, bg = p.diff_add_bg },
-    DiffChange = { fg = p.diff_change_fg, bg = p.bg },
-    DiffDelete = { fg = p.diff_delete_fg, bg = p.diff_delete_bg },
-    DiffText = { fg = p.diff_header, bg = p.bg_alt },
+    DiffAdd = { bg = p.diff_add_bg },
+    DiffChange = {},
+    DiffDelete = { bg = p.diff_delete_bg },
+    DiffText = { bg = p.bg_alt },
 
     Directory = { fg = p.fg },
     Title = { fg = p.green, bold = true },
@@ -154,8 +154,8 @@ function M.get(p)
     ["@markup.link.url"] = { fg = p.link, underline = true },
     ["@markup.list"] = { fg = p.orange },
 
-    ["@diff.plus"] = { fg = p.diff_add_fg },
-    ["@diff.minus"] = { fg = p.diff_delete_fg },
+    ["@diff.plus"] = { fg = p.diff_add_fg, bg = p.diff_add_bg },
+    ["@diff.minus"] = { fg = p.diff_delete_fg, bg = p.diff_delete_bg },
     ["@diff.delta"] = { fg = p.diff_change_fg },
 
     ["@module"] = { fg = p.namespace },

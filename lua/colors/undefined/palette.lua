@@ -11,7 +11,6 @@ return {
   selection = "#3a3a3a",
   inactive_selection = "#303030",
   whitespace = "#383838",
-  word = "#1c6b48",
 
   -- VSCode diagnostics / git / terminal colors
   red = "#cb7676",
@@ -31,10 +30,8 @@ return {
   keyword = "#4d9375",
   storage = "#cb7676",
   string = "#c98a7d",
-  string_punctuation = "#9b6b63",
   support = "#b8a965",
   property = "#b8a965",
-  property_muted = "#817647",
   attribute = "#bd976a",
   variable = "#bd976a",
   primitive = "#5DA994",
@@ -50,10 +47,9 @@ return {
 
   -- Diff/markup colors from tokenColors
   diff_delete_fg = "#fdaeb7",
-  diff_delete_bg = "#86181d",
+  diff_delete_bg = "#3f3335",
   diff_add_fg = "#85e89d",
-  diff_add_bg = "#144620",
+  diff_add_bg = "#2f3f34",
   diff_change_fg = "#ffab70",
   diff_header = "#79b8ff",
-  diff_range = "#b392f0",
 }
