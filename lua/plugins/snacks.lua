@@ -7,6 +7,7 @@ return {
     quickfile = {},
     picker = {},
     input = {},
+    image = {},
     notifier = {
       enabled = false,
     },
