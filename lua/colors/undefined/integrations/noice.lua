@@ -38,7 +38,7 @@ function M.get(p)
     NoiceFormatLevelOff = { fg = p.subtle },
     NoiceFormatLevelInfo = { fg = p.blue },
     NoiceFormatLevelWarn = { fg = p.orange },
-    NoiceFormatLevelError = { fg = p.red },
+    NoiceFormatLevelError = { fg = p.red, bg = p.bg_dark },
     NoiceLspProgressSpinner = { fg = p.cyan },
     NoiceLspProgressTitle = { fg = p.fg },
     NoiceLspProgressClient = { fg = p.muted },

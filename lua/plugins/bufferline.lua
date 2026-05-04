@@ -46,7 +46,6 @@ return {
       end,
 
       close_command = delete_buffer,
-      right_mouse_command = delete_buffer,
 
       hover = {
         enabled = true,

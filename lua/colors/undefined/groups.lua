@@ -30,6 +30,8 @@ function M.get(p)
     PmenuThumb = { bg = p.subtle },
     Question = { fg = p.green },
     MoreMsg = { fg = p.green },
+    MsgArea = { fg = p.fg_dim, bg = p.bg_dark },
+    MsgSeparator = { fg = p.border, bg = p.bg_dark },
     ModeMsg = { fg = p.fg_dim },
     NonText = { fg = p.subtle },
     EndOfBuffer = { fg = p.bg },
@@ -87,8 +89,8 @@ function M.get(p)
 
     Directory = { fg = p.fg },
     Title = { fg = p.green, bold = true },
-    ErrorMsg = { fg = p.red },
-    WarningMsg = { fg = p.orange },
+    ErrorMsg = { fg = p.red, bg = p.bg_dark },
+    WarningMsg = { fg = p.orange, bg = p.bg_dark },
 
     ["@comment"] = { link = "Comment" },
     ["@punctuation"] = { fg = p.delimiter },

@@ -11,6 +11,7 @@ opt.showmode = false
 
 -- interaction
 opt.mouse = "a"
+opt.mousemodel = "extend"
 opt.mousemoveevent = true
 opt.clipboard = "unnamedplus"
 opt.confirm = true
