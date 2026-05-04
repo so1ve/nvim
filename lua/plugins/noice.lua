@@ -15,6 +15,13 @@ return {
       enabled = true,
       view = "notify",
     },
+    views = {
+      mini = {
+        win_options = {
+          winblend = 0,
+        },
+      },
+    },
     lsp = {
       override = {
         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
