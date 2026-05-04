@@ -1,5 +1,24 @@
 local map = vim.keymap.set
 
+local function close_properly()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local is_special_buffer = vim.bo[bufnr].buftype ~= "" or not vim.bo[bufnr].buflisted
+
+  if is_special_buffer then
+    if #vim.api.nvim_tabpage_list_wins(0) > 1 then
+      vim.cmd.close()
+
+      return
+    end
+
+    vim.cmd.bdelete()
+
+    return
+  end
+
+  Snacks.bufdelete()
+end
+
 local function quit_all()
   local ok, picker = pcall(require, "snacks.picker")
   local active_pickers = ok and picker.get({ tab = false }) or {}
@@ -21,15 +40,7 @@ end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
-map("n", "<leader>q", function()
-  if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neo-tree-popup" then
-    vim.cmd("Neotree close")
-
-    return
-  end
-
-  Snacks.bufdelete()
-end, { desc = "Close buffer" })
+map("n", "<leader>q", close_properly, { desc = "Close buffer or window" })
 map("n", "<leader>Q", quit_all, { desc = "Quit all" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
