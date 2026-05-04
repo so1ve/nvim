@@ -1,4 +1,5 @@
 local M = {}
+local schemastore = require("config.schemastore")
 
 M.lsp_servers = {
   rust_analyzer = {
@@ -61,16 +62,23 @@ M.lsp_servers = {
     },
   },
   vue_ls = {},
-  jsonls = {},
+  jsonls = function()
+    return {
+      settings = {
+        json = {
+          format = {
+            enable = true,
+          },
+          schemas = schemastore.json_schemas(),
+          validate = {
+            enable = true,
+          },
+        },
+      },
+    }
+  end,
   taplo = {
-    before_init = function(_, config)
-      config.settings = config.settings or {}
-      config.settings.evenBetterToml = config.settings.evenBetterToml or {}
-      config.settings.evenBetterToml.schema = config.settings.evenBetterToml.schema or {}
-      config.settings.evenBetterToml.schema.catalogs = {
-        require("config.taplo_schema_catalog").uri(),
-      }
-    end,
+    before_init = schemastore.set_taplo_catalog,
     settings = {
       evenBetterToml = {
         schema = {
@@ -247,7 +255,11 @@ function M.lsp_configs(capabilities)
   local configs = {}
 
   for server_name, server_config in pairs(M.lsp_servers) do
-    configs[server_name] = vim.tbl_deep_extend("force", { capabilities = capabilities }, server_config)
+    configs[server_name] = vim.tbl_deep_extend(
+      "force",
+      { capabilities = capabilities },
+      type(server_config) == "function" and server_config() or server_config
+    )
   end
 
   return configs
