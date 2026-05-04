@@ -1,17 +1,5 @@
 local map = vim.keymap.set
 
-local function quit_all()
-  Snacks.bufdelete.all()
-
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].modified then
-      return
-    end
-  end
-
-  vim.cmd.qall()
-end
-
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", function()
@@ -22,7 +10,7 @@ map("n", "<leader>q", function()
 
   Snacks.bufdelete()
 end, { desc = "Close buffer" })
-map("n", "<leader>Q", quit_all, { desc = "Quit all" })
+map("n", "<leader>Q", "<cmd>confirm qall<CR>", { desc = "Quit all" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
