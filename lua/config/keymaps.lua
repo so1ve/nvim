@@ -15,6 +15,11 @@ end
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", function()
+  if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neo-tree-popup" then
+    vim.cmd("Neotree close")
+    return
+  end
+
   Snacks.bufdelete()
 end, { desc = "Close buffer" })
 map("n", "<leader>Q", quit_all, { desc = "Quit all" })

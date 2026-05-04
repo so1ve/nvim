@@ -46,13 +46,20 @@ return {
         with_expanders = true,
       },
     },
+    window = {
+      mappings = {
+        ["<leader>q"] = "close_window",
+      },
+    },
     filesystem = {
       follow_current_file = {
         enabled = true,
       },
       window = {
         mappings = {
-          ["<space>"] = { "toggle_node", nowait = true },
+          ["<space>"] = { "toggle_node", nowait = false },
+          ["/"] = "noop",
+          ["f"] = "noop",
         },
       },
       filtered_items = {
