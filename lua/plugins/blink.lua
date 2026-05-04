@@ -20,6 +20,7 @@ return {
 
           if has_copilot and suggestion.is_visible() then
             suggestion.accept()
+
             return true
           end
 
