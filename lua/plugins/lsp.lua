@@ -44,6 +44,7 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "saghen/blink.cmp",
+    "b0o/schemastore.nvim",
     "SmiteshP/nvim-navic",
   },
   config = function()

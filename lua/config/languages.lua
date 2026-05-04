@@ -62,7 +62,23 @@ M.lsp_servers = {
   },
   vue_ls = {},
   jsonls = {},
-  taplo = {},
+  taplo = {
+    before_init = function(_, config)
+      config.settings = config.settings or {}
+      config.settings.evenBetterToml = config.settings.evenBetterToml or {}
+      config.settings.evenBetterToml.schema = config.settings.evenBetterToml.schema or {}
+      config.settings.evenBetterToml.schema.catalogs = {
+        require("config.taplo_schema_catalog").uri(),
+      }
+    end,
+    settings = {
+      evenBetterToml = {
+        schema = {
+          enabled = true,
+        },
+      },
+    },
+  },
   yamlls = {},
   html = {},
   cssls = {},
@@ -230,8 +246,8 @@ end
 function M.lsp_configs(capabilities)
   local configs = {}
 
-  for server_name, server in pairs(M.lsp_servers) do
-    configs[server_name] = vim.tbl_deep_extend("force", { capabilities = capabilities }, server)
+  for server_name, server_config in pairs(M.lsp_servers) do
+    configs[server_name] = vim.tbl_deep_extend("force", { capabilities = capabilities }, server_config)
   end
 
   return configs
