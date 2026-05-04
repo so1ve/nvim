@@ -10,8 +10,8 @@ return {
     "nvim-mini/mini.nvim",
   },
   keys = {
-    { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous buffer tab" },
-    { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer tab" },
+    { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous buffer tab" },
+    { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer tab" },
     { "<leader>bb", "<cmd>BufferLinePick<cr>", desc = "Pick buffer tab" },
     { "<leader>bd", "<cmd>BufferLinePickClose<cr>", desc = "Pick close buffer tab" },
     { "<leader>bD", "<cmd>BufferLineCloseOthers<cr>", desc = "Close other buffer tabs" },
