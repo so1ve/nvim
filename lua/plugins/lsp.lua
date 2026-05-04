@@ -23,6 +23,10 @@ local function configure_lsp_buffer(event)
   map("gy", Snacks.picker.lsp_type_definitions, "Go to type definition")
   map("<leader>ca", vim.lsp.buf.code_action, "Code action")
 
+  if supports_document_symbols then
+    map("<leader>cs", Snacks.picker.lsp_symbols, "Document symbols")
+  end
+
   if supports_inlay_hints then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     map("<leader>ci", function()
