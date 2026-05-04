@@ -166,18 +166,22 @@ M.languages = {
   typescript = {
     treesitter = "typescript",
     lsp = { "vtsls", "eslint" },
+    formatters = { "prettierd", "prettier" },
   },
   javascript = {
     treesitter = "javascript",
     lsp = { "vtsls", "eslint" },
+    formatters = { "prettierd", "prettier" },
   },
   typescriptreact = {
     treesitter = "tsx",
     lsp = { "vtsls", "eslint" },
+    formatters = { "prettierd", "prettier" },
   },
   javascriptreact = {
     treesitter = "javascript",
     lsp = { "vtsls", "eslint" },
+    formatters = { "prettierd", "prettier" },
   },
   json = {
     treesitter = "json",
