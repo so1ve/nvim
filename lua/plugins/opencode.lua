@@ -31,10 +31,36 @@ return {
   "nickjvandyke/opencode.nvim",
   version = "*",
   keys = {
-    { "<leader>oa", function() require("opencode").ask("@this: ", { submit = true }) end, mode = { "n", "x" }, desc = "Ask opencode" },
-    { "<leader>oo", function() require("opencode").select() end, desc = "Select opencode action" },
-    { "<leader>op", function() require("opencode").prompt("@this") end, mode = { "n", "x" }, desc = "Prompt opencode" },
-    { "<leader>ot", function() require("opencode").toggle() end, desc = "Toggle opencode terminal" },
+    {
+      "<leader>oa",
+      function()
+        require("opencode").ask("@this: ", { submit = true })
+      end,
+      mode = { "n", "x" },
+      desc = "Ask opencode",
+    },
+    {
+      "<leader>oo",
+      function()
+        require("opencode").select()
+      end,
+      desc = "Select opencode action",
+    },
+    {
+      "<leader>op",
+      function()
+        require("opencode").prompt("@this")
+      end,
+      mode = { "n", "x" },
+      desc = "Prompt opencode",
+    },
+    {
+      "<leader>ot",
+      function()
+        require("opencode").toggle()
+      end,
+      desc = "Toggle opencode terminal",
+    },
   },
   dependencies = {
     {

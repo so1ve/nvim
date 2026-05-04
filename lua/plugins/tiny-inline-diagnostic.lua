@@ -28,12 +28,7 @@ local function register_scroll_refresh_autocmd()
       local winid = tonumber(event.match) or vim.api.nvim_get_current_win()
       local changes = vim.v.event and vim.v.event[tostring(winid)]
 
-      if
-        type(changes) == "table"
-        and changes.topline == 0
-        and changes.leftcol == 0
-        and changes.skipcol == 0
-      then
+      if type(changes) == "table" and changes.topline == 0 and changes.leftcol == 0 and changes.skipcol == 0 then
         return
       end
 

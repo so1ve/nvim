@@ -17,7 +17,12 @@ return {
           { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
           { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', { cwd = vim.fn.stdpath('config') })" },
+          {
+            icon = " ",
+            key = "c",
+            desc = "Config",
+            action = ":lua Snacks.dashboard.pick('files', { cwd = vim.fn.stdpath('config') })",
+          },
           { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
@@ -40,13 +45,61 @@ return {
     require("snacks").setup(opts)
   end,
   keys = {
-    { "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
-    { "<leader>fg", function() Snacks.picker.grep() end, desc = "Live grep" },
-    { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-    { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent files" },
-    { "<leader>fu", function() Snacks.picker.undo() end, desc = "Undo history" },
-    { "<leader>tt", function() Snacks.terminal() end, desc = "Toggle terminal" },
-    { "<leader>tT", function() Snacks.terminal(nil, { win = { position = "float" } }) end, desc = "Toggle floating terminal" },
-    { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename file" },
+    {
+      "<leader>ff",
+      function()
+        Snacks.picker.files()
+      end,
+      desc = "Find files",
+    },
+    {
+      "<leader>fg",
+      function()
+        Snacks.picker.grep()
+      end,
+      desc = "Live grep",
+    },
+    {
+      "<leader>fb",
+      function()
+        Snacks.picker.buffers()
+      end,
+      desc = "Buffers",
+    },
+    {
+      "<leader>fr",
+      function()
+        Snacks.picker.recent()
+      end,
+      desc = "Recent files",
+    },
+    {
+      "<leader>fu",
+      function()
+        Snacks.picker.undo()
+      end,
+      desc = "Undo history",
+    },
+    {
+      "<leader>tt",
+      function()
+        Snacks.terminal()
+      end,
+      desc = "Toggle terminal",
+    },
+    {
+      "<leader>tT",
+      function()
+        Snacks.terminal(nil, { win = { position = "float" } })
+      end,
+      desc = "Toggle floating terminal",
+    },
+    {
+      "<leader>cR",
+      function()
+        Snacks.rename.rename_file()
+      end,
+      desc = "Rename file",
+    },
   },
 }
