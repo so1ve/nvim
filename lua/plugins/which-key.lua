@@ -14,7 +14,7 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    delay = 250,
+    delay = 300,
     preset = "modern",
   },
   config = function(_, opts)
