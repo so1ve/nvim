@@ -7,6 +7,7 @@ local leader_groups = {
   { "<leader>gh", group = "hunk" },
   { "<leader>n", group = "noice" },
   { "<leader>o", group = "opencode" },
+  { "<leader>s", group = "search" },
   { "<leader>t", group = "terminal" },
 }
 
