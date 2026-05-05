@@ -3,8 +3,10 @@ local function configure_lsp_buffer(event)
   local client = vim.lsp.get_client_by_id(event.data.client_id)
   local inlay_hint_method = vim.lsp.protocol.Methods.textDocument_inlayHint
   local symbol_method = vim.lsp.protocol.Methods.textDocument_documentSymbol
+  local workspace_symbol_method = vim.lsp.protocol.Methods.workspace_symbol
   local supports_inlay_hints = client and client:supports_method(inlay_hint_method, bufnr)
   local supports_document_symbols = client and client:supports_method(symbol_method, bufnr)
+  local supports_workspace_symbols = client and client:supports_method(workspace_symbol_method)
 
   local navic = require("nvim-navic")
   if supports_document_symbols and not navic.is_available(bufnr) then
@@ -25,6 +27,10 @@ local function configure_lsp_buffer(event)
 
   if supports_document_symbols then
     map("<leader>cs", Snacks.picker.lsp_symbols, "Document symbols")
+  end
+
+  if supports_workspace_symbols then
+    map("<leader>cS", Snacks.picker.lsp_workspace_symbols, "Workspace symbols")
   end
 
   if supports_inlay_hints then
