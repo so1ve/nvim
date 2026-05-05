@@ -16,6 +16,16 @@ return {
       view = "notify",
     },
     views = {
+      hover = {
+        border = {
+          style = "rounded",
+          padding = { 0, 1 },
+        },
+        size = {
+          max_height = 20,
+          max_width = 100,
+        },
+      },
       mini = {
         win_options = {
           winblend = 0,

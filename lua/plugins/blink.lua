@@ -72,6 +72,7 @@ return {
     },
     completion = {
       menu = {
+        border = "rounded",
         draw = {
           columns = { { "kind_icon" }, { "label", gap = 1 } },
           components = {
@@ -89,6 +90,9 @@ return {
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 0,
+        window = {
+          border = "rounded",
+        },
       },
     },
   },

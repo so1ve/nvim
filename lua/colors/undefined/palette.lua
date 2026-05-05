@@ -7,7 +7,7 @@ return {
   bg = "#262626",
   bg_alt = "#292929",
   bg_dark = "#212221",
-  border = "#212221",
+  border = "#4a4a4a",
   selection = "#3a3a3a",
   inactive_selection = "#303030",
   whitespace = "#383838",

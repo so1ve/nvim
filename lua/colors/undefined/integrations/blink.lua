@@ -38,14 +38,13 @@ function M.get(p)
     BlinkCmpScrollBarGutter = { bg = p.bg_alt },
     BlinkCmpGhostText = { fg = p.subtle },
     BlinkCmpMenu = { fg = p.fg, bg = p.bg_alt },
-    BlinkCmpMenuBorder = { fg = p.border, bg = p.bg_alt },
+    BlinkCmpMenuBorder = { link = "FloatBorder" },
     BlinkCmpMenuSelection = { fg = p.fg, bg = p.selection },
     BlinkCmpDoc = { fg = p.fg, bg = p.bg },
-    BlinkCmpDocBorder = { fg = p.border, bg = p.bg },
+    BlinkCmpDocBorder = { link = "FloatBorder" },
     BlinkCmpDocSeparator = { fg = p.border, bg = p.bg },
     BlinkCmpDocCursorLine = { bg = p.bg_alt },
     BlinkCmpSignatureHelp = { fg = p.fg, bg = p.bg },
-    BlinkCmpSignatureHelpBorder = { fg = p.border, bg = p.bg },
     BlinkCmpSignatureHelpActiveParameter = { fg = p.orange, bold = true },
   }
 end
