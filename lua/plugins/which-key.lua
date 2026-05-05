@@ -10,6 +10,7 @@ local leader_groups = {
   { "<leader>o", group = "opencode" },
   { "<leader>s", group = "search" },
   { "<leader>t", group = "terminal" },
+  { "<leader>x", group = "trouble" },
 }
 
 return {

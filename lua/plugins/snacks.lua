@@ -1,3 +1,7 @@
+local function open_trouble(picker, opts)
+  require("trouble.sources.snacks").open(picker, opts)
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -5,7 +9,26 @@ return {
   opts = {
     bigfile = {},
     quickfile = {},
-    picker = {},
+    picker = {
+      actions = {
+        trouble_open = function(picker)
+          open_trouble(picker)
+        end,
+        trouble_open_selected = function(picker)
+          open_trouble(picker, { type = "selected" })
+        end,
+        trouble_open_all = function(picker)
+          open_trouble(picker, { type = "all" })
+        end,
+      },
+      win = {
+        input = {
+          keys = {
+            ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
+          },
+        },
+      },
+    },
     input = {},
     image = {},
     notifier = {
