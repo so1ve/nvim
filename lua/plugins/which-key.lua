@@ -8,6 +8,7 @@ local leader_groups = {
   { "<leader>m", group = "multicursor" },
   { "<leader>n", group = "noice" },
   { "<leader>o", group = "opencode" },
+  { "<leader>r", group = "refactor" },
   { "<leader>s", group = "search" },
   { "<leader>t", group = "terminal" },
   { "<leader>x", group = "trouble" },
