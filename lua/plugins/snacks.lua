@@ -39,6 +39,7 @@ return {
     indent = {},
     statuscolumn = {},
     terminal = {},
+    lazygit = {},
     rename = {},
     words = {},
   },
@@ -46,6 +47,13 @@ return {
     require("snacks").setup(opts)
   end,
   keys = {
+    {
+      "<leader>gg",
+      function()
+        Snacks.lazygit()
+      end,
+      desc = "LazyGit",
+    },
     {
       "<leader>ff",
       function()
