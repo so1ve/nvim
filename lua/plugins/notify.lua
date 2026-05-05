@@ -6,7 +6,7 @@ return {
     background_colour = "#262626",
     minimum_width = 36,
     render = "compact",
-    stages = "fade_in_slide_out",
+    stages = "static",
     timeout = 3000,
     top_down = true,
   },
