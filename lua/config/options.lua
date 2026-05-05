@@ -1,5 +1,8 @@
 local opt = vim.opt
 
+-- to make keywordprg a no-op because multiple shift+k will eventually call the default behavior of keywordprg which is to open `:help` and breaks window layout
+vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" })
+
 -- ui
 opt.termguicolors = true
 opt.number = true
@@ -17,6 +20,7 @@ opt.mousemodel = "extend"
 opt.mousemoveevent = true
 opt.clipboard = "unnamedplus"
 opt.confirm = true
+opt.keywordprg = ":RayKeywordPrg"
 
 -- scrolling
 opt.scrolloff = 8
