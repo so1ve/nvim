@@ -60,9 +60,6 @@ map("n", "<leader>zR", "zR", { desc = "Open all folds" })
 map("n", "<leader>zm", "zm", { desc = "Fold more" })
 map("n", "<leader>zr", "zr", { desc = "Fold less" })
 
-map("c", "<C-j>", "<Tab>", { desc = "Next command completion" })
-map("c", "<C-k>", "<S-Tab>", { desc = "Previous command completion" })
-
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })

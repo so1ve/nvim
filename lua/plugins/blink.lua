@@ -11,7 +11,7 @@ end
 return {
   "saghen/blink.cmp",
   version = "1.*",
-  event = "InsertEnter",
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "nvim-mini/mini.nvim",
   },
@@ -56,6 +56,18 @@ return {
       ["<C-j>"] = { "select_next", "fallback_to_mappings" },
       ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
       ["<C-e>"] = { "hide", "fallback" },
+    },
+    cmdline = {
+      keymap = {
+        ["<Tab>"] = { "show", "accept" },
+        ["<C-j>"] = { "select_next", "fallback_to_mappings" },
+        ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+      },
+      completion = {
+        menu = {
+          auto_show = true,
+        },
+      },
     },
     completion = {
       documentation = {
