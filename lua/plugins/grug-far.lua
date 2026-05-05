@@ -13,6 +13,8 @@ return {
   "MagicDuck/grug-far.nvim",
   cmd = { "GrugFar", "GrugFarWithin" },
   opts = {
+    -- create a vertical split on the right 25% of the screen
+    windowCreationCommand = [[execute 'botright vertical ' . float2nr(&columns * 0.25) . 'vsplit | setlocal winfixwidth']],
     engines = {
       ripgrep = {
         defaults = {

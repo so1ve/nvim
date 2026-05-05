@@ -2,6 +2,8 @@ local function open_trouble(picker, opts)
   require("trouble.sources.snacks").open(picker, opts)
 end
 
+local windows = require("config.windows")
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -68,6 +70,7 @@ return {
   },
   config = function(_, opts)
     require("snacks").setup(opts)
+    windows.setup_dashboard_lifecycle()
   end,
   keys = {
     {
