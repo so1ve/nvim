@@ -4,7 +4,7 @@ return {
   opts = {
     mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-f>" },
     hide_cursor = false,
-    duration_multiplier = 0.3,
+    duration_multiplier = 0.25,
     cursor_scrolls_alone = true,
   },
 }
