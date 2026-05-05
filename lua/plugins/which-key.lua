@@ -12,6 +12,7 @@ local leader_groups = {
   { "<leader>s", group = "search" },
   { "<leader>t", group = "terminal" },
   { "<leader>x", group = "trouble" },
+  { "<leader>z", group = "fold" },
 }
 
 return {
