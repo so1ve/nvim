@@ -25,9 +25,7 @@ return {
       qflist = { n = "<localleader>F" },
     },
   },
-  config = function(_, opts)
-    require("grug-far").setup(opts)
-  end,
+  config = true,
   keys = {
     {
       "<leader>sr",

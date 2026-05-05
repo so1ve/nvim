@@ -70,7 +70,5 @@ return {
       desc = "Swap previous parameter",
     },
   },
-  config = function(_, opts)
-    require("nvim-treesitter-textobjects").setup(opts)
-  end,
+  config = true,
 }

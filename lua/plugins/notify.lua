@@ -10,7 +10,5 @@ return {
     timeout = 3000,
     top_down = true,
   },
-  config = function(_, opts)
-    require("notify").setup(opts)
-  end,
+  config = true,
 }
