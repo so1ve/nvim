@@ -44,7 +44,7 @@ return {
     { "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss notifications" },
   },
   config = function(_, opts)
-    require("util.noice_hover").patch()
+    require("util.noice").patch()
     require("noice").setup(opts)
   end,
 }

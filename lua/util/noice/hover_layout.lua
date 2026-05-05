@@ -1,3 +1,6 @@
+local hover = require("util.noice.hover")
+local satellite = require("util.noice.satellite")
+
 local M = {}
 
 -- The currently displayed LSP hover view. Noice does not relayout hover windows
@@ -17,20 +20,6 @@ local function round(x)
   return math.floor(x + 0.5)
 end
 
-local function is_hover(view)
-  if view._opts.view ~= "hover" then
-    return false
-  end
-
-  for _, msg in ipairs(view._messages or {}) do
-    if msg.event == "lsp" and msg.kind == "hover" then
-      return true
-    end
-  end
-
-  return false
-end
-
 local function cursor(view)
   local cur = vim.api.nvim_get_current_win()
   local hover_win = view._nui and view._nui.winid
@@ -47,19 +36,13 @@ local function cursor(view)
     return 0, -1
   end
 
-  -- nvim_win_call returns only the callback's first value, so return a table
-  -- instead of `row, col`; otherwise screencol() is silently dropped.
-  local pos = vim.api.nvim_win_call(win, function()
-    local sr = vim.fn.screenrow()
-    local sc = vim.fn.screencol()
+  local cur_pos = vim.api.nvim_win_get_cursor(win)
+  -- screenrow()/screencol() read the active UI cursor. Once the hover is
+  -- focused, that cursor belongs to the hover window, so ask for the source
+  -- window's cursor screen position explicitly instead.
+  local pos = vim.fn.screenpos(win, cur_pos[1], cur_pos[2] + 1)
 
-    return {
-      row = sr or 0,
-      col = sc and sc - 1 or -1,
-    }
-  end)
-
-  return pos.row, pos.col
+  return pos.row or 0, (pos.curscol or pos.col or 0) - 1
 end
 
 local function place(view, layout)
@@ -112,6 +95,11 @@ local function place(view, layout)
   return layout
 end
 
+local function refresh(view)
+  hover.update_bar(view)
+  satellite.refresh()
+end
+
 local function relayout()
   if pending then
     return
@@ -121,26 +109,13 @@ local function relayout()
   vim.schedule(function()
     pending = false
 
-    if not (active and is_hover(active) and active._nui and active:is_mounted()) then
+    if not (active and hover.is(active) and active._nui and active:is_mounted()) then
       return
     end
 
     pcall(function()
       active:update_layout()
-
-      -- NuiView:update_layout() only moves/resizes the popup. Noice normally
-      -- refreshes its scrollbar from NuiView:show(), so do that explicitly for
-      -- our scroll-driven relayout path.
-      if active._scroll then
-        active._scroll:update()
-      end
-    end)
-
-    -- Satellite tracks ordinary editor windows, not Noice floating windows. A
-    -- float relayout can leave its overlay scrollbar stale, so ask Satellite to
-    -- recompute if it is already available.
-    pcall(function()
-      require("satellite.view").schedule_refresh()
+      refresh(active)
     end)
   end)
 end
@@ -150,8 +125,24 @@ local function watch_scroll()
   -- to rebuild the hover, so schedule a debounced layout refresh.
   vim.api.nvim_create_autocmd({ "WinScrolled", "WinResized", "VimResized" }, {
     group = vim.api.nvim_create_augroup("RayNoiceHoverLayout", { clear = true }),
-    callback = relayout,
+    callback = function(args)
+      local hover_win = active and active._nui and active._nui.winid
+
+      if args.event == "WinScrolled" and hover_win and tostring(hover_win) == args.match then
+        return
+      end
+
+      relayout()
+    end,
   })
+end
+
+function M.current()
+  return active
+end
+
+function M.refresh(view)
+  refresh(view or active)
 end
 
 function M.patch()
@@ -168,7 +159,7 @@ function M.patch()
   function view:get_layout()
     local layout = get_layout(self)
 
-    if not is_hover(self) then
+    if not hover.is(self) then
       return layout
     end
 
