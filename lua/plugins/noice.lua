@@ -6,15 +6,6 @@ return {
     "rcarriga/nvim-notify",
   },
   opts = {
-    messages = {
-      view = "mini",
-      view_error = "mini",
-      view_warn = "mini",
-    },
-    notify = {
-      enabled = true,
-      view = "notify",
-    },
     views = {
       hover = {
         border = {
