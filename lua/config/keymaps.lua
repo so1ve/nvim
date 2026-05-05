@@ -51,6 +51,14 @@ map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
+map("n", "<leader>za", "za", { desc = "Toggle fold" })
+map("n", "<leader>zc", "zc", { desc = "Close fold" })
+map("n", "<leader>zo", "zo", { desc = "Open fold" })
+map("n", "<leader>zM", "zM", { desc = "Close all folds" })
+map("n", "<leader>zR", "zR", { desc = "Open all folds" })
+map("n", "<leader>zm", "zm", { desc = "Fold more" })
+map("n", "<leader>zr", "zr", { desc = "Fold less" })
+
 map("c", "<C-j>", "<Tab>", { desc = "Next command completion" })
 map("c", "<C-k>", "<S-Tab>", { desc = "Previous command completion" })
 

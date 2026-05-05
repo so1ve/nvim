@@ -26,6 +26,14 @@ opt.sidescrolloff = 8
 opt.linebreak = true
 opt.breakindent = true
 
+-- folds
+opt.foldenable = true
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldtext = ""
+
 -- indentation
 opt.tabstop = 2
 opt.shiftwidth = 2
