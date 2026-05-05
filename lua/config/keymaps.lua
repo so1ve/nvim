@@ -1,25 +1,52 @@
 local map = vim.keymap.set
 
+local function is_regular_buffer(bufnr)
+  return vim.bo[bufnr].buftype == "" and vim.bo[bufnr].buflisted
+end
+
+local function is_regular_window(win)
+  local win_config = vim.api.nvim_win_get_config(win)
+  local bufnr = vim.api.nvim_win_get_buf(win)
+
+  return win_config.relative == "" and is_regular_buffer(bufnr)
+end
+
+local function has_multiple_regular_windows(wins)
+  local regular_window_count = 0
+
+  for _, win in ipairs(wins) do
+    if is_regular_window(win) then
+      regular_window_count = regular_window_count + 1
+
+      if regular_window_count > 1 then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
 local function close_properly()
   local bufnr = vim.api.nvim_get_current_buf()
-  local is_special_buffer = vim.bo[bufnr].buftype ~= "" or not vim.bo[bufnr].buflisted
-  local current_tab_wins = vim.api.nvim_tabpage_list_wins(0)
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  local has_multiple_windows = #wins > 1
+  local should_delete_buffer = is_regular_buffer(bufnr)
+    and (not has_multiple_windows or not has_multiple_regular_windows(wins))
 
-  -- With multiple windows, close the current view instead of deleting its buffer.
-  -- This keeps split editing predictable, even when another window shows the same buffer.
-  if #current_tab_wins > 1 then
+  if should_delete_buffer then
+    Snacks.bufdelete()
+
+    return
+  end
+
+  if has_multiple_windows then
     vim.cmd.close()
 
     return
   end
 
-  if is_special_buffer then
-    vim.cmd.bdelete()
-
-    return
-  end
-
-  Snacks.bufdelete()
+  vim.cmd.bdelete()
 end
 
 local function quit_all()
