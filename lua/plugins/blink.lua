@@ -27,7 +27,7 @@ return {
       sorts = { snippets_last, "score", "sort_text" },
     },
     keymap = {
-      preset = "super-tab",
+      preset = "none",
       ["<Tab>"] = {
         function(cmp)
           local has_sidekick, sidekick = pcall(require, "sidekick")
@@ -56,6 +56,8 @@ return {
       ["<C-l>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-j>"] = { "select_next", "fallback_to_mappings" },
       ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+      ["<Up>"] = { "select_prev", "fallback" },
+      ["<Down>"] = { "select_next", "fallback" },
       ["<C-e>"] = { "hide", "fallback" },
     },
     cmdline = {
