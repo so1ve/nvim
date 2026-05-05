@@ -22,6 +22,8 @@ opt.clipboard = "unnamedplus"
 opt.confirm = true
 opt.keywordprg = ":RayKeywordPrg"
 
+require("config.terminal").setup()
+
 -- scrolling
 opt.scrolloff = 8
 opt.sidescrolloff = 8

@@ -2,6 +2,7 @@ local function open_trouble(picker, opts)
   require("trouble.sources.snacks").open(picker, opts)
 end
 
+local terminal = require("config.terminal")
 local window_util = require("util.windows")
 
 return {
@@ -63,7 +64,9 @@ return {
     },
     indent = {},
     statuscolumn = {},
-    terminal = {},
+    terminal = {
+      shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
+    },
     lazygit = {},
     rename = {},
     words = {},
