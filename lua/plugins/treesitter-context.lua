@@ -6,6 +6,7 @@ return {
   },
   opts = {
     max_lines = 4,
+    mode = "topline",
     multiline_threshold = 4,
   },
   keys = {
