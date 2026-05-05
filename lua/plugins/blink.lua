@@ -1,10 +1,29 @@
+local function snippets_last(a, b)
+  local snippet_kind = require("blink.cmp.types").CompletionItemKind.Snippet
+  local a_is_snippet = a.kind == snippet_kind
+  local b_is_snippet = b.kind == snippet_kind
+
+  if a_is_snippet ~= b_is_snippet then
+    return not a_is_snippet
+  end
+end
+
 return {
   "saghen/blink.cmp",
   version = "1.*",
   event = "InsertEnter",
+  dependencies = {
+    "nvim-mini/mini.nvim",
+  },
   opts = {
     appearance = {
       kind_icons = require("config.icons").symbols,
+    },
+    snippets = {
+      preset = "mini_snippets",
+    },
+    fuzzy = {
+      sorts = { snippets_last, "score", "sort_text" },
     },
     keymap = {
       preset = "super-tab",

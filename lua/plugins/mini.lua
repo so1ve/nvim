@@ -100,6 +100,20 @@ return {
       comment = { suffix = "" },
     })
 
+    local snippets = require("mini.snippets")
+    local gen_loader = snippets.gen_loader
+    snippets.setup({
+      snippets = {
+        gen_loader.from_file(vim.fn.stdpath("config") .. "/snippets/all.json"),
+        gen_loader.from_lang(),
+      },
+      mappings = {
+        expand = "",
+        jump_next = "",
+        jump_prev = "",
+      },
+    })
+
     local hipatterns = require("mini.hipatterns")
     hipatterns.setup({
       highlighters = {
