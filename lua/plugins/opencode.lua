@@ -4,6 +4,9 @@ local terminal_opts = {
   win = {
     position = "right",
     enter = false,
+    b = {
+      ray_layout = "opencode",
+    },
     on_win = function(win)
       require("opencode.terminal").setup(win.win)
     end,

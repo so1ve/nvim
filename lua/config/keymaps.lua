@@ -1,10 +1,51 @@
 local map = vim.keymap.set
-local windows = require("config.windows")
+local window_util = require("util.windows")
+
+local function close_buffer_or_window()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  local has_multiple_windows = #wins > 1
+  local should_delete_buffer = window_util.is_file(bufnr)
+    and (not has_multiple_windows or not window_util.has_many_files(wins))
+
+  if should_delete_buffer then
+    Snacks.bufdelete()
+
+    return
+  end
+
+  if has_multiple_windows then
+    vim.cmd.close()
+
+    return
+  end
+
+  vim.cmd.bdelete()
+end
+
+local function quit_all()
+  local ok, picker = pcall(require, "snacks.picker")
+  local active_pickers = ok and picker.get({ tab = false }) or {}
+
+  if #active_pickers > 0 then
+    for _, active_picker in ipairs(active_pickers) do
+      active_picker:close()
+    end
+
+    vim.schedule(function()
+      vim.cmd("confirm qall")
+    end)
+
+    return
+  end
+
+  vim.cmd("confirm qall")
+end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
-map("n", "<leader>q", windows.close_buffer_or_window, { desc = "Close buffer or window" })
-map("n", "<leader>Q", windows.quit_all, { desc = "Quit all" })
+map("n", "<leader>q", close_buffer_or_window, { desc = "Close buffer or window" })
+map("n", "<leader>Q", quit_all, { desc = "Quit all" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
