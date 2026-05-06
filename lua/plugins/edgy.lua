@@ -45,15 +45,8 @@ local function snacks_position_filter(position)
   return function(buf, win)
     local snacks_win = vim.w[win].snacks_win
 
-    return snacks_win
-      and snacks_win.position == position
-      and snacks_win.relative == "editor"
-      and vim.b[buf].ray_layout ~= "opencode"
+    return snacks_win and snacks_win.position == position and snacks_win.relative == "editor"
   end
-end
-
-local function opencode_filter(buf)
-  return vim.b[buf].ray_layout == "opencode"
 end
 
 return {
@@ -94,10 +87,6 @@ return {
       },
       right = {
         view("Search & Replace", "grug-far", {
-          size = { width = layout.right.width },
-        }),
-        view("OpenCode", "snacks_terminal", {
-          filter = opencode_filter,
           size = { width = layout.right.width },
         }),
         view("LSP", "trouble", {

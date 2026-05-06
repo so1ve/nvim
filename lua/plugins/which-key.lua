@@ -10,7 +10,7 @@ local leader_groups = {
   { "<leader>gh", group = true, desc = "Git hunk", icon = { icon = "", color = "orange" } },
   { "<leader>m", group = true, desc = "Multicursor", icon = { icon = "󰆿", color = "purple" } },
   { "<leader>n", group = true, desc = "Noice", icon = { icon = "󰎟", color = "cyan" } },
-  { "<leader>o", group = true, desc = "Opencode", icon = { icon = "󰚩", color = "green" } },
+  { "<leader>o", group = true, desc = "AI", icon = { icon = "󰚩", color = "green" } },
   { "<leader>r", group = true, desc = "Refactor", icon = { icon = "󰑕", color = "purple" } },
   { "<leader>s", group = true, desc = "Search", icon = { icon = "", color = "blue" } },
   { "<leader>t", group = true, desc = "Terminal", icon = { icon = "", color = "green" } },
