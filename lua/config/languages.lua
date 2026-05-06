@@ -140,7 +140,7 @@ function M.hover()
   end
 
   -- require it here to make sure noice is loaded
-  require("utils.lsp.hover").show(providers)
+  require("patch.lsp.hover").show(providers)
 end
 
 return M

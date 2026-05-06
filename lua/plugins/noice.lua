@@ -43,7 +43,7 @@ return {
     { "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss notifications" },
   },
   config = function(_, opts)
-    require("utils.noice").patch()
+    require("patch.noice").patch()
     require("noice").setup(opts)
   end,
 }

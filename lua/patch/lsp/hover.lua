@@ -48,6 +48,8 @@ local function show_hover(entries, providers)
   end
 end
 
+-- added support for multiple hover providers which is not natively supported by noice.nvim
+-- https://github.com/folke/noice.nvim/issues/1052
 function M.show(providers)
   local clients = {}
   local responses = {}
