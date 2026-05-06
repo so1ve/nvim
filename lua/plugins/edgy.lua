@@ -86,6 +86,9 @@ return {
         }),
       },
       right = {
+        view("Rust Macro Expansion", "rust_macro_expansion", {
+          size = { width = layout.right.width },
+        }),
         view("Search & Replace", "grug-far", {
           size = { width = layout.right.width },
         }),

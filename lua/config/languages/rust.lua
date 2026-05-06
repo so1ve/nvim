@@ -1,7 +1,7 @@
 local macro_expansion_bufnr
 
 local function macro_expansion_lines(result)
-  local title = "Recursive expansion of the " .. result.name .. " macro"
+  local title = "Recursive expansion of `" .. result.name .. "` macro"
   local lines = {
     "// " .. string.rep("=", #title),
     "// " .. title,
@@ -23,13 +23,15 @@ local function open_macro_expansion(result)
   macro_expansion_bufnr = vim.api.nvim_create_buf(false, true)
 
   vim.api.nvim_buf_set_lines(macro_expansion_bufnr, 0, -1, false, lines)
+  vim.bo[macro_expansion_bufnr].buftype = "nofile"
   vim.bo[macro_expansion_bufnr].bufhidden = "wipe"
-  vim.bo[macro_expansion_bufnr].filetype = "rust"
+  vim.bo[macro_expansion_bufnr].filetype = "rust_macro_expansion"
+  vim.bo[macro_expansion_bufnr].syntax = "rust"
   vim.bo[macro_expansion_bufnr].modifiable = false
+  vim.bo[macro_expansion_bufnr].swapfile = false
 
-  vim.cmd("botright vsplit")
+  vim.cmd("vsplit")
   vim.api.nvim_win_set_buf(0, macro_expansion_bufnr)
-  vim.api.nvim_win_set_height(0, math.min(math.max(#lines, 4), math.floor(vim.o.lines * 0.4)))
 end
 
 local function expand_macro(bufnr)
