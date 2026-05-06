@@ -131,13 +131,16 @@ return {
       require("neo-tree").setup(opts)
     end,
   },
-  edgy.view_spec("left", edgy.view("Explorer", "neo-tree", {
-    filter = function(buf)
-      local source = vim.b[buf].neo_tree_source
+  edgy.view_spec(
+    "left",
+    edgy.view("Explorer", "neo-tree", {
+      filter = function(buf)
+        local source = vim.b[buf].neo_tree_source
 
-      return source == nil or source == "filesystem"
-    end,
-    open = "Neotree show",
-    wo = { winbar = false },
-  })),
+        return source == nil or source == "filesystem"
+      end,
+      open = "Neotree show",
+      wo = { winbar = false },
+    })
+  ),
 }

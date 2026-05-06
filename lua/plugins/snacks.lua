@@ -174,8 +174,11 @@ return {
       },
     },
   },
-  edgy.view_spec("bottom", edgy.view("Terminal", "snacks_terminal", {
-    filter = snacks_position_filter("bottom"),
-  })),
+  edgy.view_spec(
+    "bottom",
+    edgy.view("Terminal", "snacks_terminal", {
+      filter = snacks_position_filter("bottom"),
+    })
+  ),
   edgy.neo_tree_exclusion_spec("snacks_terminal"),
 }

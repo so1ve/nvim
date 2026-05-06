@@ -28,16 +28,26 @@ return {
       { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics" },
       { "<leader>xD", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace diagnostics" },
       { "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols" },
-      { "<leader>xl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP definitions/references" },
+      {
+        "<leader>xl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP definitions/references",
+      },
       { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
       { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list" },
     },
   },
-  edgy.view_spec("right", edgy.view("LSP", "trouble", {
-    filter = trouble_filter("right"),
-  })),
-  edgy.view_spec("bottom", edgy.view("Problems", "trouble", {
-    filter = trouble_filter("bottom"),
-  })),
+  edgy.view_spec(
+    "right",
+    edgy.view("LSP", "trouble", {
+      filter = trouble_filter("right"),
+    })
+  ),
+  edgy.view_spec(
+    "bottom",
+    edgy.view("Problems", "trouble", {
+      filter = trouble_filter("bottom"),
+    })
+  ),
   edgy.neo_tree_exclusion_spec({ "Trouble", "trouble" }),
 }

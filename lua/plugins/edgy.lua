@@ -45,9 +45,13 @@ return {
 
       add_language_views(opts)
       add_view(opts, "bottom", edgy.view("Quickfix", "qf"))
-      add_view(opts, "bottom", edgy.view("Help", "help", {
-        size = { height = 20 },
-      }))
+      add_view(
+        opts,
+        "bottom",
+        edgy.view("Help", "help", {
+          size = { height = 20 },
+        })
+      )
     end,
   },
   edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),
