@@ -83,6 +83,7 @@ return {
             return source == nil or source == "filesystem"
           end,
           open = "Neotree show",
+          wo = { winbar = false },
         }),
       },
       right = {
