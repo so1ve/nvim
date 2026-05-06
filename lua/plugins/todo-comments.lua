@@ -20,14 +20,14 @@ return {
       desc = "Previous todo comment",
     },
     {
-      "<leader>st",
+      "<leader>ft",
       function()
         Snacks.picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } })
       end,
       desc = "Todo/fix comments",
     },
     {
-      "<leader>sT",
+      "<leader>fT",
       function()
         Snacks.picker.todo_comments()
       end,

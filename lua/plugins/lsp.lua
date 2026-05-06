@@ -33,11 +33,11 @@ local function configure_lsp_buffer(event)
   map("<leader>ca", vim.lsp.buf.code_action, "Code action")
 
   if supports_document_symbols then
-    map("<leader>cs", Snacks.picker.lsp_symbols, "Document symbols")
+    map("<leader>fs", Snacks.picker.lsp_symbols, "Document symbols")
   end
 
   if supports_workspace_symbols then
-    map("<leader>cS", Snacks.picker.lsp_workspace_symbols, "Workspace symbols")
+    map("<leader>fS", Snacks.picker.lsp_workspace_symbols, "Workspace symbols")
   end
 
   if supports_inlay_hints then

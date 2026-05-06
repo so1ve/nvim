@@ -119,6 +119,20 @@ return {
       desc = "Undo history",
     },
     {
+      "<leader>fd",
+      function()
+        Snacks.picker.diagnostics_buffer()
+      end,
+      desc = "Buffer diagnostics",
+    },
+    {
+      "<leader>fD",
+      function()
+        Snacks.picker.diagnostics()
+      end,
+      desc = "Workspace diagnostics",
+    },
+    {
       "<leader>tt",
       function()
         Snacks.terminal()
