@@ -1,4 +1,5 @@
 local hover = require("patch.noice.hover")
+local markdown_width = require("patch.noice.markdown-width")
 local satellite = require("patch.noice.satellite")
 
 local M = {}
@@ -162,6 +163,8 @@ function M.patch()
     if not hover.is(self) then
       return layout
     end
+
+    layout = markdown_width.fix_layout(self, layout)
 
     -- Noice/NUI can do cursor-relative row+col or editor-relative row+col, but
     -- not cursor-relative row with center-biased editor-relative col. Patch the
