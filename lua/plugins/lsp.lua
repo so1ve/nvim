@@ -1,12 +1,17 @@
 local function configure_lsp_buffer(event)
   local bufnr = event.buf
   local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+  if not client then
+    return
+  end
+
   local inlay_hint_method = vim.lsp.protocol.Methods.textDocument_inlayHint
   local symbol_method = vim.lsp.protocol.Methods.textDocument_documentSymbol
   local workspace_symbol_method = vim.lsp.protocol.Methods.workspace_symbol
-  local supports_inlay_hints = client and client:supports_method(inlay_hint_method, bufnr)
-  local supports_document_symbols = client and client:supports_method(symbol_method, bufnr)
-  local supports_workspace_symbols = client and client:supports_method(workspace_symbol_method)
+  local supports_inlay_hints = client:supports_method(inlay_hint_method, bufnr)
+  local supports_document_symbols = client:supports_method(symbol_method, bufnr)
+  local supports_workspace_symbols = client:supports_method(workspace_symbol_method)
 
   local navic = require("nvim-navic")
   if supports_document_symbols and not navic.is_available(bufnr) then
@@ -17,7 +22,9 @@ local function configure_lsp_buffer(event)
     vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
   end
 
-  map("K", vim.lsp.buf.hover, "Hover documentation")
+  map("K", function()
+    require("config.languages").hover()
+  end, "Hover documentation")
   map("gd", Snacks.picker.lsp_definitions, "Go to definition")
   map("gD", Snacks.picker.lsp_declarations, "Go to declaration")
   map("gI", Snacks.picker.lsp_implementations, "Go to implementation")

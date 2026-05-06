@@ -1,253 +1,13 @@
 local M = {}
-local schemastore = require("config.schemastore")
 
-M.lsp_servers = {
-  rust_analyzer = {
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = {
-          features = "all",
-        },
-        check = {
-          command = "clippy",
-        },
-        rustfmt = {
-          rangeFormatting = {
-            enable = true,
-          },
-        },
-      },
-    },
-  },
-  vtsls = {
-    filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-    settings = {
-      vtsls = {
-        tsserver = {
-          globalPlugins = {
-            {
-              name = "@vue/typescript-plugin",
-              location = vim.fs.joinpath(
-                vim.fn.stdpath("data"),
-                "mason",
-                "packages",
-                "vue-language-server",
-                "node_modules",
-                "@vue",
-                "language-server"
-              ),
-              languages = { "vue" },
-              configNamespace = "typescript",
-            },
-          },
-        },
-      },
-    },
-  },
-  eslint = {
-    before_init = function(_, config)
-      if not config.root_dir then
-        return
-      end
+local lsp = require("config.languages.lsp")
+local hover = require("utils.lsp.hover")
+local modules = require("util.modules")
 
-      config.settings = config.settings or {}
-      config.settings.workspaceFolder = {
-        name = vim.fn.fnamemodify(config.root_dir, ":t"),
-        uri = vim.uri_from_fname(config.root_dir),
-      }
-    end,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
-    settings = {
-      format = false,
-    },
-  },
-  vue_ls = {},
-  jsonls = function()
-    return {
-      settings = {
-        json = {
-          format = {
-            enable = true,
-          },
-          schemas = schemastore.json_schemas(),
-          validate = {
-            enable = true,
-          },
-        },
-      },
-    }
-  end,
-  taplo = {
-    before_init = schemastore.set_taplo_catalog,
-    settings = {
-      evenBetterToml = {
-        schema = {
-          enabled = true,
-        },
-      },
-    },
-  },
-  yamlls = {},
-  html = {},
-  cssls = {},
-  stylelint_lsp = {
-    filetypes = { "css", "scss", "vue", "html" },
-    settings = {
-      stylelint = {
-        validate = { "css", "scss", "vue", "html" },
-      },
-    },
-  },
-  basedpyright = {
-    settings = {
-      basedpyright = {
-        analysis = {
-          diagnosticSeverityOverrides = {
-            reportUnusedImport = "none",
-            reportUnusedVariable = "none",
-          },
-          typeCheckingMode = "standard",
-        },
-      },
-    },
-  },
-  ruff = {
-    init_options = {
-      settings = {
-        fixAll = true,
-        lint = {
-          extendSelect = { "I" },
-        },
-        organizeImports = true,
-      },
-    },
-    on_attach = function(client)
-      client.server_capabilities.hoverProvider = false
-    end,
-  },
-  gopls = {
-    settings = {
-      gopls = {
-        gofumpt = true,
-      },
-    },
-  },
-  lua_ls = {
-    settings = {
-      Lua = {
-        completion = {
-          callSnippet = "Replace",
-        },
-        diagnostics = {
-          globals = { "vim" },
-        },
-        runtime = {
-          path = { "lua/?.lua", "lua/?/init.lua" },
-          version = "LuaJIT",
-        },
-        telemetry = {
-          enable = false,
-        },
-        workspace = {
-          checkThirdParty = false,
-          library = { vim.env.VIMRUNTIME },
-        },
-      },
-    },
-  },
-}
-
-M.languages = {
-  rust = {
-    treesitter = "rust",
-    lsp = { "rust_analyzer" },
-    formatters = { "rustfmt" },
-  },
-  typescript = {
-    treesitter = "typescript",
-    lsp = { "vtsls", "eslint" },
-    formatters = { "prettierd", "prettier" },
-  },
-  javascript = {
-    treesitter = "javascript",
-    lsp = { "vtsls", "eslint" },
-    formatters = { "prettierd", "prettier" },
-  },
-  typescriptreact = {
-    treesitter = "tsx",
-    lsp = { "vtsls", "eslint" },
-    formatters = { "prettierd", "prettier" },
-  },
-  javascriptreact = {
-    treesitter = "javascript",
-    lsp = { "vtsls", "eslint" },
-    formatters = { "prettierd", "prettier" },
-  },
-  json = {
-    treesitter = "json",
-    lsp = { "jsonls" },
-  },
-  jsonc = {
-    treesitter = "json",
-    lsp = { "jsonls" },
-  },
-  toml = {
-    treesitter = "toml",
-    lsp = { "taplo" },
-  },
-  yaml = {
-    treesitter = "yaml",
-    lsp = { "yamlls" },
-  },
-  html = {
-    treesitter = "html",
-    lsp = { "html", "stylelint_lsp" },
-  },
-  css = {
-    treesitter = "css",
-    lsp = { "cssls", "stylelint_lsp" },
-  },
-  scss = {
-    treesitter = "scss",
-    lsp = { "cssls", "stylelint_lsp" },
-  },
-  python = {
-    treesitter = "python",
-    lsp = { "basedpyright", "ruff" },
-    formatters = { "ruff_organize_imports", "ruff_format" },
-  },
-  vue = {
-    treesitter = "vue",
-    lsp = { "vtsls", "vue_ls", "eslint", "stylelint_lsp" },
-  },
-  go = {
-    treesitter = "go",
-    lsp = { "gopls" },
-  },
-  gomod = {
-    treesitter = "gomod",
-    lsp = { "gopls" },
-  },
-  gowork = {
-    treesitter = "gowork",
-    lsp = { "gopls" },
-  },
-  gotmpl = {
-    treesitter = "gotmpl",
-    lsp = { "gopls" },
-  },
-  gosum = {
-    treesitter = "gosum",
-  },
-  lua = {
-    treesitter = "lua",
-    lsp = { "lua_ls" },
-    formatters = { "stylua" },
-  },
-}
-
--- noice.nvim
-M.extra_treesitter_parsers = {
+local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
+local servers = {}
+local languages = {}
+local extra_treesitter_parsers = {
   "bash",
   "lua",
   "markdown",
@@ -255,25 +15,48 @@ M.extra_treesitter_parsers = {
   "regex",
   "vim",
 }
+local server_extenders = {}
+
+for _, spec in ipairs(language_specs) do
+  for filetype, language in pairs(spec.languages or {}) do
+    languages[filetype] = language
+  end
+
+  for server_name, server_config in pairs(spec.servers or {}) do
+    local current_config = servers[server_name]
+
+    if current_config then
+      servers[server_name] = vim.tbl_deep_extend("force", current_config, server_config)
+    else
+      servers[server_name] = server_config
+    end
+  end
+
+  if spec.extend then
+    table.insert(server_extenders, spec.extend)
+  end
+end
+
+for _, extend in ipairs(server_extenders) do
+  extend(servers, lsp)
+end
 
 function M.treesitter_language(filetype)
   if filetype == "" then
     return nil
   end
 
-  local language = M.languages[filetype]
-  if language and language.treesitter then
-    return language.treesitter
-  end
+  local language = languages[filetype]
 
-  return vim.treesitter.language.get_lang(filetype)
+  return language and language.treesitter or vim.treesitter.language.get_lang(filetype)
 end
 
 function M.treesitter_aliases()
   local aliases = {}
 
-  for filetype, language in pairs(M.languages) do
+  for filetype, language in pairs(languages) do
     local parser = language.treesitter
+
     if parser and parser ~= filetype then
       aliases[parser] = aliases[parser] or {}
       table.insert(aliases[parser], filetype)
@@ -286,12 +69,11 @@ end
 function M.lsp_configs(capabilities)
   local configs = {}
 
-  for server_name, server_config in pairs(M.lsp_servers) do
-    configs[server_name] = vim.tbl_deep_extend(
-      "force",
-      { capabilities = capabilities },
-      type(server_config) == "function" and server_config() or server_config
-    )
+  for server_name, server_config in pairs(servers) do
+    local config = type(server_config) == "function" and server_config() or server_config
+
+    config = vim.tbl_deep_extend("force", { capabilities = vim.deepcopy(capabilities) }, config)
+    configs[server_name] = config
   end
 
   return configs
@@ -301,12 +83,8 @@ function M.lsp_server_names()
   local names = {}
   local seen = {}
 
-  for _, language in pairs(M.languages) do
+  for _, language in pairs(languages) do
     for _, server_name in ipairs(language.lsp or {}) do
-      if not M.lsp_servers[server_name] then
-        error("Missing LSP server config: " .. server_name)
-      end
-
       if not seen[server_name] then
         seen[server_name] = true
         table.insert(names, server_name)
@@ -321,15 +99,16 @@ function M.treesitter_parsers()
   local parsers = {}
   local seen = {}
 
-  for filetype, language in pairs(M.languages) do
+  for filetype, language in pairs(languages) do
     local parser = language.treesitter or vim.treesitter.language.get_lang(filetype)
+
     if parser and not seen[parser] then
       seen[parser] = true
       table.insert(parsers, parser)
     end
   end
 
-  for _, parser in ipairs(M.extra_treesitter_parsers) do
+  for _, parser in ipairs(extra_treesitter_parsers) do
     if not seen[parser] then
       seen[parser] = true
       table.insert(parsers, parser)
@@ -342,13 +121,26 @@ end
 function M.formatters_by_ft()
   local formatters = {}
 
-  for filetype, language in pairs(M.languages) do
+  for filetype, language in pairs(languages) do
     if language.formatters then
       formatters[filetype] = language.formatters
     end
   end
 
   return formatters
+end
+
+function M.hover()
+  local language = languages[vim.bo.filetype]
+  local providers = language and language.hover
+
+  if not providers then
+    vim.lsp.buf.hover()
+
+    return
+  end
+
+  hover.show(providers)
 end
 
 return M
