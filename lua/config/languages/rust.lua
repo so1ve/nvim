@@ -1,3 +1,5 @@
+local edgy = require("config.edgy")
+
 local macro_expansion_bufnr
 
 local function macro_expansion_lines(result)
@@ -75,6 +77,11 @@ local function attach_rust_keymaps(_, bufnr)
 end
 
 return {
+  edgy = {
+    right = {
+      edgy.view("Rust Macro Expansion", "rust_macro_expansion"),
+    },
+  },
   languages = {
     rust = {
       treesitter = "rust",

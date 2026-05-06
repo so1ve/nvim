@@ -6,6 +6,7 @@ local modules = require("utils.modules")
 local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
 local servers = {}
 local languages = {}
+local edgy_views = { left = {}, right = {}, bottom = {} }
 local extra_treesitter_parsers = {
   "bash",
   "lua",
@@ -33,6 +34,14 @@ for _, spec in ipairs(language_specs) do
 
   if spec.extend then
     table.insert(server_extenders, spec.extend)
+  end
+
+  for position, views in pairs(spec.edgy or {}) do
+    edgy_views[position] = edgy_views[position] or {}
+
+    for _, view in ipairs(views) do
+      table.insert(edgy_views[position], view)
+    end
   end
 end
 
@@ -92,6 +101,10 @@ function M.lsp_server_names()
   end
 
   return names
+end
+
+function M.edgy_views()
+  return vim.deepcopy(edgy_views)
 end
 
 function M.treesitter_parsers()
