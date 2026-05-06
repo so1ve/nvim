@@ -47,6 +47,7 @@ local function expand_macro(bufnr)
 
   local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
 
+  --- @diagnostic disable-next-line: param-type-mismatch
   client:request("rust-analyzer/expandMacro", params, function(err, result)
     if err then
       vim.notify(err.message or "Failed to expand macro", vim.log.levels.ERROR)
