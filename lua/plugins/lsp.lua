@@ -70,7 +70,6 @@ return {
       virtual_text = false,
       virtual_lines = false,
       float = {
-        border = "rounded",
         source = true,
       },
     })

@@ -3,11 +3,7 @@ return {
     "mason-org/mason.nvim",
     lazy = false,
     cmd = { "Mason", "MasonInstall", "MasonLog", "MasonUninstall", "MasonUpdate" },
-    opts = {
-      ui = {
-        border = "rounded",
-      },
-    },
+    opts = {},
   },
   {
     "mason-org/mason-lspconfig.nvim",

@@ -13,6 +13,7 @@ opt.cmdheight = 0
 opt.showmode = false
 opt.title = true
 opt.titlestring = "nvim: %t"
+opt.winborder = "rounded"
 
 -- interaction
 opt.mouse = "a"

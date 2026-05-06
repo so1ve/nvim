@@ -23,10 +23,6 @@ return {
         hover = {
           silent = true,
           opts = {
-            border = {
-              style = "rounded",
-              padding = { 0, 1 },
-            },
             size = {
               max_height = 20,
               max_width = 100,

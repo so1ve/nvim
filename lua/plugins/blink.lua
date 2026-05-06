@@ -77,7 +77,6 @@ return {
       --   show_on_blocked_trigger_characters = { " ", "\n", "\t", "(" },
       -- },
       menu = {
-        border = "rounded",
         draw = {
           columns = { { "kind_icon" }, { "label", gap = 1 } },
           components = {
@@ -95,16 +94,10 @@ return {
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 0,
-        window = {
-          border = "rounded",
-        },
       },
     },
     signature = {
       enabled = true,
-      window = {
-        border = "rounded",
-      },
     },
   },
 }
