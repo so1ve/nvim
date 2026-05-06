@@ -1,27 +1,11 @@
 local M = {}
-
-local modules = {
-  "mini",
-  "snacks",
-  "gitsigns",
-  "satellite",
-  "bufferline",
-  "incline",
-  "navic",
-  "blink",
-  "noice",
-  "neo-tree",
-  "treesitter-context",
-  "rainbow-delimiters",
-  "opencode",
-  "sidekick",
-}
+local modules = require("util.modules")
 
 function M.get(p)
   local groups = {}
 
-  for _, module in ipairs(modules) do
-    local integration = require("colors.undefined.integrations." .. module).get(p)
+  for _, module in ipairs(modules.load("colors.undefined.integrations")) do
+    local integration = module.get(p)
 
     for group, spec in pairs(integration) do
       groups[group] = spec
