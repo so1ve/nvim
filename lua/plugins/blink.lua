@@ -75,9 +75,6 @@ return {
       },
     },
     completion = {
-      -- trigger = {
-      --   show_on_blocked_trigger_characters = { " ", "\n", "\t", "(" },
-      -- },
       menu = {
         draw = {
           columns = { { "kind_icon" }, { "label", gap = 1 } },
