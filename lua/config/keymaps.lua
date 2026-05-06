@@ -1,5 +1,5 @@
 local map = vim.keymap.set
-local window_util = require("util.windows")
+local window_util = require("utils.windows")
 
 local function close_buffer_or_window()
   local bufnr = vim.api.nvim_get_current_buf()

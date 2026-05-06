@@ -3,7 +3,7 @@ local function open_trouble(picker, opts)
 end
 
 local terminal = require("config.terminal")
-local window_util = require("util.windows")
+local window_util = require("utils.windows")
 
 return {
   "folke/snacks.nvim",

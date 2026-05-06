@@ -1,5 +1,5 @@
-local hover = require("util.noice.hover")
-local satellite = require("util.noice.satellite")
+local hover = require("utils.noice.hover")
+local satellite = require("utils.noice.satellite")
 
 local M = {}
 

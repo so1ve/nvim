@@ -2,7 +2,7 @@ local M = {}
 
 local lsp = require("config.languages.lsp")
 local hover = require("utils.lsp.hover")
-local modules = require("util.modules")
+local modules = require("utils.modules")
 
 local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
 local servers = {}

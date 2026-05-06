@@ -1,5 +1,5 @@
 local M = {}
-local modules = require("util.modules")
+local modules = require("utils.modules")
 
 function M.get(p)
   local groups = {}
