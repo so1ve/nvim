@@ -3,6 +3,7 @@ local function open_trouble(picker, opts)
 end
 
 local terminal = require("config.terminal")
+local symbols = require("config.symbols")
 local window_util = require("utils.windows")
 
 return {
@@ -13,6 +14,14 @@ return {
     bigfile = {},
     quickfile = {},
     picker = {
+      sources = {
+        lsp_symbols = {
+          filter = symbols.snacks_lsp_symbol_filter(),
+        },
+        lsp_workspace_symbols = {
+          filter = symbols.snacks_lsp_symbol_filter(),
+        },
+      },
       actions = {
         trouble_open = function(picker)
           open_trouble(picker)

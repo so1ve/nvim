@@ -1,7 +1,15 @@
+local symbols = require("config.symbols")
+
 return {
   "folke/trouble.nvim",
   cmd = "Trouble",
-  opts = {},
+  opts = {
+    modes = {
+      symbols = {
+        filter = symbols.trouble_lsp_symbol_filter(),
+      },
+    },
+  },
   keys = {
     { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics" },
     { "<leader>xD", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace diagnostics" },
