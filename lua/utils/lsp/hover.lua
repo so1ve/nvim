@@ -1,49 +1,51 @@
 local M = {}
 
+local docs = require("noice.lsp.docs")
+local format = require("noice.lsp.format")
+local markdown = require("noice.text.markdown")
+
 local hover_method = vim.lsp.protocol.Methods.textDocument_hover
 
-local function handler()
-  if package.loaded["noice.config"] then
-    local ok, hover = pcall(require, "noice.lsp.hover")
+local function has_hover_content(result)
+  if not (result and result.contents) then
+    return false
+  end
 
-    if ok and hover.on_hover then
-      return hover.on_hover
+  for _, line in ipairs(vim.lsp.util.convert_input_to_markdown_lines(result.contents)) do
+    if line ~= "" then
+      return true
     end
   end
 
-  return vim.lsp.handlers[hover_method]
+  return false
 end
 
-local function trim_empty_lines(lines)
-  local first = 1
-  local last = #lines
+local function show_hover(entries, providers)
+  local message = docs.get("hover")
 
-  while lines[first] == "" do
-    first = first + 1
+  if message:focus() then
+    return
   end
 
-  while lines[last] == "" do
-    last = last - 1
+  local shown = false
+
+  for index = 1, #providers do
+    local entry = entries[index]
+
+    if entry then
+      if shown then
+        message:newline()
+        markdown.horizontal_line(message)
+      end
+
+      format.format(message, entry.result.contents, { ft = vim.bo[entry.ctx.bufnr].filetype })
+      shown = true
+    end
   end
 
-  local trimmed = {}
-
-  for index = first, last do
-    table.insert(trimmed, lines[index])
+  if not message:is_empty() then
+    docs.show(message)
   end
-
-  return trimmed
-end
-
-local function markdown_lines(result)
-  if not (result and result.contents) then
-    return nil
-  end
-
-  local lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
-  local trimmed = trim_empty_lines(lines)
-
-  return #trimmed > 0 and trimmed or nil
 end
 
 function M.show(providers)
@@ -62,10 +64,7 @@ function M.show(providers)
     return
   end
 
-  local hover_handler = handler()
   local pending = #clients
-  local first_context
-  local first_config
 
   local function finish()
     pending = pending - 1
@@ -74,39 +73,17 @@ function M.show(providers)
       return
     end
 
-    local merged = {}
-
-    for index = 1, #providers do
-      local lines = responses[index]
-
-      if lines then
-        if #merged > 0 then
-          vim.list_extend(merged, { "", "---", "" })
-        end
-
-        vim.list_extend(merged, lines)
-      end
-    end
-
-    if #merged == 0 then
-      return
-    end
-
-    hover_handler(nil, {
-      contents = {
-        kind = vim.lsp.protocol.MarkupKind.Markdown,
-        value = table.concat(merged, "\n"),
-      },
-    }, first_context, first_config)
+    show_hover(responses, providers)
   end
 
   for _, entry in ipairs(clients) do
     local params = vim.lsp.util.make_position_params(nil, entry.client.offset_encoding)
 
-    entry.client:request(hover_method, params, function(_, result, ctx, config)
-      responses[entry.index] = markdown_lines(result)
-      first_context = first_context or ctx
-      first_config = first_config or config
+    entry.client:request(hover_method, params, function(_, result, ctx)
+      if has_hover_content(result) then
+        responses[entry.index] = { result = result, ctx = ctx }
+      end
+
       finish()
     end, 0)
   end

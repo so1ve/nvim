@@ -1,7 +1,6 @@
 local M = {}
 
 local lsp = require("config.languages.lsp")
-local hover = require("utils.lsp.hover")
 local modules = require("utils.modules")
 
 local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
@@ -140,7 +139,8 @@ function M.hover()
     return
   end
 
-  hover.show(providers)
+  -- require it here to make sure noice is loaded
+  require("utils.lsp.hover").show(providers)
 end
 
 return M

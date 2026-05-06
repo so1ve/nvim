@@ -56,6 +56,7 @@ return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
+    "folke/noice.nvim", -- we patch noice's hover to make it work better with LSP
     "saghen/blink.cmp",
     "b0o/schemastore.nvim",
     "SmiteshP/nvim-navic",
