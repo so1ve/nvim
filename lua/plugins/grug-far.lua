@@ -19,7 +19,7 @@ return {
       engines = {
         ripgrep = {
           defaults = {
-            flags = "--multiline --multiline-dotall",
+            flags = "--smart-case --multiline --multiline-dotall",
           },
         },
       },
