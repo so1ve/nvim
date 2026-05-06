@@ -45,7 +45,8 @@ function M.get(p)
     BlinkCmpDocSeparator = { fg = p.border, bg = p.bg },
     BlinkCmpDocCursorLine = { bg = p.bg_alt },
     BlinkCmpSignatureHelp = { fg = p.fg, bg = p.bg },
-    BlinkCmpSignatureHelpActiveParameter = { fg = p.orange, bold = true },
+    BlinkCmpSignatureHelpBorder = { link = "FloatBorder" },
+    BlinkCmpSignatureHelpActiveParameter = { bg = p.selection, bold = true },
   }
 end
 

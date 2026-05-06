@@ -17,6 +17,9 @@ return {
         },
       },
       lsp = {
+        signature = {
+          enabled = false,
+        },
         hover = {
           silent = true,
           opts = {

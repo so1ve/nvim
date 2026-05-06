@@ -15,6 +15,7 @@ function M.get(p)
     NoiceCursor = { fg = p.bg, bg = p.fg },
     NoiceMini = { fg = p.fg_dim, bg = p.bg_dark },
     NoicePopup = { fg = p.fg, bg = p.bg },
+    NoicePopupBorder = { link = "FloatBorder" },
     NoicePopupmenu = { fg = p.fg, bg = p.bg_alt },
     NoicePopupmenuMatch = { fg = p.orange, bold = true },
     NoicePopupmenuSelected = { fg = p.fg, bg = p.selection },
