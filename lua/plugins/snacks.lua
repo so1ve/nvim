@@ -89,6 +89,7 @@ return {
       },
       lazygit = {},
       rename = {},
+      scope = {},
       words = {},
     },
     config = function(_, opts)
@@ -172,6 +173,13 @@ return {
           Snacks.rename.rename_file()
         end,
         desc = "Rename file",
+      },
+      {
+        "<leader>cs",
+        function()
+          Snacks.scope.jump()
+        end,
+        desc = "Go to scope",
       },
     },
   },
