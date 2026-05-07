@@ -1,3 +1,8 @@
+-- Shared Noice hover helpers.
+-- Purpose: centralize what counts as our LSP hover view.
+-- Implementation: `is()` inspects Noice view metadata for LSP hover messages;
+-- other patches use this to avoid touching non-hover Noice popups.
+
 local M = {}
 
 function M.is(view)
@@ -12,13 +17,6 @@ function M.is(view)
   end
 
   return false
-end
-
-function M.update_bar(view)
-  if view and view._scroll then
-    view._scroll._ray_hover = true
-    view._scroll:update()
-  end
 end
 
 return M

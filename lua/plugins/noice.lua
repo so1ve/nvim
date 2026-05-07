@@ -52,6 +52,7 @@ return {
         hover = {
           silent = true,
           opts = {
+            scrollbar = false,
             size = {
               max_height = 20,
               max_width = 100,

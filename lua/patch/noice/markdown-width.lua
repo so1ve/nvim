@@ -1,3 +1,13 @@
+-- Noice markdown visual width patch.
+-- Purpose: make hover layout size itself from rendered markdown width instead
+-- of raw markdown source width, especially for inline links where `[label](url)`
+-- visually occupies only `label`.
+-- Behavior: markdown links remain clickable via stored link ranges, while layout
+-- height/width calculations use the transformed visual text.
+-- Implementation: patches Noice markdown formatting and text block width/render
+-- methods, caches each line's visual width, and exposes `fix_layout()` so the
+-- hover layout patch can recalculate wrapped popup dimensions before placement.
+
 local M = {}
 
 local LINK_HL = "@markup.link"
@@ -323,6 +333,8 @@ function M.patch()
   if not markdown._ray_markdown_width_patched then
     markdown._ray_markdown_width_patched = true
 
+    -- Replace Noice's markdown formatting so inline links are rendered as visual
+    -- labels with our own link metadata, rather than raw markdown source text.
     function markdown.format(message, text, opts)
       format_markdown(markdown, message, text, opts)
     end
@@ -341,11 +353,15 @@ function M.patch()
   local render = block.render
   local width = block.width
 
+  -- Attach link metadata during render so the patched gx/K handlers can open the
+  -- URL even though the visible text no longer contains markdown link syntax.
   function block:render(bufnr, ns_id, linenr_start, linenr_end)
     render(self, bufnr, ns_id, linenr_start, linenr_end)
     attach_links(bufnr, self._lines, linenr_start)
   end
 
+  -- Prefer cached visual widths for lines produced by our markdown formatter;
+  -- fall back to Noice's upstream width calculation for all other blocks.
   function block:width()
     local has_markdown_width = false
     local ret = 0

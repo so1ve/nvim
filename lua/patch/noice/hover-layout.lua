@@ -1,6 +1,15 @@
+-- Noice LSP hover layout patch.
+-- Purpose: keep hover windows anchored to the source-code cursor while using a
+-- center-biased horizontal placement that avoids snapping wide hovers to the
+-- far left. This module owns hover positioning and the active hover view.
+-- Behavior: on source-window scroll/resize it asks Noice to recompute the hover
+-- layout.
+-- Implementation: monkey-patches `noice.view.nui:get_layout()` for LSP hover
+-- views only, first applying markdown visual sizing, then replacing the final
+-- NUI layout with editor-relative row/col coordinates.
+
 local hover = require("patch.noice.hover")
 local markdown_width = require("patch.noice.markdown-width")
-local satellite = require("patch.noice.satellite")
 
 local M = {}
 
@@ -96,11 +105,6 @@ local function place(view, layout)
   return layout
 end
 
-local function refresh(view)
-  hover.update_bar(view)
-  satellite.refresh()
-end
-
 local function relayout()
   if pending then
     return
@@ -116,7 +120,6 @@ local function relayout()
 
     pcall(function()
       active:update_layout()
-      refresh(active)
     end)
   end)
 end
@@ -142,10 +145,6 @@ function M.current()
   return active
 end
 
-function M.refresh(view)
-  refresh(view or active)
-end
-
 function M.patch()
   local view = require("noice.view.nui")
 
@@ -157,6 +156,8 @@ function M.patch()
 
   local get_layout = view.get_layout
 
+  -- Replace only the final layout for LSP hover views. Non-hover Noice views
+  -- continue using Noice's original layout calculation unchanged.
   function view:get_layout()
     local layout = get_layout(self)
 

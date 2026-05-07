@@ -19,8 +19,6 @@ function M.get(p)
     NoicePopupmenu = { fg = p.fg, bg = p.bg_alt },
     NoicePopupmenuMatch = { fg = p.orange, bold = true },
     NoicePopupmenuSelected = { fg = p.fg, bg = p.selection },
-    NoiceScrollbar = { bg = p.bg_alt },
-    NoiceScrollbarThumb = { bg = p.subtle },
     NoiceSplit = { fg = p.fg, bg = p.bg },
     NoiceVirtualText = { fg = p.blue },
     NoiceFormatProgressDone = { fg = p.green, bg = p.bg_alt },
