@@ -24,7 +24,7 @@ return {
   event = "VeryLazy",
   opts = {
     delay = 300,
-    preset = "modern",
+    preset = "helix",
   },
   config = function(_, opts)
     local wk = require("which-key")
