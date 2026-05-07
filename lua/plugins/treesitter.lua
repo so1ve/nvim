@@ -1,5 +1,5 @@
 local function install_configured_parsers()
-  require("nvim-treesitter").install(require("config.languages").treesitter_parsers()):wait(300000)
+  require("nvim-treesitter").install(require("config.languages").treesitter_parsers())
 end
 
 local function register_treesitter_aliases(languages)
