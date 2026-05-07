@@ -30,7 +30,9 @@ local function configure_lsp_buffer(event)
   map("gI", Snacks.picker.lsp_implementations, "Go to implementation")
   map("gr", Snacks.picker.lsp_references, "References")
   map("gy", Snacks.picker.lsp_type_definitions, "Go to type definition")
-  map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+  map("<leader>ca", function()
+    require("code-action-menu").code_action()
+  end, "Code action")
 
   if supports_document_symbols then
     map("<leader>fs", Snacks.picker.lsp_symbols, "Document symbols")
