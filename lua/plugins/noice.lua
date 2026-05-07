@@ -6,7 +6,6 @@ return {
     event = "VeryLazy",
     dependencies = {
       "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
     },
     opts = {
       views = {
@@ -15,6 +14,17 @@ return {
             winblend = 0,
           },
         },
+        notify = {
+          backend = "snacks",
+        },
+      },
+      messages = {
+        view = "mini",
+        view_error = "notify",
+        view_warn = "mini",
+      },
+      notify = {
+        view = "notify",
       },
       commands = {
         history = {
@@ -30,6 +40,12 @@ return {
         },
       },
       lsp = {
+        message = {
+          view = "mini",
+        },
+        progress = {
+          view = "mini",
+        },
         signature = {
           enabled = false,
         },

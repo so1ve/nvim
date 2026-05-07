@@ -54,7 +54,8 @@ return {
       input = {},
       image = {},
       notifier = {
-        enabled = false,
+        height = { min = 1, max = 0.4 },
+        style = "compact",
       },
       dashboard = {
         preset = {
