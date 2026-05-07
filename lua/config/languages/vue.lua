@@ -1,5 +1,3 @@
-local formatters = require("config.formatters")
-
 local function vue_language_server_path()
   return vim.fs.joinpath(
     vim.fn.stdpath("data"),
@@ -17,7 +15,8 @@ return {
     vue = {
       treesitter = "vue",
       lsp = { "vtsls", "vue_ls", "eslint", "stylelint_lsp" },
-      formatters = formatters.prettier(),
+      tools = { "prettierd" },
+      formatters = { "prettierd" },
       hover = { "vue_ls", "vtsls" },
     },
   },

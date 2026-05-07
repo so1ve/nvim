@@ -3,6 +3,7 @@ return {
     lua = {
       treesitter = "lua",
       lsp = { "lua_ls" },
+      tools = { "stylua" },
       formatters = { "stylua" },
     },
   },

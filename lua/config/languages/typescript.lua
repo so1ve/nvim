@@ -1,26 +1,28 @@
-local formatters = require("config.formatters")
-
 return {
   languages = {
     typescript = {
       treesitter = "typescript",
       lsp = { "vtsls", "eslint" },
-      formatters = formatters.prettier(),
+      tools = { "prettierd" },
+      formatters = { "prettierd" },
     },
     javascript = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      formatters = formatters.prettier(),
+      tools = { "prettierd" },
+      formatters = { "prettierd" },
     },
     typescriptreact = {
       treesitter = "tsx",
       lsp = { "vtsls", "eslint" },
-      formatters = formatters.prettier(),
+      tools = { "prettierd" },
+      formatters = { "prettierd" },
     },
     javascriptreact = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      formatters = formatters.prettier(),
+      tools = { "prettierd" },
+      formatters = { "prettierd" },
     },
   },
   servers = {

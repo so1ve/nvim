@@ -1,3 +1,5 @@
+vim.env.PRETTIERD_LOCAL_PRETTIER_ONLY = "1"
+
 return {
   "stevearc/conform.nvim",
   cmd = { "ConformInfo" },

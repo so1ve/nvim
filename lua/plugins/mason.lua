@@ -20,4 +20,19 @@ return {
       }
     end,
   },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "mason-org/mason.nvim",
+    },
+    opts = function()
+      return {
+        ensure_installed = require("config.languages").tool_names(),
+        run_on_start = true,
+        start_delay = 3000,
+        debounce_hours = 12,
+      }
+    end,
+  },
 }

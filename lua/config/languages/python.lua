@@ -3,6 +3,7 @@ return {
     python = {
       treesitter = "python",
       lsp = { "basedpyright", "ruff" },
+      tools = { "ruff" },
       formatters = { "ruff_organize_imports", "ruff_format" },
     },
   },

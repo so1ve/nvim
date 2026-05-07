@@ -49,6 +49,22 @@ for _, extend in ipairs(server_extenders) do
   extend(servers, lsp)
 end
 
+local function collect_language_entries(field)
+  local names = {}
+  local seen = {}
+
+  for _, language in pairs(languages) do
+    for _, name in ipairs(language[field] or {}) do
+      if not seen[name] then
+        seen[name] = true
+        table.insert(names, name)
+      end
+    end
+  end
+
+  return names
+end
+
 function M.treesitter_language(filetype)
   if filetype == "" then
     return nil
@@ -88,19 +104,11 @@ function M.lsp_configs(capabilities)
 end
 
 function M.lsp_server_names()
-  local names = {}
-  local seen = {}
+  return collect_language_entries("lsp")
+end
 
-  for _, language in pairs(languages) do
-    for _, server_name in ipairs(language.lsp or {}) do
-      if not seen[server_name] then
-        seen[server_name] = true
-        table.insert(names, server_name)
-      end
-    end
-  end
-
-  return names
+function M.tool_names()
+  return collect_language_entries("tools")
 end
 
 function M.edgy_views()
