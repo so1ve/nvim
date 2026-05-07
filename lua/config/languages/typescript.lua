@@ -1,26 +1,26 @@
-local prettier = { "prettierd", "prettier" }
+local formatters = require("config.formatters")
 
 return {
   languages = {
     typescript = {
       treesitter = "typescript",
       lsp = { "vtsls", "eslint" },
-      formatters = prettier,
+      formatters = formatters.prettier(),
     },
     javascript = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      formatters = prettier,
+      formatters = formatters.prettier(),
     },
     typescriptreact = {
       treesitter = "tsx",
       lsp = { "vtsls", "eslint" },
-      formatters = prettier,
+      formatters = formatters.prettier(),
     },
     javascriptreact = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      formatters = prettier,
+      formatters = formatters.prettier(),
     },
   },
   servers = {
