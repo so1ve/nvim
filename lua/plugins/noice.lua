@@ -1,15 +1,5 @@
 local edgy = require("config.edgy")
 
-local history_filter = {
-  any = {
-    { event = "notify" },
-    { error = true },
-    { warning = true },
-    { event = "msg_show", kind = { "", "list_cmd" } },
-    { event = "lsp", kind = "message" },
-  },
-}
-
 return {
   {
     "folke/noice.nvim",
@@ -28,10 +18,15 @@ return {
       },
       commands = {
         history = {
-          filter = history_filter,
-        },
-        last = {
-          filter = history_filter,
+          filter = {
+            any = {
+              { event = "notify" },
+              { error = true },
+              { warning = true },
+              { event = "msg_show", kind = { "", "list_cmd" } },
+              { event = "lsp", kind = "message" },
+            },
+          },
         },
       },
       lsp = {
