@@ -1,3 +1,4 @@
+-- Snacks.scroll has issues when scrolling multiple times in a short time so we use neoscroll instead for a smoother experience.
 return {
   "karb94/neoscroll.nvim",
   lazy = false,
