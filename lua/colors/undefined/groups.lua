@@ -69,7 +69,7 @@ function M.get(p)
     Special = { fg = p.support },
     SpecialChar = { fg = p.yellow },
     Delimiter = { fg = p.delimiter },
-    Underlined = { fg = p.green, underline = true },
+    Underlined = { fg = p.link, underline = true },
     Error = { fg = p.invalid },
     Todo = { fg = p.yellow, bg = p.bg_alt, bold = true },
 
@@ -91,6 +91,13 @@ function M.get(p)
     Title = { fg = p.green, bold = true },
     ErrorMsg = { fg = p.red, bg = p.bg_dark },
     WarningMsg = { fg = p.orange, bg = p.bg_dark },
+
+    helpHyperTextJump = { fg = p.link, underline = true },
+    helpHyperTextEntry = { fg = p.link, underline = true },
+    helpURL = { fg = p.link, underline = true },
+
+    markdownLinkText = { fg = p.link, underline = true },
+    markdownUrl = { fg = p.link, underline = true },
 
     ["@comment"] = { link = "Comment" },
     ["@punctuation"] = { fg = p.delimiter },
@@ -150,8 +157,9 @@ function M.get(p)
     ["@markup.italic"] = { fg = p.fg, italic = true },
     ["@markup.quote"] = { fg = p.interface },
     ["@markup.raw"] = { fg = p.green },
-    ["@markup.link"] = { fg = p.string },
+    ["@markup.link"] = { fg = p.link, underline = true },
     ["@markup.link.url"] = { fg = p.link, underline = true },
+    ["@text.reference"] = { fg = p.link, underline = true },
     ["@markup.list"] = { fg = p.orange },
 
     ["@diff.plus"] = { fg = p.diff_add_fg, bg = p.diff_add_bg },

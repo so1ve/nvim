@@ -43,7 +43,7 @@ return {
   invalid = "#fdaeb7",
   class = "#6872ab",
   interface = "#5d99a9",
-  link = "#dedcd5",
+  link = "#6394bf", -- same as blue, used for underlined text like markdown links
 
   -- Diff/markup colors from tokenColors
   diff_delete_fg = "#fdaeb7",
