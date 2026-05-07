@@ -77,14 +77,6 @@ local function default_snippet_patterns(lang)
   return { lang .. "/**/*.json", lang .. "/**/*.lua", "**/" .. lang .. ".json", "**/" .. lang .. ".lua" }
 end
 
-local function snippet_patterns(lang, shared)
-  local patterns = vim.list_extend({}, shared or {})
-
-  vim.list_extend(patterns, default_snippet_patterns(lang))
-
-  return patterns
-end
-
 return {
   "nvim-mini/mini.nvim",
   version = false,
@@ -114,18 +106,30 @@ return {
 
     local snippets = require("mini.snippets")
     local gen_loader = snippets.gen_loader
-    local javascript_snippets = { "shared/javascript.json" }
+    local lang_patterns = {}
+
+    local function add_snippet_file(path, langs)
+      for _, lang in ipairs(langs) do
+        lang_patterns[lang] = lang_patterns[lang] or default_snippet_patterns(lang)
+        table.insert(lang_patterns[lang], 1, path)
+      end
+
+      return lang_patterns
+    end
+
+    add_snippet_file("shared/javascript.json", {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue",
+    })
+
     snippets.setup({
       snippets = {
         gen_loader.from_file(vim.fn.stdpath("config") .. "/snippets/all.json"),
         gen_loader.from_lang({
-          lang_patterns = {
-            javascript = snippet_patterns("javascript", javascript_snippets),
-            javascriptreact = snippet_patterns("javascriptreact", javascript_snippets),
-            typescript = snippet_patterns("typescript", javascript_snippets),
-            typescriptreact = snippet_patterns("typescriptreact", javascript_snippets),
-            vue = snippet_patterns("vue", javascript_snippets),
-          },
+          lang_patterns = lang_patterns,
         }),
       },
       mappings = {
