@@ -126,6 +126,8 @@ function M.get(p)
     SnacksPickerIconTypeParameter = { fg = p.primitive },
     SnacksPickerIconVariable = { fg = p.variable },
     SnacksPickerRule = { fg = p.border },
+    SnacksDiffHeader = { fg = p.fg_dim, bg = p.bg_alt },
+    SnacksDiffLabel = { fg = p.property, bg = p.bg_alt, bold = true },
 
     SnacksDashboardNormal = { fg = p.fg, bg = p.bg },
     SnacksDashboardTerminal = { fg = p.green },
