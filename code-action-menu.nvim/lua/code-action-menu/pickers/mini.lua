@@ -17,22 +17,25 @@ local function show_items(bufnr, items)
     return item.item
   end)
   local lines = {}
+  local line_parts = {}
 
   vim.api.nvim_buf_clear_namespace(bufnr, source_ns, 0, -1)
 
   for index, item in ipairs(items) do
-    lines[index] = display.line(item.item, source_col)
+    lines[index], line_parts[index] = display.line_parts(item.item, source_col)
   end
 
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
-  for index, line in ipairs(lines) do
-    local source_start = #line - #items[index].item.source_text
-
-    vim.api.nvim_buf_set_extmark(bufnr, source_ns, index - 1, source_start, {
-      end_col = source_start + #items[index].item.source_text,
-      hl_group = "Comment",
-    })
+  for index, parts in ipairs(line_parts) do
+    for _, part in ipairs(parts) do
+      if part.hl_group and part.start_col < part.end_col then
+        vim.api.nvim_buf_set_extmark(bufnr, source_ns, index - 1, part.start_col, {
+          end_col = part.end_col,
+          hl_group = part.hl_group,
+        })
+      end
+    end
   end
 end
 

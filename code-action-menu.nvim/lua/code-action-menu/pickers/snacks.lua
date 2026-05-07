@@ -32,12 +32,12 @@ local function format_item(item)
   local action_item = item.item
 
   return {
-    { action_item.icon, "SnacksPickerSpecial" },
+    { action_item.icon, action_item.icon_hl },
     { " " },
-    { action_item.title },
+    { action_item.title, action_item.title_hl },
     {
       col = 0,
-      virt_text = { { action_item.source_text, "SnacksPickerComment" } },
+      virt_text = { { action_item.source_text, action_item.source_hl } },
       virt_text_pos = "right_align",
       hl_mode = "combine",
     },
