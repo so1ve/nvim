@@ -67,26 +67,53 @@ function M.show(providers)
   end
 
   local pending = #clients
+  local shown_count = 0
+
+  local function response_count()
+    local count = 0
+
+    for _ in pairs(responses) do
+      count = count + 1
+    end
+
+    return count
+  end
+
+  local function render(force)
+    local count = response_count()
+
+    if count == 0 or count == shown_count then
+      return
+    end
+
+    if force or shown_count == 0 then
+      show_hover(responses, providers)
+      shown_count = count
+    end
+  end
 
   local function finish()
     pending = pending - 1
 
-    if pending > 0 then
-      return
+    if pending == 0 then
+      render(true)
+    end
+  end
+
+  local function handle_response(entry, result, ctx)
+    if has_hover_content(result) then
+      responses[entry.index] = { result = result, ctx = ctx }
+      render(false)
     end
 
-    show_hover(responses, providers)
+    finish()
   end
 
   for _, entry in ipairs(clients) do
     local params = vim.lsp.util.make_position_params(nil, entry.client.offset_encoding)
 
     entry.client:request(hover_method, params, function(_, result, ctx)
-      if has_hover_content(result) then
-        responses[entry.index] = { result = result, ctx = ctx }
-      end
-
-      finish()
+      handle_response(entry, result, ctx)
     end, 0)
   end
 end
