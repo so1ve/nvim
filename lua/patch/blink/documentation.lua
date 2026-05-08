@@ -1,35 +1,21 @@
+-- Blink completion documentation Noice renderer patch.
+-- Purpose: make blink.cmp documentation use Noice's markdown renderer, matching
+-- LSP hover styling, markdown handling, and code-block highlighting.
+-- Behavior: empty documentation closes the popup, `detail` is prepended as a
+-- fenced code block when it is not already present, and the source buffer
+-- filetype is used as Noice's fallback language for unlabeled code fences.
+-- Implementation: monkey-patches blink's documentation `show_item()` so resolved
+-- items are drawn through the configured draw hook, with Noice-backed default
+-- rendering and a final empty-buffer guard before the window opens.
+
 local M = {}
 
 local function has_text(value)
-  if type(value) ~= "string" then
-    return false
-  end
-
-  return value:find("%S") ~= nil
+  return type(value) == "string" and value:find("%S") ~= nil
 end
 
-local function has_documentation(documentation)
-  if type(documentation) == "string" then
-    return has_text(documentation)
-  end
-
-  if type(documentation) ~= "table" then
-    return false
-  end
-
-  if type(documentation.draw) == "function" then
-    return true
-  end
-
-  return has_text(documentation.value)
-end
-
-local function buffer_has_content(bufnr)
-  if not vim.api.nvim_buf_is_valid(bufnr) then
-    return false
-  end
-
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+local function has_lines(lines)
+  for _, line in ipairs(lines) do
     if has_text(line) then
       return true
     end
@@ -38,19 +24,125 @@ local function buffer_has_content(bufnr)
   return false
 end
 
-function M.patch()
-  local docs = require("blink.cmp.completion.windows.documentation")
+local function valid_bufnr(bufnr)
+  return type(bufnr) == "number" and vim.api.nvim_buf_is_valid(bufnr)
+end
 
-  if docs._ray_empty_docs_patched then
+local function source_filetype(context, item)
+  local bufnr = context and context.bufnr
+
+  if not valid_bufnr(bufnr) then
+    bufnr = item and item.bufnr
+  end
+
+  if not valid_bufnr(bufnr) then
+    bufnr = vim.api.nvim_get_current_buf()
+  end
+
+  return vim.bo[bufnr].filetype
+end
+
+local function format_documentation(documentation)
+  if type(documentation) ~= "string" and type(documentation) ~= "table" then
+    return {}
+  end
+
+  return require("noice.lsp.format").format_markdown(documentation)
+end
+
+local function has_documentation(item)
+  return has_text(item.detail) or has_lines(format_documentation(item.documentation))
+end
+
+local function append_detail(lines, detail, filetype)
+  if not has_text(detail) then
+    return lines
+  end
+
+  local text = table.concat(lines, "\n")
+
+  if text:find(detail, 1, true) then
+    return lines
+  end
+
+  if has_text(filetype) then
+    filetype = filetype:match("^[^%.]+")
+  else
+    filetype = ""
+  end
+
+  local detail_lines = vim.split(("```%s\n%s\n```"):format(filetype, vim.trim(detail)), "\n")
+
+  if #lines > 0 then
+    table.insert(detail_lines, "")
+    vim.list_extend(detail_lines, lines)
+  end
+
+  return detail_lines
+end
+
+local function render(bufnr, lines, filetype)
+  local noice_config = require("noice.config")
+
+  vim.api.nvim_buf_clear_namespace(bufnr, noice_config.ns, 0, -1)
+
+  local message = require("noice.message")("lsp")
+  -- Noice hover passes `ft` to the markdown renderer. Doing the same here keeps
+  -- unlabeled fenced code blocks highlighted as the source language instead of
+  -- falling back to plain text.
+  require("noice.text.markdown").format(
+    message,
+    table.concat(lines, "\n"),
+    { ft = filetype }
+  )
+  message:render(bufnr, noice_config.ns)
+  require("noice.text.markdown").keys(bufnr)
+end
+
+local function buffer_has_content(bufnr)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return false
+  end
+
+  return has_lines(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false))
+end
+
+function M.draw(opts)
+  local item = opts.item
+  local docs = format_documentation(item.documentation)
+  local filetype = source_filetype(opts.context, item)
+
+  local lines = append_detail(docs, item.detail, filetype)
+
+  if not has_lines(lines) then
+    opts.window:close()
     return
   end
 
-  docs._ray_empty_docs_patched = true
+  local bufnr = opts.window:get_buf()
+  vim.api.nvim_set_option_value("modifiable", true, { buf = bufnr })
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+  render(bufnr, lines, filetype)
+  vim.api.nvim_set_option_value("modifiable", false, { buf = bufnr })
+  vim.api.nvim_set_option_value("modified", false, { buf = bufnr })
+end
+
+function M.patch()
+  local docs = require("blink.cmp.completion.windows.documentation")
+
+  if docs._ray_noice_docs_patched then
+    return
+  end
+
+  docs._ray_noice_docs_patched = true
 
   local config = require("blink.cmp.config").completion.documentation
   local sources = require("blink.cmp.sources.lib")
   local menu = require("blink.cmp.completion.windows.menu")
 
+  -- Patch at the documentation item boundary instead of `win:open()`: this lets
+  -- blink resolve the item asynchronously, keeps custom `documentation.draw`
+  -- hooks working, and prevents empty docs from ever opening a blank popup.
   function docs.show_item(context, item)
     docs.auto_show_timer:stop()
     if item == nil or not menu.win:is_open() then
@@ -60,34 +152,28 @@ function M.patch()
     sources
       .resolve(context, item)
       :map(function(resolved)
-        local has_detail = has_text(resolved.detail)
-        local has_docs = has_documentation(resolved.documentation)
-
-        if not has_detail and not has_docs then
+        if not has_documentation(resolved) then
           docs.close()
-
           return
         end
 
         if docs.shown_item ~= resolved then
           local docs_buf = docs.win:get_buf()
-          local default_render_opts = {
-            bufnr = docs_buf,
-            detail = resolved.detail,
-            documentation = resolved.documentation,
-            max_width = docs.win.config.max_width,
-            use_treesitter_highlighting = config and config.treesitter_highlighting,
-          }
           local default_impl = function(opts)
-            require("blink.cmp.lib.window.docs").render_detail_and_documentation(
-              vim.tbl_extend("force", default_render_opts, opts or {})
-            )
+            M.draw(vim.tbl_extend("force", {
+              context = context,
+              item = resolved,
+              window = docs.win,
+              config = config,
+            }, opts or {}))
           end
+          local draw = type(resolved.documentation) == "table" and resolved.documentation.draw
+            or config.draw
 
-          local draw = type(resolved.documentation) == "table" and resolved.documentation.draw or config.draw
           vim.api.nvim_set_option_value("modifiable", true, { buf = docs_buf })
           draw({
             item = resolved,
+            context = context,
             window = docs.win,
             config = config,
             default_implementation = default_impl,
@@ -96,7 +182,6 @@ function M.patch()
 
           if not buffer_has_content(docs_buf) then
             docs.close()
-
             return
           end
         end

@@ -7,8 +7,11 @@ return {
     "xzbdmw/colorful-menu.nvim",
   },
   config = function(_, opts)
+    local docs = require("patch.blink.documentation")
+
+    opts.completion.documentation.draw = docs.draw
     require("blink.cmp").setup(opts)
-    require("patch.blink.documentation").patch()
+    docs.patch()
   end,
   opts = {
     appearance = {
