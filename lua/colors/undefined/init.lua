@@ -14,12 +14,15 @@ function M.setup()
   vim.g.colors_name = "undefined"
 
   local palette = require("colors.undefined.palette")
+  local styles = require("colors.undefined.styles")
   local groups = require("colors.undefined.groups").get(palette)
   local integrations = require("colors.undefined.integrations").get(palette)
 
   for group, spec in pairs(integrations) do
     groups[group] = spec
   end
+
+  styles.resolve_links(groups)
 
   for group, spec in pairs(groups) do
     vim.api.nvim_set_hl(0, group, spec)

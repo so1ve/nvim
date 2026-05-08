@@ -1,9 +1,12 @@
 local M = {}
+local styles = require("colors.undefined.styles")
 
 function M.get(p)
+  local s = styles.get(p)
+
   return {
-    InclineNormal = { fg = p.fg_dim, bg = p.bg_dark },
-    InclineNormalNC = { fg = p.subtle, bg = p.bg_dark },
+    InclineNormal = s.statusline.section,
+    InclineNormalNC = s.statusline.inactive,
   }
 end
 

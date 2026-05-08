@@ -1,11 +1,14 @@
 local M = {}
+local styles = require("colors.undefined.styles")
 
 function M.get(p)
+  local s = styles.get(p)
+
   return {
     SidekickSign = { fg = p.green, bg = p.bg },
     SidekickDiffContext = {},
-    SidekickDiffAdd = { bg = p.diff_add_bg },
-    SidekickDiffDelete = { bg = p.diff_delete_bg },
+    SidekickDiffAdd = s.diff.add_bg,
+    SidekickDiffDelete = s.diff.delete_bg,
   }
 end
 
