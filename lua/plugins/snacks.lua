@@ -81,6 +81,11 @@ return {
         height = { min = 1, max = 0.4 },
         style = "compact",
       },
+      styles = {
+        notification = {
+          ft = "snacks_notif",
+        },
+      },
       dashboard = {
         preset = {
           keys = {
