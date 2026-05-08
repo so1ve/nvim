@@ -116,6 +116,7 @@ function M.draw(opts)
 
   if not has_lines(lines) then
     opts.window:close()
+
     return
   end
 
@@ -154,6 +155,7 @@ function M.patch()
       :map(function(resolved)
         if not has_documentation(resolved) then
           docs.close()
+
           return
         end
 
@@ -182,6 +184,7 @@ function M.patch()
 
           if not buffer_has_content(docs_buf) then
             docs.close()
+
             return
           end
         end
