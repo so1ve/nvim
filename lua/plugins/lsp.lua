@@ -52,6 +52,8 @@ local function configure_lsp_buffer(event)
   end
 
   map("<leader>cr", vim.lsp.buf.rename, "Rename symbol")
+
+  MiniClue.ensure_buf_triggers(bufnr)
 end
 
 return {

@@ -1,7 +1,7 @@
 local map = vim.keymap.set
 local window_util = require("utils.windows")
 
--- delete them since when lsp is not ready for references, `gr` triggers the builtin `gr` which shows `which-key` menu instead of a warning indicating that no references are found
+-- delete them since when lsp is not ready for references, `gr` triggers the builtin key hint menu instead of a warning indicating that no references are found
 local conflict_keymaps = {
   n = { "gO", "gra", "gri", "grn", "grr", "grt", "grx", "<C-W>d", "<C-W><C-D>" },
   i = { "<C-S>" },
