@@ -49,5 +49,4 @@ return {
       filter = trouble_filter("bottom"),
     })
   ),
-  edgy.neo_tree_exclusion_spec({ "Trouble", "trouble" }),
 }

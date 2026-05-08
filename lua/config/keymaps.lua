@@ -61,6 +61,8 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", close_buffer_or_window, { desc = "Close buffer or window" })
 map("n", "<leader>Q", quit_all, { desc = "Quit all" })
+map("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+map("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })

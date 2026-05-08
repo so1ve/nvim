@@ -1,5 +1,3 @@
-local edgy = require("config.edgy")
-
 return {
   {
     "folke/noice.nvim",
@@ -79,5 +77,4 @@ return {
       require("noice").setup(opts)
     end,
   },
-  edgy.neo_tree_exclusion_spec("noice"),
 }

@@ -1,3 +1,5 @@
+local window_util = require("utils.windows")
+
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
 end
@@ -73,6 +75,42 @@ local function register_statusline_autocmds()
   })
 end
 
+local function sync_dashboard_tabline()
+  local has_dashboard = false
+  local has_work_file = false
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local bufnr = vim.api.nvim_win_get_buf(win)
+
+    if window_util.is_dashboard(bufnr) then
+      vim.b[bufnr].minitabline_disable = true
+      has_dashboard = true
+    elseif window_util.is_work_win(win) then
+      has_work_file = true
+    end
+  end
+
+  if has_dashboard and not has_work_file then
+    vim.o.showtabline = 0
+
+    return
+  end
+
+  vim.o.showtabline = 2
+end
+
+local function register_tabline_autocmds()
+  local tabline_group = vim.api.nvim_create_augroup("RayTabline", { clear = true })
+
+  vim.api.nvim_create_autocmd({ "BufEnter", "FileType", "WinEnter" }, {
+    group = tabline_group,
+    desc = "Hide mini.tabline while the dashboard is visible",
+    callback = sync_dashboard_tabline,
+  })
+
+  sync_dashboard_tabline()
+end
+
 local function default_snippet_patterns(lang)
   return { lang .. "/**/*.json", lang .. "/**/*.lua", "**/" .. lang .. ".json", "**/" .. lang .. ".lua" }
 end
@@ -97,10 +135,11 @@ return {
       },
     })
     register_statusline_autocmds()
+    require("mini.tabline").setup()
+    register_tabline_autocmds()
     require("mini.move").setup()
     require("mini.splitjoin").setup()
     require("mini.bracketed").setup({
-      buffer = { suffix = "" },
       comment = { suffix = "" },
     })
 

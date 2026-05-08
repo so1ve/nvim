@@ -18,7 +18,6 @@ opt.winborder = "rounded"
 -- interaction
 opt.mouse = "a"
 opt.mousemodel = "extend"
-opt.mousemoveevent = true
 opt.clipboard = "unnamedplus"
 opt.confirm = true
 opt.keywordprg = ":RayKeywordPrg"
@@ -65,6 +64,7 @@ opt.inccommand = "split"
 -- splits
 opt.splitright = true
 opt.splitbelow = true
+opt.splitkeep = "screen"
 
 -- files
 opt.fileformat = "unix"

@@ -20,10 +20,6 @@ return {
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
-    init = function()
-      vim.opt.laststatus = 3
-      vim.opt.splitkeep = "screen"
-    end,
     keys = {
       {
         "<leader>uw",
@@ -38,7 +34,6 @@ return {
         enabled = false,
       }
       opts.options = {
-        left = { size = layout.left.width },
         right = { size = layout.right.width },
         bottom = { size = layout.bottom.height },
       }
@@ -54,5 +49,4 @@ return {
       )
     end,
   },
-  edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),
 }

@@ -15,6 +15,30 @@ local function snacks_position_filter(position)
   end
 end
 
+local function delete_dashboard_buffers()
+  if not window_util.is_work_file(vim.api.nvim_get_current_buf()) then
+    return
+  end
+
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if window_util.is_dashboard(bufnr) then
+      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+    end
+  end
+end
+
+local function register_dashboard_cleanup_autocmds()
+  local group = vim.api.nvim_create_augroup("RaySnacksDashboardLifecycle", { clear = true })
+
+  vim.api.nvim_create_autocmd("BufEnter", {
+    group = group,
+    desc = "Dismiss dashboard when entering a listed file buffer",
+    callback = delete_dashboard_buffers,
+  })
+
+  delete_dashboard_buffers()
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -23,8 +47,16 @@ return {
     opts = {
       bigfile = {},
       quickfile = {},
+      explorer = {
+        replace_netrw = false,
+      },
       picker = {
         sources = {
+          explorer = {
+            auto_close = true,
+            jump = { close = true },
+            layout = { preset = "default", preview = false },
+          },
           lsp_symbols = {
             filter = symbols.snacks_lsp_symbol_filter(),
           },
@@ -87,7 +119,7 @@ return {
     },
     config = function(_, opts)
       require("snacks").setup(opts)
-      window_util.setup_dashboard()
+      register_dashboard_cleanup_autocmds()
     end,
     keys = {
       {
@@ -96,6 +128,20 @@ return {
           Snacks.lazygit()
         end,
         desc = "LazyGit",
+      },
+      {
+        "<leader>e",
+        function()
+          Snacks.picker.explorer()
+        end,
+        desc = "File explorer",
+      },
+      {
+        "<leader>E",
+        function()
+          Snacks.picker.explorer({ cwd = vim.fn.expand("%:p:h") })
+        end,
+        desc = "Explorer current file directory",
       },
       {
         "<leader>ff",
@@ -182,5 +228,4 @@ return {
       filter = snacks_position_filter("bottom"),
     })
   ),
-  edgy.neo_tree_exclusion_spec("snacks_terminal"),
 }

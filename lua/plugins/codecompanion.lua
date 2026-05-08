@@ -44,5 +44,4 @@ return {
     },
   },
   edgy.view_spec("right", edgy.view("AI Chat", "codecompanion")),
-  edgy.neo_tree_exclusion_spec("codecompanion"),
 }

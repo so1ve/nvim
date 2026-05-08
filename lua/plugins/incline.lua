@@ -95,7 +95,7 @@ return {
     },
     ignore = {
       buftypes = "special",
-      filetypes = { "snacks_dashboard", "neo-tree" },
+      filetypes = { "snacks_dashboard", "snacks_picker_list" },
       floating_wins = true,
       unlisted_buffers = true,
       wintypes = "special",
