@@ -1,7 +1,7 @@
 -- Noice LSP hover layout patch.
--- Purpose: keep hover windows anchored to the source-code cursor while using a
--- center-biased horizontal placement that avoids snapping wide hovers to the
--- far left. This module owns hover positioning and the active hover view.
+-- Purpose: keep hover windows anchored to the source-code cursor while keeping
+-- horizontal placement inside the source window's currently available screen
+-- width. This module owns hover positioning and the active hover view.
 -- Behavior: on source-window scroll/resize it asks Noice to recompute the hover
 -- layout.
 -- Implementation: monkey-patches `noice.view.nui:get_layout()` for LSP hover
@@ -30,7 +30,23 @@ local function round(x)
   return math.floor(x + 0.5)
 end
 
-local function cursor(view)
+local function is_mounted(view)
+  if type(view.is_mounted) ~= "function" then
+    return false
+  end
+
+  local ok, mounted = pcall(view.is_mounted, view)
+
+  return ok and mounted or false
+end
+
+local function source_win(view)
+  local win = view._ray_hover_src_win
+
+  if win and vim.api.nvim_win_is_valid(win) and is_mounted(view) then
+    return win
+  end
+
   local cur = vim.api.nvim_get_current_win()
   local hover_win = view._nui and view._nui.winid
 
@@ -41,8 +57,27 @@ local function cursor(view)
     view._ray_hover_src_win = cur
   end
 
-  local win = view._ray_hover_src_win
+  win = view._ray_hover_src_win
   if not (win and vim.api.nvim_win_is_valid(win)) then
+    return nil
+  end
+
+  return win
+end
+
+local function source_bounds(win)
+  local ok_pos, pos = pcall(vim.api.nvim_win_get_position, win)
+  local ok_width, width = pcall(vim.api.nvim_win_get_width, win)
+
+  if not (ok_pos and ok_width and pos and type(width) == "number") then
+    return 0, vim.o.columns
+  end
+
+  return pos[2] or 0, width
+end
+
+local function cursor(win)
+  if not win then
     return 0, -1
   end
 
@@ -62,16 +97,17 @@ local function place(view, layout)
     return layout
   end
 
-  local cols = vim.o.columns
   local rows = vim.o.lines
   local pad = 2
   -- Approximate the extra cells used by the rounded border/padding. The actual
   -- NUI border window is separate, so leave a little space at the screen edges.
   local bw = 2
   local bh = 1
-  local w = math.min(size.width, math.max(1, cols - (pad + bw) * 2))
+  local src_win = source_win(view)
+  local src_left, src_width = source_bounds(src_win)
+  local w = math.min(size.width, math.max(1, src_width - (pad + bw) * 2))
   local h = size.height
-  local sr, sc = cursor(view)
+  local sr, sc = cursor(src_win)
 
   if not (sr and sc) or sr <= 0 or sc < 0 then
     return layout
@@ -85,14 +121,12 @@ local function place(view, layout)
   -- above when there is not enough space below.
   local row = down + h + bh <= rows - pad and down or up
 
-  local left = pad + bw
-  local right = math.max(left, cols - w - bw - pad)
-  local mid = (cols - 1) / 2
-  local drift = math.max(12, math.min(30, math.floor(cols * 0.15)))
-  local pull = 0.25
-  -- Horizontally, bias toward editor center. The cursor only adds a small pull,
-  -- so wide hovers near a left-indented symbol do not snap back to the left.
-  local col = round(mid + clamp(sc - mid, -drift, drift) * pull - w / 2)
+  local left = src_left + pad + bw
+  local right = math.max(left, src_left + src_width - w - bw - pad)
+  -- Horizontally, follow the source cursor and clamp only to the source window's
+  -- available width. This naturally avoids any left split/sidebar when present,
+  -- but lets the hover reach the editor edge when the source window owns it.
+  local col = round(sc - w / 2)
 
   layout.relative = "editor"
   layout.anchor = "NW"
