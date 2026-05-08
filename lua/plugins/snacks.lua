@@ -122,20 +122,6 @@ return {
         desc = "LazyGit",
       },
       {
-        "<leader>e",
-        function()
-          Snacks.picker.explorer()
-        end,
-        desc = "File explorer",
-      },
-      {
-        "<leader>E",
-        function()
-          Snacks.picker.explorer({ cwd = vim.fn.expand("%:p:h") })
-        end,
-        desc = "Explorer current file directory",
-      },
-      {
         "<leader>ff",
         function()
           Snacks.picker.files()
@@ -183,6 +169,41 @@ return {
           Snacks.picker.diagnostics()
         end,
         desc = "Workspace diagnostics",
+      },
+      {
+        "<leader>fk",
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = "Keymaps",
+      },
+      {
+        "<leader>fc",
+        function()
+          Snacks.picker.commands()
+        end,
+        desc = "Commands",
+      },
+      {
+        "<leader>f:",
+        function()
+          Snacks.picker.command_history()
+        end,
+        desc = "Command history",
+      },
+      {
+        "<leader>f/",
+        function()
+          Snacks.picker.search_history()
+        end,
+        desc = "Search history",
+      },
+      {
+        "<leader>fG",
+        function()
+          Snacks.picker.git_status()
+        end,
+        desc = "Git status",
       },
       {
         "<leader>tt",

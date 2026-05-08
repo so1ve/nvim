@@ -31,7 +31,7 @@ function M.get(p)
     PmenuSel = { fg = p.fg, bg = p.selection },
     PmenuSbar = { bg = p.bg_alt },
     PmenuThumb = { bg = p.subtle },
-    Question = { fg = p.green },
+    Question = s.input.prompt,
     MoreMsg = { fg = p.green },
     MsgArea = s.message.area,
     MsgSeparator = s.message.separator,
@@ -90,7 +90,7 @@ function M.get(p)
     DiffDelete = { bg = p.diff_delete_bg },
     DiffText = { bg = p.bg_alt },
 
-    Directory = { fg = p.fg },
+    Directory = s.kind.folder,
     Title = s.title,
     ErrorMsg = s.message.error,
     WarningMsg = s.message.warning,
@@ -152,7 +152,7 @@ function M.get(p)
     ["@tag.attribute"] = { fg = p.attribute },
     ["@tag.delimiter"] = { fg = p.delimiter },
 
-    ["@markup.heading"] = { fg = p.green, bold = true },
+    ["@markup.heading"] = s.title,
     ["@markup.strong"] = { fg = p.fg, bold = true },
     ["@markup.italic"] = { fg = p.fg, italic = true },
     ["@markup.quote"] = { fg = p.interface },

@@ -6,9 +6,9 @@ function M.get(p)
 
   return {
     NoiceCmdline = { fg = p.fg, bg = p.bg_dark },
-    NoiceCmdlineIcon = { fg = p.blue },
+    NoiceCmdlineIcon = { fg = p.green },
     NoiceCmdlineIconSearch = { fg = p.yellow },
-    NoiceCmdlinePrompt = s.title,
+    NoiceCmdlinePrompt = s.input.prompt,
     NoiceCmdlinePopup = s.popup.normal,
     NoiceCmdlinePopupBorder = s.popup.border,
     NoiceCmdlinePopupTitle = s.popup.title,
@@ -23,7 +23,7 @@ function M.get(p)
     NoicePopupmenuMatch = s.match,
     NoicePopupmenuSelected = s.popup.selected,
     NoiceSplit = s.float.normal,
-    NoiceVirtualText = { fg = p.blue },
+    NoiceVirtualText = { fg = p.green },
     NoiceFormatProgressDone = s.popup.progress_done,
     NoiceFormatProgressTodo = s.popup.progress_todo,
     NoiceFormatEvent = { fg = p.magenta },

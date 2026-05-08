@@ -1,4 +1,5 @@
 local M = {}
+local trunc_width = 120
 
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
@@ -25,7 +26,7 @@ local function statusline_location()
   return "%l/%L:%v"
 end
 
-local function statusline_path()
+local function statusline_pretty_path(max_parts)
   local path = vim.api.nvim_buf_get_name(0)
 
   if path == "" then
@@ -37,30 +38,74 @@ local function statusline_path()
   local cwd = vim.fs.normalize(vim.fn.getcwd(0))
   local relative = vim.fs.relpath(cwd, path)
 
-  return relative or path
+  relative = (relative or path):gsub("\\", "/")
+
+  local parts = vim.split(relative, "/", { plain = true })
+
+  if #parts > max_parts then
+    relative = table.concat({ parts[1], "…", parts[#parts - 1], parts[#parts] }, "/")
+  end
+
+  return relative
 end
 
 local function statusline_fileinfo()
-  local filetype = vim.bo.filetype
-
-  if MiniStatusline.is_truncated(120) or vim.bo.buftype ~= "" then
-    return filetype
-  end
-
-  if filetype == "" then
+  if MiniStatusline.is_truncated(trunc_width) or vim.bo.buftype ~= "" then
     return ""
   end
 
-  local path = vim.api.nvim_buf_get_name(0)
-  local icon = MiniIcons.get("file", path ~= "" and path or filetype)
+  local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
+  local format = vim.bo.fileformat
 
-  return string.format("%s %s", icon, filetype)
+  return string.format("%s[%s]", encoding, format)
+end
+
+local function statusline_path_parts(path)
+  local directory, filename = path:match("^(.*[/\\])([^/\\]+)$")
+
+  if not filename then
+    return "", path
+  end
+
+  return directory, filename
+end
+
+local function statusline_highlighted_path(path)
+  local directory, filename = statusline_path_parts(path)
+
+  if directory == "" then
+    return "%#MiniStatuslineFilename#" .. statusline_section(filename)
+  end
+
+  return "%#MiniStatuslineDirectory#"
+    .. statusline_section(directory)
+    .. "%#MiniStatuslineFilename#"
+    .. statusline_section(filename)
+end
+
+local function statusline_file()
+  local path = vim.api.nvim_buf_get_name(0)
+
+  if path == "" or vim.bo.buftype ~= "" then
+    return ""
+  end
+
+  local icon, icon_hl = MiniIcons.get("file", path)
+  local icon_part = "%#" .. icon_hl .. "#" .. statusline_escape(icon)
+
+  if MiniStatusline.is_truncated(trunc_width) then
+    return icon_part
+  end
+
+  local path_part = statusline_highlighted_path(statusline_pretty_path(3))
+
+  return icon_part .. "%#MiniStatuslineFileinfo# " .. path_part
 end
 
 local function statusline_active()
-  local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+  local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
   local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
-  local path = statusline_path()
+  local file = statusline_file()
   local fileinfo = statusline_fileinfo()
   local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
   local location = statusline_location()
@@ -75,7 +120,7 @@ local function statusline_active()
       },
     },
     "%<",
-    { hl = "MiniStatuslineFileinfo", strings = { statusline_section(path) } },
+    { hl = "MiniStatuslineFileinfo", strings = { file } },
     "%=",
     { hl = "MiniStatuslineFileinfo", strings = { statusline_section(fileinfo) } },
     { hl = mode_hl, strings = { statusline_section(search), location } },

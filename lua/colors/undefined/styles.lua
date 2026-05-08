@@ -67,6 +67,10 @@ function M.resolve_links(groups)
 end
 
 function M.get(p)
+  -- Color contract:
+  -- Green is the single theme accent: titles, focused popup/input borders, prompts, active chrome, and file/folder wayfinding.
+  -- Blue is not a theme accent; keep it only for semantic info states and literal color categories.
+  -- Border owns passive structure: separators and unfocused/generic float borders.
   local styles = {
     normal = { fg = p.fg, bg = p.bg },
     normal_nc = { fg = p.fg, bg = p.bg },
@@ -75,7 +79,7 @@ function M.get(p)
     subtle = { fg = p.subtle },
     title = { fg = p.green, bold = true },
     key = { fg = p.orange, bold = true },
-    separator = { fg = p.subtle },
+    separator = { fg = p.border },
     match = { fg = p.orange, bold = true },
     url = { fg = p.link, underline = true },
   }
@@ -84,15 +88,15 @@ function M.get(p)
     normal = { fg = p.fg, bg = p.bg },
     normal_nc = { fg = p.fg_dim, bg = p.bg },
     border = { fg = p.border, bg = p.bg },
-    title = { fg = p.fg, bg = p.bg, bold = true },
+    title = { fg = p.green, bg = p.bg, bold = true },
     separator = { fg = p.border, bg = p.bg },
     backdrop = { bg = p.bg_dark },
   }
 
   styles.popup = {
     normal = { fg = p.fg, bg = p.bg_alt },
-    border = { fg = p.blue, bg = p.bg_alt },
-    title = { fg = p.blue, bg = p.bg_alt, bold = true },
+    border = { fg = p.green, bg = p.bg_alt },
+    title = { fg = p.green, bg = p.bg_alt, bold = true },
     border_search = { fg = p.yellow, bg = p.bg_alt },
     selected = { fg = p.fg, bg = p.selection },
     progress_done = { fg = p.green, bg = p.bg_alt },
@@ -101,8 +105,8 @@ function M.get(p)
 
   styles.input = {
     normal = { fg = p.fg, bg = p.bg_alt },
-    border = { fg = p.blue, bg = p.bg_alt },
-    title = { fg = p.blue, bg = p.bg_alt, bold = true },
+    border = { fg = p.green, bg = p.bg_alt },
+    title = { fg = p.green, bg = p.bg_alt, bold = true },
     prompt = { fg = p.green },
   }
 
@@ -117,7 +121,7 @@ function M.get(p)
     section = { fg = p.fg_dim, bg = p.bg_dark },
     inactive = { fg = p.subtle, bg = p.bg_dark },
     mode = function(color)
-      return { fg = p.bg_dark, bg = color, bold = true }
+      return { fg = p.bg_dark, bg = color }
     end,
   }
 
@@ -180,7 +184,7 @@ function M.get(p)
     keyword = { fg = p.keyword, italic = true },
     snippet = { fg = p.magenta },
     color = { fg = p.cyan },
-    file = { fg = p.blue },
+    file = { fg = p.green },
     reference = { fg = p.link },
     folder = { fg = p.green },
     enum_member = { fg = p.constant },

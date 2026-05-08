@@ -12,6 +12,7 @@ function M.setup()
   require("mini.move").setup()
   require("mini.splitjoin").setup()
   require("mini.bracketed").setup({
+    buffer = { suffix = "" },
     comment = { suffix = "" },
   })
 

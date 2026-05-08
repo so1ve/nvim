@@ -6,6 +6,7 @@ vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" 
 -- ui
 opt.termguicolors = true
 opt.number = true
+opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.laststatus = 3
@@ -25,8 +26,8 @@ opt.keywordprg = ":RayKeywordPrg"
 require("config.terminal").setup()
 
 -- scrolling
-opt.scrolloff = 8
-opt.sidescrolloff = 8
+opt.scrolloff = 5
+opt.sidescrolloff = 5
 
 -- wrapping
 opt.linebreak = true

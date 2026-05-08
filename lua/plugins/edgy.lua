@@ -34,6 +34,7 @@ return {
         enabled = false,
       }
       opts.options = {
+        left = { size = layout.left.width },
         right = { size = layout.right.width },
         bottom = { size = layout.bottom.height },
       }
@@ -49,4 +50,5 @@ return {
       )
     end,
   },
+  edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),
 }

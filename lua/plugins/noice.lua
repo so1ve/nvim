@@ -6,6 +6,15 @@ return {
       "MunifTanjim/nui.nvim",
     },
     opts = {
+      cmdline = {
+        opts = {
+          win_options = {
+            winhighlight = {
+              FloatTitle = "NoiceCmdlinePopupTitle",
+            },
+          },
+        },
+      },
       views = {
         mini = {
           win_options = {
