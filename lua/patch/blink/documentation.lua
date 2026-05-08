@@ -24,22 +24,14 @@ local function has_lines(lines)
   return false
 end
 
-local function valid_bufnr(bufnr)
-  return type(bufnr) == "number" and vim.api.nvim_buf_is_valid(bufnr)
-end
-
-local function source_filetype(context, item)
+local function context_filetype(context)
   local bufnr = context and context.bufnr
 
-  if not valid_bufnr(bufnr) then
-    bufnr = item and item.bufnr
+  if type(bufnr) == "number" and vim.api.nvim_buf_is_valid(bufnr) then
+    return vim.bo[bufnr].filetype
   end
 
-  if not valid_bufnr(bufnr) then
-    bufnr = vim.api.nvim_get_current_buf()
-  end
-
-  return vim.bo[bufnr].filetype
+  return vim.bo.filetype
 end
 
 local function format_documentation(documentation)
@@ -48,10 +40,6 @@ local function format_documentation(documentation)
   end
 
   return require("noice.lsp.format").format_markdown(documentation)
-end
-
-local function has_documentation(item)
-  return has_text(item.detail) or has_lines(format_documentation(item.documentation))
 end
 
 local function append_detail(lines, detail, filetype)
@@ -110,7 +98,7 @@ end
 function M.draw(opts)
   local item = opts.item
   local docs = format_documentation(item.documentation)
-  local filetype = source_filetype(opts.context, item)
+  local filetype = context_filetype(opts.context)
 
   local lines = append_detail(docs, item.detail, filetype)
 
@@ -141,9 +129,8 @@ function M.patch()
   local sources = require("blink.cmp.sources.lib")
   local menu = require("blink.cmp.completion.windows.menu")
 
-  -- Patch at the documentation item boundary instead of `win:open()`: this lets
-  -- blink resolve the item asynchronously, keeps custom `documentation.draw`
-  -- hooks working, and prevents empty docs from ever opening a blank popup.
+  -- Keep blink's upstream flow intact. The only differences are the Noice-backed
+  -- default renderer and the empty-buffer guard before opening the popup.
   function docs.show_item(context, item)
     docs.auto_show_timer:stop()
     if item == nil or not menu.win:is_open() then
@@ -153,7 +140,11 @@ function M.patch()
     sources
       .resolve(context, item)
       :map(function(resolved)
-        if not has_documentation(resolved) then
+        local valid_documentation = type(resolved.documentation) == "table"
+          or type(resolved.documentation) == "string"
+        local valid_detail = type(resolved.detail) == "string"
+
+        if not valid_documentation and not valid_detail then
           docs.close()
 
           return
