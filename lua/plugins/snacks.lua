@@ -47,16 +47,8 @@ return {
     opts = {
       bigfile = {},
       quickfile = {},
-      explorer = {
-        replace_netrw = false,
-      },
       picker = {
         sources = {
-          explorer = {
-            auto_close = true,
-            jump = { close = true },
-            layout = { preset = "default", preview = false },
-          },
           lsp_symbols = {
             filter = symbols.snacks_lsp_symbol_filter(),
           },
