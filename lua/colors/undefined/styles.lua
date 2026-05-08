@@ -111,10 +111,10 @@ function M.get(p)
   }
 
   styles.message = {
-    area = { fg = p.fg_dim, bg = p.bg_dark },
-    separator = { fg = p.border, bg = p.bg_dark },
-    error = { fg = p.red, bg = p.bg_dark },
-    warning = { fg = p.orange, bg = p.bg_dark },
+    area = { fg = p.fg_dim },
+    separator = { fg = p.border },
+    error = { fg = p.red },
+    warning = { fg = p.orange },
   }
 
   styles.statusline = {
