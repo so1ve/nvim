@@ -22,7 +22,7 @@ M.lsp_symbol_kinds = {
 
 function M.snacks_lsp_symbol_filter()
   return {
-    default = vim.deepcopy(M.lsp_symbol_kinds),
+    default = M.lsp_symbol_kinds,
     help = true,
     markdown = true,
   }
@@ -33,7 +33,7 @@ function M.trouble_lsp_symbol_filter()
     ["not"] = { ft = "lua", kind = "Package" },
     any = {
       ft = { "help", "markdown" },
-      kind = vim.deepcopy(M.lsp_symbol_kinds),
+      kind = M.lsp_symbol_kinds,
     },
   }
 end

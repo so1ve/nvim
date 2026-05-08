@@ -96,7 +96,7 @@ function M.lsp_configs(capabilities)
   for server_name, server_config in pairs(servers) do
     local config = type(server_config) == "function" and server_config() or server_config
 
-    config = vim.tbl_deep_extend("force", { capabilities = vim.deepcopy(capabilities) }, config)
+    config = vim.tbl_deep_extend("force", { capabilities = capabilities }, config)
     configs[server_name] = config
   end
 
@@ -112,7 +112,7 @@ function M.tool_names()
 end
 
 function M.edgy_views()
-  return vim.deepcopy(edgy_views)
+  return edgy_views
 end
 
 function M.treesitter_parsers()
