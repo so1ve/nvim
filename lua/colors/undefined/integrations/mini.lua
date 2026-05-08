@@ -4,7 +4,7 @@ local styles = require("colors.undefined.styles")
 function M.get(p)
   local s = styles.get(p)
 
-  return {
+  local groups = {
     MiniStatuslineModeNormal = s.statusline.mode(p.green),
     MiniStatuslineModeInsert = s.statusline.mode(p.blue),
     MiniStatuslineModeVisual = s.statusline.mode(p.magenta),
@@ -21,6 +21,7 @@ function M.get(p)
     MiniTablineModifiedVisible = styles.extend(s.tabline.visible, { fg = p.orange, italic = true }),
     MiniTablineModifiedHidden = styles.extend(s.tabline.hidden, { italic = true }),
     MiniTablineFill = s.tabline.fill,
+    MiniTablineFocusIndicator = s.tabline.focus_indicator,
     MiniTablineTabpagesection = s.statusline.mode(p.green),
     MiniTablineTrunc = s.tabline.trunc,
     MiniClueBorder = s.float.border,
@@ -44,6 +45,25 @@ function M.get(p)
     MiniIconsRed = { fg = p.red },
     MiniIconsYellow = { fg = p.yellow },
   }
+
+  local icon_colors = {
+    Azure = p.blue,
+    Blue = p.blue,
+    Cyan = p.cyan,
+    Green = p.green,
+    Grey = p.muted,
+    Orange = p.orange,
+    Purple = p.magenta,
+    Red = p.red,
+    Yellow = p.yellow,
+  }
+
+  for name, color in pairs(icon_colors) do
+    groups["MiniTablineIcon" .. name .. "Current"] = { fg = color, bg = p.bg_alt }
+    groups["MiniTablineIcon" .. name .. "Inactive"] = { fg = color, bg = p.bg_dark }
+  end
+
+  return groups
 end
 
 return M

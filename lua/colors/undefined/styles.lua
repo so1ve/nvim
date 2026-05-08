@@ -126,6 +126,7 @@ function M.get(p)
     visible = { fg = p.fg_dim, bg = p.bg_dark },
     hidden = { fg = p.muted, bg = p.bg_dark },
     fill = { fg = p.subtle, bg = p.bg_dark },
+    focus_indicator = { fg = p.green, bg = p.bg_alt, bold = true },
     trunc = { fg = p.subtle, bg = p.bg_dark },
   }
 
