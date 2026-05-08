@@ -64,7 +64,8 @@ return {
     completion = {
       menu = {
         draw = {
-          columns = { { "kind_icon" }, { "label", gap = 1 } },
+          gap = 2,
+          columns = { { "kind_icon" }, { "label" }, { "kind" } },
           components = {
             label = {
               text = function(ctx)
@@ -73,6 +74,12 @@ return {
               highlight = function(ctx)
                 return require("colorful-menu").blink_components_highlight(ctx)
               end,
+            },
+            kind = {
+              text = function(ctx)
+                return ctx.kind or ""
+              end,
+              highlight = "Comment",
             },
           },
         },
