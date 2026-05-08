@@ -6,6 +6,10 @@ return {
     "nvim-mini/mini.nvim",
     "xzbdmw/colorful-menu.nvim",
   },
+  config = function(_, opts)
+    require("blink.cmp").setup(opts)
+    require("patch.blink.documentation").patch()
+  end,
   opts = {
     appearance = {
       kind_icons = require("config.icons").symbols,
