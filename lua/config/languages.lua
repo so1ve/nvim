@@ -65,6 +65,18 @@ local function collect_language_entries(field)
   return names
 end
 
+local function collect_language_map(field)
+  local values = {}
+
+  for filetype, language in pairs(languages) do
+    if language[field] then
+      values[filetype] = language[field]
+    end
+  end
+
+  return values
+end
+
 function M.treesitter_language(filetype)
   if filetype == "" then
     return nil
@@ -139,15 +151,11 @@ function M.treesitter_parsers()
 end
 
 function M.formatters_by_ft()
-  local formatters = {}
+  return collect_language_map("formatters")
+end
 
-  for filetype, language in pairs(languages) do
-    if language.formatters then
-      formatters[filetype] = language.formatters
-    end
-  end
-
-  return formatters
+function M.linters_by_ft()
+  return collect_language_map("linters")
 end
 
 function M.hover()
