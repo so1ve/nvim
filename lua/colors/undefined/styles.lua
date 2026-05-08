@@ -98,7 +98,7 @@ function M.get(p)
     border = { fg = p.green, bg = p.bg_alt },
     title = { fg = p.green, bg = p.bg_alt, bold = true },
     border_search = { fg = p.yellow, bg = p.bg_alt },
-    selected = { fg = p.fg, bg = p.selection },
+    selected = { bg = p.selection },
     progress_done = { fg = p.green, bg = p.bg_alt },
     progress_todo = { fg = p.subtle, bg = p.bg_alt },
   }
