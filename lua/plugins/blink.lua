@@ -1,3 +1,51 @@
+local function label_text(ctx)
+  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+
+  if highlights_info then
+    return highlights_info.label
+  end
+
+  return ctx.label
+end
+
+local function detail_text(ctx)
+  if require("colorful-menu").blink_highlights(ctx) then
+    return ""
+  end
+
+  local detail = ctx.item and ctx.item.detail
+
+  if type(detail) ~= "string" then
+    return ""
+  end
+
+  return detail:match("^[^\r\n]+") or ""
+end
+
+local function label_highlight(ctx)
+  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+
+  if highlights_info then
+    local highlights = highlights_info.highlights or {}
+
+    for _, idx in ipairs(ctx.label_matched_indices) do
+      table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+    end
+
+    return highlights
+  end
+
+  local highlights = {
+    { 0, #ctx.label, group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel" },
+  }
+
+  for _, idx in ipairs(ctx.label_matched_indices) do
+    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+  end
+
+  return highlights
+end
+
 return {
   "saghen/blink.cmp",
   version = "1.*",
@@ -8,6 +56,11 @@ return {
     "so1ve/blink-noice-docs.nvim",
   },
   config = function(_, opts)
+    require("colorful-menu").setup({
+      ls = {
+        fallback = false,
+      },
+    })
     require("blink.cmp").setup(opts)
     require("blink-noice-docs").setup()
   end,
@@ -70,15 +123,16 @@ return {
       menu = {
         draw = {
           gap = 2,
-          columns = { { "kind_icon" }, { "label" }, { "kind" } },
+          columns = { { "kind_icon" }, { "label" }, { "detail" }, { "kind" } },
           components = {
             label = {
-              text = function(ctx)
-                return require("colorful-menu").blink_components_text(ctx)
-              end,
-              highlight = function(ctx)
-                return require("colorful-menu").blink_components_highlight(ctx)
-              end,
+              text = label_text,
+              highlight = label_highlight,
+            },
+            detail = {
+              width = { max = 30 },
+              text = detail_text,
+              highlight = "BlinkCmpLabelDetail",
             },
             kind = {
               text = function(ctx)
@@ -92,6 +146,14 @@ return {
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 0,
+        window = {
+          desired_min_width = 24,
+          desired_min_height = 5,
+          direction_priority = {
+            menu_north = { "e", "n", "s" },
+            menu_south = { "e", "s", "n" },
+          },
+        },
       },
     },
     signature = {
