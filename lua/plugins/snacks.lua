@@ -115,7 +115,10 @@ return {
       words = {},
     },
     config = function(_, opts)
-      require("snacks").setup(opts)
+      local snacks = require("snacks")
+
+      require("patch.snacks.dashboard").patch()
+      snacks.setup(opts)
       register_dashboard_cleanup_autocmds()
     end,
     keys = {
