@@ -9,6 +9,7 @@
 -- guarded `size()` / `update()` methods.
 
 local M = {}
+local hacks = require("utils.hacks")
 
 local function valid_win(win)
   return type(win) == "number" and vim.api.nvim_win_is_valid(win)
@@ -37,30 +38,25 @@ end
 function M.patch()
   local Dashboard = require("snacks.dashboard").Dashboard
 
-  if Dashboard._ray_stale_window_patched then
-    return
-  end
+  hacks.wrap(Dashboard, "snacks.dashboard.size", "size", function(size)
+    return function(self)
+      if not dashboard_win(self) then
+        return self._size
+      end
 
-  Dashboard._ray_stale_window_patched = true
-
-  local size = Dashboard.size
-  local update = Dashboard.update
-
-  function Dashboard:size()
-    if not dashboard_win(self) then
-      return self._size
+      return size(self)
     end
+  end)
 
-    return size(self)
-  end
+  hacks.wrap(Dashboard, "snacks.dashboard.update", "update", function(update)
+    return function(self)
+      if not dashboard_win(self) then
+        return
+      end
 
-  function Dashboard:update()
-    if not dashboard_win(self) then
-      return
+      return update(self)
     end
-
-    return update(self)
-  end
+  end)
 end
 
 return M

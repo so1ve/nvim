@@ -10,6 +10,7 @@
 
 local hover = require("patch.noice.hover")
 local markdown_width = require("patch.noice.markdown-width")
+local hacks = require("utils.hacks")
 
 local M = {}
 
@@ -182,33 +183,35 @@ end
 function M.patch()
   local view = require("noice.view.nui")
 
-  if view._ray_hover_layout_patched then
-    return
+  if
+    hacks.wrap(view, "noice.hover-layout", "get_layout", function(get_layout)
+      -- Replace only the final layout for LSP hover views. Non-hover Noice views
+      -- continue using Noice's original layout calculation unchanged.
+      return function(self)
+        local layout = get_layout(self)
+
+        if not hover.is(self) then
+          return layout
+        end
+
+        layout = markdown_width.fix_layout(self, layout)
+
+        -- Noice/NUI can do cursor-relative row+col or editor-relative row+col, but
+        -- not cursor-relative row with center-biased editor-relative col. Patch the
+        -- final computed layout so we can mix those behaviors only for LSP hover.
+        active = self
+
+        return place(self, layout)
+      end
+    end)
+  then
+    watch_scroll()
+    hacks.cleanup(function()
+      active = nil
+      pending = false
+      pcall(vim.api.nvim_del_augroup_by_name, "RayNoiceHoverLayout")
+    end)
   end
-
-  view._ray_hover_layout_patched = true
-
-  local get_layout = view.get_layout
-
-  -- Replace only the final layout for LSP hover views. Non-hover Noice views
-  -- continue using Noice's original layout calculation unchanged.
-  function view:get_layout()
-    local layout = get_layout(self)
-
-    if not hover.is(self) then
-      return layout
-    end
-
-    layout = markdown_width.fix_layout(self, layout)
-
-    -- Noice/NUI can do cursor-relative row+col or editor-relative row+col, but
-    -- not cursor-relative row with center-biased editor-relative col. Patch the
-    -- final computed layout so we can mix those behaviors only for LSP hover.
-    active = self
-    return place(self, layout)
-  end
-
-  watch_scroll()
 end
 
 return M

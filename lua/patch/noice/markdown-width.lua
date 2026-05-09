@@ -9,6 +9,7 @@
 -- hover layout patch can recalculate wrapped popup dimensions before placement.
 
 local M = {}
+local hacks = require("utils.hacks")
 
 local LINK_HL = "@markup.link"
 
@@ -257,13 +258,7 @@ local function format_markdown(markdown, message, text, opts)
 end
 
 local function patch_keys(markdown)
-  if markdown._ray_markdown_keys_patched then
-    return
-  end
-
-  markdown._ray_markdown_keys_patched = true
-
-  function markdown.keys(buf)
+  hacks.replace(markdown, "noice.markdown.keys", "keys", function(buf)
     if not vim.api.nvim_buf_is_valid(buf) then
       return
     end
@@ -324,62 +319,53 @@ local function patch_keys(markdown)
     map("K")
 
     vim.b[buf].markdown_keys = true
-  end
+  end)
 end
 
 function M.patch()
   local markdown = require("noice.text.markdown")
 
-  if not markdown._ray_markdown_width_patched then
-    markdown._ray_markdown_width_patched = true
-
+  hacks.replace(markdown, "noice.markdown.format", "format", function(message, text, opts)
     -- Replace Noice's markdown formatting so inline links are rendered as visual
     -- labels with our own link metadata, rather than raw markdown source text.
-    function markdown.format(message, text, opts)
-      format_markdown(markdown, message, text, opts)
-    end
-  end
+    format_markdown(markdown, message, text, opts)
+  end)
 
   patch_keys(markdown)
 
   local block = require("noice.text.block")
 
-  if block._ray_markdown_width_patched then
-    return
-  end
+  hacks.wrap(block, "noice.markdown.block.render", "render", function(render)
+    -- Attach link metadata during render so the patched gx/K handlers can open the
+    -- URL even though the visible text no longer contains markdown link syntax.
+    return function(self, bufnr, ns_id, linenr_start, linenr_end)
+      render(self, bufnr, ns_id, linenr_start, linenr_end)
+      attach_links(bufnr, self._lines, linenr_start)
+    end
+  end)
 
-  block._ray_markdown_width_patched = true
+  hacks.wrap(block, "noice.markdown.block.width", "width", function(width)
+    -- Prefer cached visual widths for lines produced by our markdown formatter;
+    -- fall back to Noice's upstream width calculation for all other blocks.
+    return function(self)
+      local has_markdown_width = false
+      local ret = 0
 
-  local render = block.render
-  local width = block.width
+      for _, line in ipairs(self._lines or {}) do
+        if line._ray_markdown_visual_width then
+          has_markdown_width = true
+        end
 
-  -- Attach link metadata during render so the patched gx/K handlers can open the
-  -- URL even though the visible text no longer contains markdown link syntax.
-  function block:render(bufnr, ns_id, linenr_start, linenr_end)
-    render(self, bufnr, ns_id, linenr_start, linenr_end)
-    attach_links(bufnr, self._lines, linenr_start)
-  end
-
-  -- Prefer cached visual widths for lines produced by our markdown formatter;
-  -- fall back to Noice's upstream width calculation for all other blocks.
-  function block:width()
-    local has_markdown_width = false
-    local ret = 0
-
-    for _, line in ipairs(self._lines or {}) do
-      if line._ray_markdown_visual_width then
-        has_markdown_width = true
+        ret = math.max(ret, M.line_width(line))
       end
 
-      ret = math.max(ret, M.line_width(line))
-    end
+      if has_markdown_width then
+        return ret
+      end
 
-    if has_markdown_width then
-      return ret
+      return width(self)
     end
-
-    return width(self)
-  end
+  end)
 end
 
 return M
