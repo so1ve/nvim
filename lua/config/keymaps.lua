@@ -65,6 +65,9 @@ local function close_buffer_or_window()
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+-- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
+-- the cursor when no leader sequence is completed.
+map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", close_buffer_or_window, { desc = "Close buffer or window" })
 map("n", "<leader>Q", quit_all, { desc = "Quit all" })
