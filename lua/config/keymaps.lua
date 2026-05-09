@@ -16,8 +16,34 @@ for mode, keys in pairs(conflict_keymaps) do
   end
 end
 
+local function quit_all()
+  local ok, picker = pcall(require, "snacks.picker")
+  local active_pickers = ok and picker.get({ tab = false }) or {}
+
+  if #active_pickers > 0 then
+    for _, active_picker in ipairs(active_pickers) do
+      active_picker:close()
+    end
+
+    vim.schedule(function()
+      vim.cmd("confirm qall")
+    end)
+
+    return
+  end
+
+  vim.cmd("confirm qall")
+end
+
 local function close_buffer_or_window()
   local bufnr = vim.api.nvim_get_current_buf()
+
+  if window_util.is_dashboard(bufnr) then
+    quit_all()
+
+    return
+  end
+
   local wins = vim.api.nvim_tabpage_list_wins(0)
   local has_multiple_windows = #wins > 1
   local should_delete_buffer = window_util.is_file(bufnr)
@@ -38,29 +64,7 @@ local function close_buffer_or_window()
   vim.cmd.bdelete()
 end
 
-local function quit_all()
-  local ok, picker = pcall(require, "snacks.picker")
-  local active_pickers = ok and picker.get({ tab = false }) or {}
-
-  if #active_pickers > 0 then
-    for _, active_picker in ipairs(active_pickers) do
-      active_picker:close()
-    end
-
-    vim.schedule(function()
-      vim.cmd("confirm qall")
-    end)
-
-    return
-  end
-
-  vim.cmd("confirm qall")
-end
-
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
--- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
--- the cursor when mini.clue executes an unmatched leader query.
-map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>q", close_buffer_or_window, { desc = "Close buffer or window" })
 map("n", "<leader>Q", quit_all, { desc = "Quit all" })

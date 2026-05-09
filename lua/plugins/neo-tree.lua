@@ -92,11 +92,6 @@ return {
       },
     },
     config = function(_, opts)
-      -- enable mini clue for neo-tree buffers
-      local function ensure_mini_clue()
-        MiniClue.ensure_buf_triggers(vim.api.nvim_get_current_buf())
-      end
-
       local function on_move(data)
         Snacks.rename.on_rename_file(data.source, data.destination)
       end
@@ -104,7 +99,6 @@ return {
       local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
-        { event = events.NEO_TREE_BUFFER_ENTER, handler = ensure_mini_clue },
         { event = events.FILE_MOVED, handler = on_move },
         { event = events.FILE_RENAMED, handler = on_move },
       })
