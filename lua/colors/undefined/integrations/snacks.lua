@@ -3,20 +3,13 @@ local styles = require("colors.undefined.styles")
 
 function M.get(p)
   local s = styles.get(p)
-  local picker_surface = p.inactive_selection
-  local picker = {
-    normal = styles.extend(s.popup.normal, { bg = picker_surface }),
-    border = styles.extend(s.popup.border, { bg = picker_surface }),
-    pane_border = styles.extend(s.float.border, { bg = picker_surface }),
-    title = styles.extend(s.popup.title, { bg = picker_surface }),
-  }
 
   local groups = {
     SnacksNormal = s.float.normal,
     SnacksNormalNC = s.float.normal_nc,
-    SnacksWinBar = { fg = p.fg, bg = p.bg_alt, bold = true },
-    SnacksWinBarNC = { fg = p.muted, bg = p.bg_alt },
-    SnacksTitle = picker.title,
+    SnacksWinBar = styles.extend(s.popup_editor.title, { fg = p.fg }),
+    SnacksWinBarNC = { fg = p.muted, bg = s.popup_editor.normal.bg },
+    SnacksTitle = s.popup_editor.title,
     SnacksFooter = s.dim,
     SnacksFooterKey = s.key,
     SnacksFooterDesc = s.muted,
@@ -26,23 +19,23 @@ function M.get(p)
     SnacksWinKeySep = s.separator,
     SnacksWinKeyDesc = s.dim,
 
-    SnacksPicker = picker.normal,
-    SnacksPickerBox = picker.normal,
-    SnacksPickerBoxBorder = picker.border,
-    SnacksPickerBoxTitle = picker.title,
-    SnacksPickerBorder = picker.border,
-    SnacksPickerTitle = picker.title,
+    SnacksPicker = s.popup_editor.normal,
+    SnacksPickerBox = s.popup_editor.normal,
+    SnacksPickerBoxBorder = s.popup_editor.border,
+    SnacksPickerBoxTitle = s.popup_editor.title,
+    SnacksPickerBorder = s.popup_editor.border,
+    SnacksPickerTitle = s.popup_editor.title,
     SnacksPickerCursorLine = s.popup.selected,
-    SnacksPickerInput = picker.normal,
-    SnacksPickerInputBorder = picker.border,
-    SnacksPickerInputTitle = picker.title,
-    SnacksPickerList = picker.normal,
-    SnacksPickerListBorder = picker.pane_border,
+    SnacksPickerInput = s.popup_editor.normal,
+    SnacksPickerInputBorder = s.popup_editor.border,
+    SnacksPickerInputTitle = s.popup_editor.title,
+    SnacksPickerList = s.popup_editor.normal,
+    SnacksPickerListBorder = s.popup_editor.border,
     SnacksPickerListCursorLine = s.popup.selected,
-    SnacksPickerListTitle = picker.title,
-    SnacksPickerPreview = picker.normal,
-    SnacksPickerPreviewBorder = picker.pane_border,
-    SnacksPickerPreviewTitle = picker.title,
+    SnacksPickerListTitle = s.popup_editor.title,
+    SnacksPickerPreview = s.popup_editor.normal,
+    SnacksPickerPreviewBorder = s.popup_editor.border,
+    SnacksPickerPreviewTitle = s.popup_editor.title,
     SnacksPickerMatch = s.match,
     SnacksPickerSearch = { fg = p.bg, bg = p.yellow },
     SnacksPickerPrompt = s.input.prompt,
@@ -180,9 +173,9 @@ function M.get(p)
     SnacksIndent7 = { fg = p.magenta },
     SnacksIndent8 = { fg = p.muted },
     SnacksInputIcon = { fg = p.green },
-    SnacksInputNormal = s.input.normal,
-    SnacksInputBorder = s.input.border,
-    SnacksInputTitle = s.input.title,
+    SnacksInputNormal = s.input_editor.normal,
+    SnacksInputBorder = s.input_editor.border,
+    SnacksInputTitle = s.input_editor.title,
     SnacksInputPrompt = s.input.prompt,
     SnacksStatusColumnMark = { fg = p.yellow, bold = true },
   }
@@ -196,11 +189,11 @@ function M.get(p)
   }
 
   for level, color in pairs(notifier_levels) do
-    groups["SnacksNotifier" .. level] = { fg = color }
-    groups["SnacksNotifierIcon" .. level] = { fg = color }
-    groups["SnacksNotifierBorder" .. level] = { fg = color }
-    groups["SnacksNotifierTitle" .. level] = { fg = color, bold = true }
-    groups["SnacksNotifierFooter" .. level] = { fg = color }
+    groups["SnacksNotifier" .. level] = { fg = color, bg = p.bg }
+    groups["SnacksNotifierIcon" .. level] = { fg = color, bg = p.bg }
+    groups["SnacksNotifierBorder" .. level] = { fg = color, bg = p.bg }
+    groups["SnacksNotifierTitle" .. level] = { fg = color, bg = p.bg, bold = true }
+    groups["SnacksNotifierFooter" .. level] = { fg = color, bg = p.bg }
   end
 
   return groups

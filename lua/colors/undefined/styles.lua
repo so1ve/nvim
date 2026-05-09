@@ -93,22 +93,32 @@ function M.get(p)
     backdrop = { bg = p.bg_dark },
   }
 
-  styles.popup = {
-    normal = { fg = p.fg, bg = p.bg_alt },
-    border = { fg = p.green, bg = p.bg_alt },
-    title = { fg = p.green, bg = p.bg_alt, bold = true },
-    border_search = { fg = p.yellow, bg = p.bg_alt },
-    selected = { bg = p.selection },
-    progress_done = { fg = p.green, bg = p.bg_alt },
-    progress_todo = { fg = p.subtle, bg = p.bg_alt },
-  }
+  local function popup(bg)
+    return {
+      normal = { fg = p.fg, bg = bg },
+      border = { fg = p.green, bg = bg },
+      title = { fg = p.green, bg = bg, bold = true },
+      border_search = { fg = p.yellow, bg = bg },
+      selected = { bg = p.selection },
+      progress_done = { fg = p.green, bg = bg },
+      progress_todo = { fg = p.subtle, bg = bg },
+    }
+  end
 
-  styles.input = {
-    normal = { fg = p.fg, bg = p.bg_alt },
-    border = { fg = p.green, bg = p.bg_alt },
-    title = { fg = p.green, bg = p.bg_alt, bold = true },
-    prompt = { fg = p.green },
-  }
+  local function input(bg)
+    return {
+      normal = { fg = p.fg, bg = bg },
+      border = { fg = p.green, bg = bg },
+      title = { fg = p.green, bg = bg, bold = true },
+      prompt = { fg = p.green },
+    }
+  end
+
+  styles.popup = popup(p.bg_alt)
+  styles.popup_editor = popup(p.bg)
+
+  styles.input = input(p.bg_alt)
+  styles.input_editor = input(p.bg)
 
   styles.message = {
     area = { fg = p.fg_dim },
