@@ -1,3 +1,10 @@
+local function server_defaults(opts)
+  local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local servers = opts.servers or {}
+
+  return vim.tbl_deep_extend("force", { capabilities = capabilities }, servers["*"] or {})
+end
+
 local function configure_lsp_buffer(event)
   local bufnr = event.buf
   local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -65,7 +72,21 @@ return {
     "b0o/schemastore.nvim",
     "SmiteshP/nvim-navic",
   },
-  config = function()
+  opts = {
+    servers = {
+      ["*"] = {
+        capabilities = {
+          workspace = {
+            fileOperations = {
+              didRename = true,
+              willRename = true,
+            },
+          },
+        },
+      },
+    },
+  },
+  config = function(_, opts)
     local languages = require("config.languages")
 
     vim.diagnostic.config({
@@ -78,9 +99,9 @@ return {
       },
     })
 
-    local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
+    vim.lsp.config("*", server_defaults(opts))
 
-    for server_name, server_config in pairs(languages.lsp_configs(capabilities)) do
+    for server_name, server_config in pairs(languages.lsp_configs()) do
       vim.lsp.config(server_name, server_config)
     end
 

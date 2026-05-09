@@ -14,6 +14,9 @@ return {
           completion = {
             callSnippet = "Replace",
           },
+          codeLens = {
+            enable = true,
+          },
           diagnostics = {
             globals = { "vim" },
           },
@@ -27,6 +30,17 @@ return {
           workspace = {
             checkThirdParty = false,
             library = { vim.env.VIMRUNTIME },
+          },
+          doc = {
+            privateName = { "^_" },
+          },
+          hint = {
+            enable = true,
+            setType = false,
+            paramType = true,
+            paramName = "Disable",
+            semicolon = "Disable",
+            arrayIndex = "Disable",
           },
         },
       },
