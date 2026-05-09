@@ -6,6 +6,7 @@ local modules = require("utils.modules")
 local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
 local servers = {}
 local languages = {}
+local language_plugins = {}
 local edgy_views = { left = {}, right = {}, bottom = {} }
 local extra_treesitter_parsers = {
   "bash",
@@ -34,6 +35,10 @@ for _, spec in ipairs(language_specs) do
 
   if spec.extend then
     table.insert(server_extenders, spec.extend)
+  end
+
+  for _, plugin in ipairs(spec.plugins or {}) do
+    table.insert(language_plugins, plugin)
   end
 
   for position, views in pairs(spec.edgy or {}) do
@@ -122,6 +127,10 @@ end
 
 function M.edgy_views()
   return edgy_views
+end
+
+function M.plugins()
+  return language_plugins
 end
 
 function M.treesitter_parsers()

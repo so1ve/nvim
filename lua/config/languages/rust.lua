@@ -1,113 +1,155 @@
-local edgy = require("config.edgy")
+local function rust_capabilities()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local macro_expansion_bufnr
-
-local function macro_expansion_lines(result)
-  local title = "Recursive expansion of `" .. result.name .. "` macro"
-  local lines = {
-    "// " .. string.rep("=", #title),
-    "// " .. title,
-    "// " .. string.rep("=", #title),
-    "",
+  capabilities.workspace = capabilities.workspace or {}
+  capabilities.workspace.fileOperations = {
+    didRename = true,
+    willRename = true,
   }
 
-  vim.list_extend(lines, vim.split(result.expansion, "\n", { plain = true }))
-
-  return lines
+  return require("blink.cmp").get_lsp_capabilities(capabilities)
 end
 
-local function open_macro_expansion(result)
-  if macro_expansion_bufnr and vim.api.nvim_buf_is_valid(macro_expansion_bufnr) then
-    vim.api.nvim_buf_delete(macro_expansion_bufnr, { force = true })
+local function rust_lsp(command)
+  return function()
+    vim.cmd.RustLsp(command)
   end
-
-  local lines = macro_expansion_lines(result)
-  macro_expansion_bufnr = vim.api.nvim_create_buf(false, true)
-
-  vim.api.nvim_buf_set_lines(macro_expansion_bufnr, 0, -1, false, lines)
-  vim.bo[macro_expansion_bufnr].buftype = "nofile"
-  vim.bo[macro_expansion_bufnr].bufhidden = "wipe"
-  vim.bo[macro_expansion_bufnr].filetype = "rust_macro_expansion"
-  vim.bo[macro_expansion_bufnr].syntax = "rust"
-  vim.bo[macro_expansion_bufnr].modifiable = false
-  vim.bo[macro_expansion_bufnr].swapfile = false
-
-  vim.cmd("vsplit")
-  vim.api.nvim_win_set_buf(0, macro_expansion_bufnr)
 end
 
-local function expand_macro(bufnr)
-  local client = vim.lsp.get_clients({ bufnr = bufnr, name = "rust_analyzer" })[1]
+local function rust_lsp_command(command)
+  local command_args = vim.split(command, " ", { trimempty = true })
 
-  if not client then
-    vim.notify("rust-analyzer is not attached", vim.log.levels.WARN)
+  return function(args)
+    local rust_args = vim.list_extend(vim.deepcopy(command_args), args.fargs)
 
-    return
+    vim.api.nvim_cmd({ cmd = "RustLsp", args = rust_args }, {})
   end
-
-  local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
-
-  --- @diagnostic disable-next-line: param-type-mismatch
-  client:request("rust-analyzer/expandMacro", params, function(err, result)
-    if err then
-      vim.notify(err.message or "Failed to expand macro", vim.log.levels.ERROR)
-
-      return
-    end
-
-    if not result then
-      vim.notify("No macro under cursor", vim.log.levels.INFO)
-
-      return
-    end
-
-    vim.schedule(function()
-      open_macro_expansion(result)
-    end)
-  end, bufnr)
 end
 
 local function attach_rust_keymaps(_, bufnr)
-  vim.api.nvim_buf_create_user_command(bufnr, "RustExpandMacro", function()
-    expand_macro(bufnr)
-  end, { desc = "Expand macro at caret" })
+  local commands = {
+    RustCrateGraph = { "crateGraph", "View crate graph" },
+    RustExplainError = { "explainError", "Explain Rust diagnostic" },
+    RustExpandMacro = { "expandMacro", "Expand macro at caret" },
+    RustOpenCargo = { "openCargo", "Open Cargo.toml" },
+    RustOpenDocs = { "openDocs", "Open docs.rs for symbol" },
+    RustRelatedDiagnostics = { "relatedDiagnostics", "Show related Rust diagnostics" },
+    RustRelatedTests = { "relatedTests", "Show related Rust tests" },
+    RustRenderDiagnostic = { "renderDiagnostic", "Render Rust diagnostic" },
+    RustSsr = { "ssr", "Run structural search replace" },
+    RustSyntaxTree = { "syntaxTree", "View rust-analyzer syntax tree" },
+    RustViewHir = { "view hir", "View HIR for item at cursor" },
+    RustViewMir = { "view mir", "View MIR for item at cursor" },
+  }
 
-  vim.keymap.set("n", "<leader>ce", function()
-    expand_macro(bufnr)
-  end, { buffer = bufnr, desc = "Expand macro" })
+  for name, command in pairs(commands) do
+    vim.api.nvim_buf_create_user_command(bufnr, name, rust_lsp_command(command[1]), {
+      desc = command[2],
+      nargs = "*",
+    })
+  end
+
+  vim.keymap.set("n", "<leader>ce", rust_lsp("expandMacro"), { buffer = bufnr, desc = "Expand macro" })
+  vim.keymap.set("n", "<leader>dr", rust_lsp("debuggables"), { buffer = bufnr, desc = "Rust debuggables" })
+end
+
+local function codelldb_adapter()
+  local codelldb = vim.fn.exepath("codelldb")
+
+  if codelldb == "" then
+    return nil
+  end
+
+  local lib_ext = vim.fn.has("win32") == 1 and ".dll" or vim.uv.os_uname().sysname == "Linux" and ".so" or ".dylib"
+  local liblldb = vim.fn.expand("$MASON/opt/lldb/lib/liblldb" .. lib_ext)
+
+  if vim.uv.fs_stat(liblldb) then
+    return require("rustaceanvim.config").get_codelldb_adapter(codelldb, liblldb)
+  end
+
+  return nil
 end
 
 return {
-  edgy = {
-    right = {
-      edgy.view("Rust Macro Expansion", "rust_macro_expansion"),
-    },
-  },
   languages = {
     rust = {
       treesitter = "rust",
-      lsp = { "rust_analyzer" },
+      tools = { "codelldb" },
       formatters = { "rustfmt" },
     },
   },
-  servers = {
-    rust_analyzer = {
-      on_attach = attach_rust_keymaps,
-      settings = {
-        ["rust-analyzer"] = {
-          cargo = {
-            features = "all",
+  plugins = {
+    {
+      "mrcjkb/rustaceanvim",
+      version = "^9",
+      lazy = false,
+      opts = {
+        tools = {
+          reload_workspace_from_cargo_toml = true,
+          test_executor = "background",
+          float_win_config = {
+            auto_focus = true,
+            open_split = "vertical",
           },
-          check = {
-            command = "clippy",
-          },
-          rustfmt = {
-            rangeFormatting = {
-              enable = true,
+        },
+        server = {
+          capabilities = rust_capabilities(),
+          on_attach = attach_rust_keymaps,
+          default_settings = {
+            ["rust-analyzer"] = {
+              cargo = {
+                allFeatures = true,
+                loadOutDirsFromCheck = true,
+                buildScripts = {
+                  enable = true,
+                },
+              },
+              checkOnSave = true,
+              check = {
+                command = "clippy",
+              },
+              diagnostics = {
+                enable = true,
+              },
+              files = {
+                exclude = {
+                  ".direnv",
+                  ".git",
+                  ".github",
+                  ".gitlab",
+                  ".jj",
+                  ".venv",
+                  "bin",
+                  "node_modules",
+                  "target",
+                  "venv",
+                },
+                watcher = "client",
+              },
+              procMacro = {
+                enable = true,
+              },
+              rustfmt = {
+                rangeFormatting = {
+                  enable = true,
+                },
+              },
             },
           },
         },
+        dap = {
+          autoload_configurations = true,
+        },
       },
+      config = function(_, opts)
+        local adapter = codelldb_adapter()
+
+        if adapter then
+          opts.dap.adapter = adapter
+        end
+
+        vim.g.rustaceanvim = vim.tbl_deep_extend("keep", vim.g.rustaceanvim or {}, opts or {})
+      end,
     },
   },
 }

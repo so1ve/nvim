@@ -41,6 +41,7 @@ return {
         evenBetterToml = {
           schema = {
             enabled = true,
+            exclude = { "Cargo.toml", "**/Cargo.toml" },
           },
         },
       },
