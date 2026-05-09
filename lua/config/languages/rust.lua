@@ -7,7 +7,11 @@ local function rust_capabilities()
     willRename = true,
   }
 
-  return require("blink.cmp").get_lsp_capabilities(capabilities)
+  capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+  capabilities.experimental = capabilities.experimental or {}
+  capabilities.experimental.codeActionGroup = true
+
+  return capabilities
 end
 
 local function rust_lsp(command)
