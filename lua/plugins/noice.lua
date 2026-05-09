@@ -33,6 +33,16 @@ return {
       notify = {
         view = "notify",
       },
+      routes = {
+        {
+          filter = {
+            event = "notify",
+            error = true,
+            find = "wakatime%-cli%.exe %-%-today",
+          },
+          opts = { skip = true },
+        },
+      },
       commands = {
         history = {
           filter = {
