@@ -5,13 +5,11 @@ return {
   dependencies = {
     "nvim-mini/mini.nvim",
     "xzbdmw/colorful-menu.nvim",
+    "so1ve/blink-noice-docs.nvim",
   },
   config = function(_, opts)
-    local docs = require("patch.blink.documentation")
-
-    opts.completion.documentation.draw = docs.draw
     require("blink.cmp").setup(opts)
-    docs.patch()
+    require("blink-noice-docs").setup()
   end,
   opts = {
     appearance = {

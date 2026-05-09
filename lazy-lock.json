@@ -1,6 +1,7 @@
 {
   "async.nvim": { "branch": "main", "commit": "7a1d7d49933fbe902b84b55f352a3b10fd587331" },
   "better-escape.nvim": { "branch": "master", "commit": "3f4bc0b326606264ff75967f59091b5ddada0554" },
+  "blink-noice-docs.nvim": { "branch": "main", "commit": "ca01574a94c189513b64f5c2a68c1e12157dc472" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
   "code-action-menu.nvim": { "branch": "main", "commit": "e7577ba0f1016d8145122786096dea2b6f251a1f" },
