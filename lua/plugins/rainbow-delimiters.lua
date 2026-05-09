@@ -1,17 +1,16 @@
 return {
   "HiPhish/rainbow-delimiters.nvim",
   event = { "BufReadPost", "BufNewFile" },
+  main = "rainbow-delimiters.setup",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
   },
-  init = function()
-    vim.g.rainbow_delimiters = {
-      blacklist = {
-        "html",
-        "htmldjango",
-        "templ",
-        "xml",
-      },
-    }
-  end,
+  opts = {
+    blacklist = {
+      "html",
+      "htmldjango",
+      "templ",
+      "xml",
+    },
+  },
 }

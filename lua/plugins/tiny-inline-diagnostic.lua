@@ -59,7 +59,6 @@ return {
     },
   },
   config = function(_, opts)
-    vim.diagnostic.config({ update_in_insert = false })
     require("tiny-inline-diagnostic").setup(opts)
     register_scroll_refresh_autocmd()
   end,
