@@ -22,9 +22,13 @@ return {
       },
     },
     ruff = {
+      cmd_env = {
+        RUFF_TRACE = "messages",
+      },
       init_options = {
         settings = {
           fixAll = true,
+          logLevel = "error",
           lint = {
             extendSelect = { "I" },
           },

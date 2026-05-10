@@ -4,6 +4,10 @@ function M.json_schemas()
   return require("schemastore").json.schemas()
 end
 
+function M.yaml_schemas()
+  return require("schemastore").yaml.schemas()
+end
+
 -- Taplo 0.10.0 rejects the current online SchemaStore catalog because the
 -- catalog's `$schema` value changed from json.schemastore.org to
 -- www.schemastore.org. Build a local compatibility copy from schemastore.nvim
