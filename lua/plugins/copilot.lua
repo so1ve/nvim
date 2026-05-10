@@ -64,7 +64,12 @@ return {
 
   opts = {
     panel = { enabled = false },
-    suggestion = { auto_trigger = true },
+    suggestion = {
+      auto_trigger = true,
+      keymap = {
+        accept = false,
+      },
+    },
     server_opts_overrides = {
       on_exit = restart_copilot,
     },
