@@ -12,8 +12,7 @@ function M.is_normal_win(win)
   return vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_config(win).relative == ""
 end
 
--- Snacks dashboard buffers are startup UI, not real work files, even though they
--- are listed and use a normal buffer type.
+-- Snacks dashboard buffers are unlisted nofile startup UI, not real work files.
 function M.is_dashboard(bufnr)
   return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].filetype == "snacks_dashboard"
 end
