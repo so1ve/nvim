@@ -82,7 +82,6 @@ map("i", "<A-h>", "<Left>", { desc = "Move lef cursor" })
 map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
 map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
 map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
-map("i", "<C-h>", "<Nop>", { desc = "Disable Ctrl-h", silent = true })
 
 map("n", "<leader>za", "za", { desc = "Toggle fold" })
 map("n", "<leader>zc", "zc", { desc = "Close fold" })
