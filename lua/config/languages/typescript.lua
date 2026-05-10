@@ -5,14 +5,6 @@ local tsserver_language_settings = {
   suggest = {
     completeFunctionCalls = true,
   },
-  inlayHints = {
-    enumMemberValues = { enabled = true },
-    functionLikeReturnTypes = { enabled = true },
-    parameterNames = { enabled = "literals" },
-    parameterTypes = { enabled = true },
-    propertyDeclarationTypes = { enabled = true },
-    variableTypes = { enabled = false },
-  },
 }
 
 local function move_to_file(command, client)
