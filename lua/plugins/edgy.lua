@@ -6,16 +6,6 @@ local function add_view(opts, position, view)
   table.insert(opts[position], view)
 end
 
-local function add_language_views(opts)
-  local language_views = require("config.languages").edgy_views()
-
-  for position, views in pairs(language_views) do
-    for _, view in ipairs(views) do
-      add_view(opts, position, view)
-    end
-  end
-end
-
 return {
   {
     "folke/edgy.nvim",
@@ -39,7 +29,6 @@ return {
         bottom = { size = layout.bottom.height },
       }
 
-      add_language_views(opts)
       add_view(opts, "bottom", edgy.view("Quickfix", "qf"))
       add_view(
         opts,

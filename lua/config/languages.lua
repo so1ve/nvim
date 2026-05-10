@@ -4,23 +4,44 @@ local lsp = require("config.languages.lsp")
 local modules = require("utils.modules")
 
 local language_specs = modules.load("config.languages", { exclude = { "lsp" } })
+local languages_by_filetype = {}
+local language_filetypes = {}
 local servers = {}
-local languages = {}
 local language_plugins = {}
-local edgy_views = { left = {}, right = {}, bottom = {} }
-local extra_treesitter_parsers = {
-  "bash",
-  "lua",
-  "markdown",
-  "markdown_inline",
-  "regex",
-  "vim",
-}
 local server_extenders = {}
+
+local function add_language(filetype, language)
+  if not languages_by_filetype[filetype] then
+    table.insert(language_filetypes, filetype)
+  end
+
+  languages_by_filetype[filetype] = language
+end
+
+local function add_unique(values, seen, value)
+  if value == nil or value == false or seen[value] then
+    return
+  end
+
+  seen[value] = true
+  table.insert(values, value)
+end
+
+local function add_entries(values, seen, entries)
+  if type(entries) == "table" then
+    for _, entry in ipairs(entries) do
+      add_unique(values, seen, entry)
+    end
+
+    return
+  end
+
+  add_unique(values, seen, entries)
+end
 
 for _, spec in ipairs(language_specs) do
   for filetype, language in pairs(spec.languages or {}) do
-    languages[filetype] = language
+    add_language(filetype, language)
   end
 
   for server_name, server_config in pairs(spec.servers or {}) do
@@ -37,44 +58,47 @@ for _, spec in ipairs(language_specs) do
     table.insert(server_extenders, spec.extend)
   end
 
-  for _, plugin in ipairs(spec.plugins or {}) do
-    table.insert(language_plugins, plugin)
-  end
-
-  for position, views in pairs(spec.edgy or {}) do
-    edgy_views[position] = edgy_views[position] or {}
-
-    for _, view in ipairs(views) do
-      table.insert(edgy_views[position], view)
-    end
-  end
+  vim.list_extend(language_plugins, spec.plugins or {})
 end
+
+table.sort(language_filetypes)
 
 for _, extend in ipairs(server_extenders) do
   extend(servers, lsp)
 end
 
-local function collect_language_entries(field)
-  local names = {}
+M.by_filetype = languages_by_filetype
+M.plugins = language_plugins
+
+function M.collect(field, opts)
+  opts = opts or {}
+
+  local values = {}
   local seen = {}
 
-  for _, language in pairs(languages) do
-    for _, name in ipairs(language[field] or {}) do
-      if not seen[name] then
-        seen[name] = true
-        table.insert(names, name)
-      end
+  for _, filetype in ipairs(language_filetypes) do
+    local language = languages_by_filetype[filetype]
+    local entries = language[field]
+
+    if entries == nil and opts.fallback then
+      entries = opts.fallback(filetype, language)
     end
+
+    add_entries(values, seen, entries)
   end
 
-  return names
+  add_entries(values, seen, opts.extra)
+
+  return values
 end
 
-local function collect_language_map(field)
+function M.map(field)
   local values = {}
 
-  for filetype, language in pairs(languages) do
-    if language[field] then
+  for _, filetype in ipairs(language_filetypes) do
+    local language = languages_by_filetype[filetype]
+
+    if language[field] ~= nil then
       values[filetype] = language[field]
     end
   end
@@ -82,29 +106,19 @@ local function collect_language_map(field)
   return values
 end
 
-function M.treesitter_language(filetype)
-  if filetype == "" then
+function M.get(filetype, field, fallback)
+  if not filetype or filetype == "" then
     return nil
   end
 
-  local language = languages[filetype]
+  local language = languages_by_filetype[filetype]
+  local value = language and language[field]
 
-  return language and language.treesitter or vim.treesitter.language.get_lang(filetype)
-end
-
-function M.treesitter_aliases()
-  local aliases = {}
-
-  for filetype, language in pairs(languages) do
-    local parser = language.treesitter
-
-    if parser and parser ~= filetype then
-      aliases[parser] = aliases[parser] or {}
-      table.insert(aliases[parser], filetype)
-    end
+  if value ~= nil then
+    return value
   end
 
-  return aliases
+  return fallback and fallback(filetype, language) or nil
 end
 
 function M.lsp_configs()
@@ -117,56 +131,8 @@ function M.lsp_configs()
   return configs
 end
 
-function M.lsp_server_names()
-  return collect_language_entries("lsp")
-end
-
-function M.tool_names()
-  return collect_language_entries("tools")
-end
-
-function M.edgy_views()
-  return edgy_views
-end
-
-function M.plugins()
-  return language_plugins
-end
-
-function M.treesitter_parsers()
-  local parsers = {}
-  local seen = {}
-
-  for filetype, language in pairs(languages) do
-    local parser = language.treesitter or vim.treesitter.language.get_lang(filetype)
-
-    if parser and not seen[parser] then
-      seen[parser] = true
-      table.insert(parsers, parser)
-    end
-  end
-
-  for _, parser in ipairs(extra_treesitter_parsers) do
-    if not seen[parser] then
-      seen[parser] = true
-      table.insert(parsers, parser)
-    end
-  end
-
-  return parsers
-end
-
-function M.formatters_by_ft()
-  return collect_language_map("formatters")
-end
-
-function M.linters_by_ft()
-  return collect_language_map("linters")
-end
-
 function M.hover()
-  local language = languages[vim.bo.filetype]
-  local providers = language and language.hover
+  local providers = M.get(vim.bo.filetype, "hover")
 
   if not providers then
     vim.lsp.buf.hover()

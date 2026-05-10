@@ -111,6 +111,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
+    opts_extend = { "adapters" },
     opts = {
       adapters = {},
       status = { virtual_text = true },

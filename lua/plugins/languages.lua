@@ -1,1 +1,1 @@
-return require("config.languages").plugins()
+return require("config.languages").plugins

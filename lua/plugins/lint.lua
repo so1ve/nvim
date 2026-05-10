@@ -2,7 +2,7 @@ return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPost", "BufWritePost" },
   opts = {
-    linters_by_ft = require("config.languages").linters_by_ft(),
+    linters_by_ft = require("config.languages").map("linters"),
   },
   config = function(_, opts)
     local lint = require("lint")
