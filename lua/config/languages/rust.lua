@@ -97,7 +97,6 @@ return {
           },
         },
         server = {
-          capabilities = rust_capabilities(),
           on_attach = attach_rust_keymaps,
           default_settings = {
             ["rust-analyzer"] = {
@@ -146,13 +145,20 @@ return {
         },
       },
       config = function(_, opts)
-        local adapter = codelldb_adapter()
+        local user_config = type(vim.g.rustaceanvim) == "table" and vim.g.rustaceanvim or {}
 
-        if adapter then
-          opts.dap.adapter = adapter
+        vim.g.rustaceanvim = function()
+          local config = vim.deepcopy(opts)
+          local adapter = codelldb_adapter()
+
+          config.server.capabilities = rust_capabilities()
+
+          if adapter then
+            config.dap.adapter = adapter
+          end
+
+          return vim.tbl_deep_extend("keep", user_config, config)
         end
-
-        vim.g.rustaceanvim = vim.tbl_deep_extend("keep", vim.g.rustaceanvim or {}, opts or {})
       end,
     },
     {
