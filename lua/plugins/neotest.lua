@@ -1,108 +1,5 @@
 local edgy = require("config.edgy")
 
-local function has_plugin(name)
-  local ok, lazy_config = pcall(require, "lazy.core.config")
-
-  return ok and lazy_config.plugins[name] ~= nil
-end
-
-local function open_quickfix()
-  if has_plugin("trouble.nvim") then
-    require("trouble").open({ mode = "quickfix", focus = false })
-  else
-    vim.cmd("copen")
-  end
-end
-
-local function setup_trouble_consumer(opts)
-  if not has_plugin("trouble.nvim") then
-    return
-  end
-
-  opts.consumers = opts.consumers or {}
-  opts.consumers.trouble = function(client)
-    client.listeners.results = function(adapter_id, results, partial)
-      if partial then
-        return
-      end
-
-      local tree = assert(client:get_position(nil, { adapter = adapter_id }))
-      local failed = 0
-
-      for position_id, result in pairs(results) do
-        if result.status == "failed" and tree:get_key(position_id) then
-          failed = failed + 1
-        end
-      end
-
-      vim.schedule(function()
-        local trouble = require("trouble")
-
-        if trouble.is_open() then
-          trouble.refresh()
-
-          if failed == 0 then
-            trouble.close()
-          end
-        end
-      end)
-
-      return {}
-    end
-  end
-end
-
-local function setup_diagnostics()
-  local neotest_namespace = vim.api.nvim_create_namespace("neotest")
-
-  vim.diagnostic.config({
-    virtual_text = {
-      format = function(diagnostic)
-        return diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
-      end,
-    },
-  }, neotest_namespace)
-end
-
-local function setup_adapters(opts)
-  if not opts.adapters then
-    return
-  end
-
-  local adapters = {}
-
-  for name, config in pairs(opts.adapters) do
-    if type(name) == "number" then
-      if type(config) == "string" then
-        config = require(config)
-      end
-
-      table.insert(adapters, config)
-    elseif config ~= false then
-      local adapter = require(name)
-
-      if type(config) == "table" and not vim.tbl_isempty(config) then
-        local meta = getmetatable(adapter)
-
-        if adapter.setup then
-          adapter.setup(config)
-        elseif adapter.adapter then
-          adapter.adapter(config)
-          adapter = adapter.adapter
-        elseif meta and meta.__call then
-          adapter = adapter(config)
-        else
-          error("Adapter " .. name .. " does not support setup")
-        end
-      end
-
-      table.insert(adapters, adapter)
-    end
-  end
-
-  opts.adapters = adapters
-end
-
 return {
   {
     "nvim-neotest/neotest",
@@ -117,13 +14,86 @@ return {
       status = { virtual_text = true },
       output = { open_on_run = true },
       quickfix = {
-        open = open_quickfix,
+        open = function()
+          require("trouble").open({ mode = "quickfix", focus = false })
+        end,
       },
     },
     config = function(_, opts)
-      setup_diagnostics()
-      setup_trouble_consumer(opts)
-      setup_adapters(opts)
+      local neotest_namespace = vim.api.nvim_create_namespace("neotest")
+
+      vim.diagnostic.config({
+        virtual_text = {
+          format = function(diagnostic)
+            return diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+          end,
+        },
+      }, neotest_namespace)
+
+      opts.consumers = opts.consumers or {}
+      opts.consumers.trouble = function(client)
+        client.listeners.results = function(adapter_id, results, partial)
+          if partial then
+            return
+          end
+
+          local tree = assert(client:get_position(nil, { adapter = adapter_id }))
+          local failed = 0
+
+          for position_id, result in pairs(results) do
+            if result.status == "failed" and tree:get_key(position_id) then
+              failed = failed + 1
+            end
+          end
+
+          vim.schedule(function()
+            local trouble = require("trouble")
+
+            if trouble.is_open() then
+              trouble.refresh()
+
+              if failed == 0 then
+                trouble.close()
+              end
+            end
+          end)
+
+          return {}
+        end
+      end
+
+      local adapters = {}
+
+      for name, config in pairs(opts.adapters) do
+        if type(name) == "number" then
+          if type(config) == "string" then
+            config = require(config)
+          end
+
+          table.insert(adapters, config)
+        elseif config ~= false then
+          local adapter = require(name)
+
+          if type(config) == "table" and not vim.tbl_isempty(config) then
+            local meta = getmetatable(adapter)
+
+            if adapter.setup then
+              adapter.setup(config)
+            elseif adapter.adapter then
+              adapter.adapter(config)
+              adapter = adapter.adapter
+            elseif meta and meta.__call then
+              adapter = adapter(config)
+            else
+              error("Adapter " .. name .. " does not support setup")
+            end
+          end
+
+          table.insert(adapters, adapter)
+        end
+      end
+
+      opts.adapters = adapters
       require("neotest").setup(opts)
     end,
     -- stylua: ignore
