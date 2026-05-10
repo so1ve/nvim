@@ -15,14 +15,21 @@ local function snacks_position_filter(position)
   end
 end
 
-local function delete_dashboard_buffers()
-  if not window_util.is_work_file(vim.api.nvim_get_current_buf()) then
+local function delete_startup_buffers()
+  -- Neo-tree popups and sidebar windows can trigger BufEnter while the dashboard
+  -- is still the only real editor buffer. Cleanup only after entering an actual
+  -- file window, otherwise Neovim may create a lingering [No Name] replacement.
+  if not window_util.is_work_win(vim.api.nvim_get_current_win()) then
     return
   end
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if window_util.is_dashboard(bufnr) then
       pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+    elseif window_util.is_empty_unnamed_file(bufnr) and vim.fn.bufwinid(bufnr) == -1 then
+      -- Remove only hidden, never-edited [No Name] placeholders; visible buffers
+      -- or modified scratch buffers are intentionally left alone.
+      pcall(vim.api.nvim_buf_delete, bufnr, {})
     end
   end
 end
@@ -33,10 +40,10 @@ local function register_dashboard_cleanup_autocmds()
   vim.api.nvim_create_autocmd("BufEnter", {
     group = group,
     desc = "Dismiss dashboard when entering a listed file buffer",
-    callback = delete_dashboard_buffers,
+    callback = delete_startup_buffers,
   })
 
-  delete_dashboard_buffers()
+  delete_startup_buffers()
 end
 
 return {
