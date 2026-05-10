@@ -51,7 +51,7 @@ return {
               { event = "notify" },
               { error = true },
               { warning = true },
-              { event = "msg_show", kind = { "", "list_cmd" } },
+              { event = "msg_show", kind = { "", "echo", "echomsg", "lua_print", "list_cmd" } },
               { event = "lsp", kind = "message" },
             },
           },
