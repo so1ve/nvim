@@ -56,14 +56,14 @@ return {
       desc = "Previous parameter",
     },
     {
-      "<leader>a",
+      "]A",
       function()
         require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
       end,
       desc = "Swap next parameter",
     },
     {
-      "<leader>A",
+      "[A",
       function()
         require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
       end,

@@ -1,7 +1,4 @@
 local leader_groups = {
-  -- nvim-treesitter-textobjects
-  { "<leader>a", icon = { icon = "󰓡", color = "purple" } },
-  { "<leader>A", icon = { icon = "󰓢", color = "purple" } },
   { "<leader>b", group = "Buffer", icon = { icon = "󰈔", color = "cyan" } },
   { "<leader>c", group = "Code", icon = { icon = "󰅩", color = "azure" } },
   { "<leader>d", group = "Diagnostics", icon = { icon = "", color = "yellow" } },
@@ -20,12 +17,20 @@ local leader_groups = {
   { "<leader>z", group = "Fold", icon = { icon = "", color = "grey" } },
 }
 
+local surround_groups = {
+  { "s", group = "Surround", mode = { "n", "x" }, icon = { icon = "󰅪", color = "purple" } },
+}
+
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
     delay = 300,
     preset = "helix",
+    triggers = {
+      { "<auto>", mode = { "n", "x", "s", "o" } },
+      { "s", mode = { "n", "x" } },
+    },
   },
   keys = {
     {
@@ -40,5 +45,6 @@ return {
     local wk = require("which-key")
     wk.setup(opts)
     wk.add(leader_groups)
+    wk.add(surround_groups)
   end,
 }
