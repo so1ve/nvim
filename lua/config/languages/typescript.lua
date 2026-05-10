@@ -157,7 +157,11 @@ return {
       "nvim-neotest/neotest",
       optional = true,
       dependencies = {
-        "marilari88/neotest-vitest",
+        {
+          "marilari88/neotest-vitest",
+          url = "https://github.com/JarmoCluyse/neotest-vitest.git",
+          commit = "28259d282068628f078295a1a23317ae918934d9",
+        },
       },
       opts = {
         adapters = {

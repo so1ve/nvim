@@ -1,5 +1,11 @@
 local edgy = require("config.edgy")
 
+local function current_file()
+  local path = vim.fn.expand("%:p")
+
+  return vim.uv.fs_realpath(path) or path
+end
+
 return {
   {
     "nvim-neotest/neotest",
@@ -8,7 +14,6 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
-    opts_extend = { "adapters" },
     opts = {
       adapters = {},
       status = { virtual_text = true },
@@ -100,7 +105,7 @@ return {
     keys = {
       { "<leader>T", "", desc = "+test" },
       { "<leader>Ta", function() require("neotest").run.attach() end, desc = "Attach to test" },
-      { "<leader>Tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run test file" },
+      { "<leader>Tt", function() require("neotest").run.run(current_file()) end, desc = "Run test file" },
       { "<leader>TT", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run all test files" },
       { "<leader>Tr", function() require("neotest").run.run() end, desc = "Run nearest test" },
       { "<leader>Tl", function() require("neotest").run.run_last() end, desc = "Run last test" },
@@ -108,7 +113,7 @@ return {
       { "<leader>To", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show test output" },
       { "<leader>TO", function() require("neotest").output_panel.toggle() end, desc = "Toggle test output panel" },
       { "<leader>TS", function() require("neotest").run.stop() end, desc = "Stop tests" },
-      { "<leader>Tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end, desc = "Toggle test watch" },
+      { "<leader>Tw", function() require("neotest").watch.toggle(current_file()) end, desc = "Toggle test watch" },
     },
   },
   {
