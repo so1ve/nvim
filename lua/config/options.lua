@@ -66,9 +66,11 @@ opt.listchars = {
 }
 
 -- search
+opt.hlsearch = false
 opt.ignorecase = true
+opt.incsearch = false
 opt.smartcase = true
-opt.inccommand = "split"
+opt.inccommand = ""
 
 -- splits
 opt.splitright = true

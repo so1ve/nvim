@@ -65,6 +65,8 @@ local function close_buffer_or_window()
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+map({ "n", "x", "o" }, "/", "<Nop>", { desc = "Disable forward search", silent = true })
+map({ "n", "x", "o" }, "?", "<Nop>", { desc = "Disable backward search", silent = true })
 -- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
 -- the cursor when no leader sequence is completed.
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })

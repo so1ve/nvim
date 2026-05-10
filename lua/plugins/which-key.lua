@@ -27,6 +27,15 @@ return {
     delay = 300,
     preset = "helix",
   },
+  keys = {
+    {
+      "<leader>?",
+      function()
+        require("which-key").show({ global = false })
+      end,
+      desc = "Buffer keymaps",
+    },
+  },
   config = function(_, opts)
     local wk = require("which-key")
     wk.setup(opts)
