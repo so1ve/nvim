@@ -7,10 +7,10 @@ function M.get(p)
   return {
     NeominimapBackground = s.float.normal,
     NeominimapBorder = s.float.border,
-    NeominimapCursorLine = { bg = p.bg_alt },
-    NeominimapCursorLineNr = { fg = p.green, bg = p.bg_alt, bold = true },
-    NeominimapCursorLineSign = { fg = p.green, bg = p.bg_alt },
-    NeominimapCursorLineFold = { fg = p.green, bg = p.bg_alt },
+    NeominimapCursorLine = { bg = p.selection },
+    NeominimapCursorLineNr = { fg = p.green, bg = p.selection, bold = true },
+    NeominimapCursorLineSign = { fg = p.green, bg = p.selection },
+    NeominimapCursorLineFold = { fg = p.green, bg = p.selection },
 
     NeominimapHintLine = { fg = p.green },
     NeominimapInfoLine = { fg = p.blue },
