@@ -10,7 +10,6 @@ return {
     lint.linters_by_ft = opts.linters_by_ft
 
     vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost" }, {
-      group = vim.api.nvim_create_augroup("RayLint", { clear = true }),
       callback = function()
         lint.try_lint()
       end,

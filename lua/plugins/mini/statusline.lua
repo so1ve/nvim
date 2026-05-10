@@ -138,16 +138,12 @@ local function redraw_statusline()
 end
 
 local function register_autocmds()
-  local statusline_group = vim.api.nvim_create_augroup("RayStatusline", { clear = true })
-
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
-    group = statusline_group,
     desc = "Redraw statusline when macro recording changes",
     callback = redraw_statusline,
   })
 
   vim.api.nvim_create_autocmd("User", {
-    group = statusline_group,
     pattern = "GitSignsUpdate",
     desc = "Redraw statusline when Git head changes",
     callback = redraw_statusline,

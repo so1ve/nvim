@@ -1,7 +1,4 @@
-local group = vim.api.nvim_create_augroup("RayConfig", { clear = true })
-
 vim.api.nvim_create_autocmd("TextYankPost", {
-  group = group,
   desc = "Highlight yanked text",
   callback = function()
     vim.highlight.on_yank({ timeout = 300 })
@@ -9,7 +6,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = group,
   desc = "Reload files changed outside Neovim",
   callback = function()
     if vim.bo.buftype ~= "nofile" then
@@ -19,7 +15,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 })
 
 vim.api.nvim_create_autocmd("VimResized", {
-  group = group,
   desc = "Keep splits balanced after resize",
   command = "tabdo wincmd =",
 })

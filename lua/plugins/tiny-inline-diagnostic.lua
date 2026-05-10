@@ -20,10 +20,7 @@ local function refresh_visible_diagnostics(winid)
 end
 
 local function register_scroll_refresh_autocmd()
-  local group = vim.api.nvim_create_augroup("RayTinyInlineDiagnosticScrollRefresh", { clear = true })
-
   vim.api.nvim_create_autocmd("WinScrolled", {
-    group = group,
     callback = function(event)
       local winid = tonumber(event.match) or vim.api.nvim_get_current_win()
       local changes = vim.v.event and vim.v.event[tostring(winid)]

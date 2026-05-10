@@ -35,10 +35,7 @@ local function delete_startup_buffers()
 end
 
 local function register_dashboard_cleanup_autocmds()
-  local group = vim.api.nvim_create_augroup("RaySnacksDashboardLifecycle", { clear = true })
-
   vim.api.nvim_create_autocmd("BufEnter", {
-    group = group,
     desc = "Dismiss dashboard when entering a listed file buffer",
     callback = delete_startup_buffers,
   })

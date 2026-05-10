@@ -37,7 +37,6 @@ end
 
 local function register_treesitter_autocmd(languages)
   vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("RayTreesitter", { clear = true }),
     desc = "Start Tree-sitter for configured parsers",
     callback = function(event)
       local filetype = vim.bo[event.buf].filetype

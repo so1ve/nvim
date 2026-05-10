@@ -35,10 +35,7 @@ local function restart_copilot(code)
 end
 
 local function register_copilot_blink_autocmds()
-  local group = vim.api.nvim_create_augroup("RayCopilotBlink", { clear = true })
-
   vim.api.nvim_create_autocmd("User", {
-    group = group,
     pattern = "BlinkCmpMenuOpen",
     desc = "Hide Copilot inline suggestions while blink menu is open",
     callback = function()
@@ -48,7 +45,6 @@ local function register_copilot_blink_autocmds()
   })
 
   vim.api.nvim_create_autocmd("User", {
-    group = group,
     pattern = "BlinkCmpMenuClose",
     desc = "Restore Copilot inline suggestions after blink menu closes",
     callback = function()

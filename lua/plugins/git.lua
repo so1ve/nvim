@@ -12,7 +12,6 @@ end
 
 local function register_current_line_blame_refresh_autocmd()
   vim.api.nvim_create_autocmd("InsertLeave", {
-    group = vim.api.nvim_create_augroup("RayGitSignsBlame", { clear = true }),
     desc = "Restore gitsigns current line blame after leaving insert mode",
     callback = refresh_current_line_blame,
   })

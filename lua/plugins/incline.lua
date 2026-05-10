@@ -72,7 +72,6 @@ end
 
 local function register_incline_diagnostics_autocmd()
   vim.api.nvim_create_autocmd("DiagnosticChanged", {
-    group = vim.api.nvim_create_augroup("RayInclineDiagnostics", { clear = true }),
     desc = "Refresh incline when diagnostics change",
     callback = refresh_incline,
   })
