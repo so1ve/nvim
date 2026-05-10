@@ -135,6 +135,8 @@ return {
           return
         end
 
+        -- vscode-eslint expects a file URI here. On Windows, the upstream
+        -- default raw path can make projectService resolve test files wrong.
         config.settings = config.settings or {}
         config.settings.workspaceFolder = {
           name = vim.fn.fnamemodify(config.root_dir, ":t"),
@@ -144,6 +146,9 @@ return {
       filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
       settings = {
         format = false,
+        workingDirectory = {
+          mode = "location",
+        },
       },
     },
   },
