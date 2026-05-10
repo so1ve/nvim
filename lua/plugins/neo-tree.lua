@@ -1,4 +1,5 @@
 local edgy = require("config.edgy")
+local bufferline = require("config.bufferline")
 
 return {
   {
@@ -118,4 +119,5 @@ return {
       wo = { winbar = false },
     })
   ),
+  bufferline.offset_spec(bufferline.offset("neo-tree", "Explorer")),
 }

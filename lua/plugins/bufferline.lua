@@ -23,15 +23,6 @@ return {
     options = {
       max_name_length = 24,
       show_buffer_close_icons = false,
-      offsets = {
-        {
-          filetype = "neo-tree",
-          text = "Explorer",
-          text_align = "left",
-          highlight = "Directory",
-          separator = true,
-        },
-      },
 
       diagnostics = "nvim_lsp",
       diagnostics_indicator = function(count, level)

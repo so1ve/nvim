@@ -1,3 +1,4 @@
+local bufferline = require("config.bufferline")
 local edgy = require("config.edgy")
 
 local function current_file()
@@ -129,7 +130,8 @@ return {
       },
     },
   },
-  edgy.view_spec("left", edgy.view("Neotest", "neotest-summary")),
+  edgy.view_spec("left", edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })),
+  bufferline.offset_spec(bufferline.offset("neotest-summary", "Neotest")),
   edgy.view_spec("bottom", edgy.view("Neotest Output", "neotest-output-panel", { size = { height = 15 } })),
   edgy.neo_tree_exclusion_spec({ "neotest-summary", "neotest-output-panel" }),
 }
