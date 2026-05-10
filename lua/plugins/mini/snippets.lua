@@ -39,6 +39,23 @@ function M.setup()
       jump_prev = "",
     },
   })
+
+  local make_stop = function()
+    vim.api.nvim_create_autocmd("ModeChanged", {
+      pattern = "*:n",
+      once = true,
+      callback = function()
+        while MiniSnippets.session.get() do
+          MiniSnippets.session.stop()
+        end
+      end,
+    })
+  end
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "MiniSnippetsSessionStart",
+    callback = make_stop,
+  })
 end
 
 return M
