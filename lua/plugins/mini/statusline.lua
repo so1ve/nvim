@@ -43,7 +43,7 @@ local function statusline_pretty_path(max_parts)
   local parts = vim.split(relative, "/", { plain = true })
 
   if #parts > max_parts then
-    relative = table.concat({ parts[1], "..", parts[#parts - 1], parts[#parts] }, "/")
+    relative = table.concat({ parts[1], "…", parts[#parts - 1], parts[#parts] }, "/")
   end
 
   return relative
