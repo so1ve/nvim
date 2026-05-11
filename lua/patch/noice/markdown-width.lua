@@ -1,18 +1,11 @@
 -- Noice markdown visual width patch.
--- Purpose: size hover layout from rendered markdown width instead of raw source
--- width. Link parsing/rendering lives in `patch.noice.markdown-links`; this
--- module only consumes the cached visual-width metadata it produces.
+-- Purpose: size hover layout from cached rendered markdown width instead of raw
+-- source width. Link parsing/rendering lives in `patch.noice.markdown-links`.
 
 local M = {}
 local hacks = require("utils.hacks")
 
-function M.width(text, references)
-  local content = require("patch.noice.markdown-links").visual_content(text, references)
-
-  return vim.api.nvim_strwidth(content)
-end
-
-function M.line_width(line)
+local function line_width(line)
   local content = line:content()
 
   if line._ray_markdown_visual_width and line._ray_markdown_width_source == content then
@@ -41,7 +34,7 @@ function M.fix_layout(view, layout)
 
   for _, msg in ipairs(view._messages or {}) do
     for _, line in ipairs(msg._lines or {}) do
-      height = height + math.max(1, math.ceil(M.line_width(line) / layout.size.width))
+      height = height + math.max(1, math.ceil(line_width(line) / layout.size.width))
     end
   end
 
@@ -63,7 +56,7 @@ function M.patch()
           has_markdown_width = true
         end
 
-        ret = math.max(ret, M.line_width(line))
+        ret = math.max(ret, line_width(line))
       end
 
       if has_markdown_width then

@@ -1,41 +1,42 @@
--- Link-aware Noice markdown rendering.
--- Purpose: render markdown links as their visible labels while storing URL ranges
--- so hover buffers can open them with K/gx. Supports both inline links and
--- rust-analyzer/rustdoc reference-style links such as:
---   See [`set_control_flow()`]
---   [`set_control_flow()`]: https://docs.rs/...
+-- Minimal link-aware Noice markdown rendering.
+-- Fixes LSP hover docs that arrive as hard-wrapped Markdown paragraphs by
+-- reflowing prose before Noice splits it into one rendered line per source line.
 
 local M = {}
+
 local hacks = require("utils.hacks")
 
 local LINK_HL = "@markup.link"
 
+local function trim(text)
+  return text:gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+local function normalize_label(label)
+  return trim(label):gsub("%s+", " "):lower()
+end
+
 local function normalize_url(url)
-  return url and (url:match("^<(.+)>$") or url) or nil
+  if not url then
+    return nil
+  end
+
+  return trim(url):match("^<(.+)>$") or trim(url)
 end
 
-local function normalize_reference_label(label)
-  return label:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " "):lower()
-end
-
-local function plain_reference_label(label)
+local function plain_label(label)
   return label:gsub("`([^`]*)`", "%1"):gsub("`", "")
 end
 
 local function set_reference(references, label, url)
-  if not (label and url) then
+  url = normalize_url(url)
+
+  if not (label and url and url ~= "") then
     return
   end
 
-  url = normalize_url(url)
-
-  references[normalize_reference_label(label)] = url
-
-  local plain_label = plain_reference_label(label)
-
-  if plain_label ~= label then
-    references[normalize_reference_label(plain_label)] = url
-  end
+  references[normalize_label(label)] = url
+  references[normalize_label(plain_label(label))] = url
 end
 
 local function parse_reference_definition(line)
@@ -68,6 +69,93 @@ local function is_reference_definition(line)
   return label ~= nil and not label:match("^%^")
 end
 
+local function fence_marker(line)
+  local marker = line:match("^%s*(```+)") or line:match("^%s*(~~~+)")
+
+  if marker and #marker >= 3 then
+    return marker:sub(1, 1), #marker
+  end
+
+  return nil, nil
+end
+
+local function is_fence_close(line, fence_char, fence_len)
+  local char, len = fence_marker(line)
+
+  return char == fence_char and len >= fence_len
+end
+
+local function is_blank(line)
+  return line:match("^%s*$") ~= nil
+end
+
+local function is_indented_code(line)
+  return (line:sub(1, 4) == "    " or line:sub(1, 1) == "\t") and not is_blank(line)
+end
+
+local function is_structural_line(line)
+  return line:match("^%s*#")
+    or line:match("^%s*>")
+    or line:match("^%s*[%-%+%*]%s+")
+    or line:match("^%s*%d+[%.%)]%s+")
+    or line:match("^%s*|.*|")
+    or line:match("^%s*%[.-%]:%s*")
+    or line:match("^%s*[-*_][%s%-*_]*$")
+end
+
+local function reflow(text)
+  local out = {}
+  local paragraph = {}
+  local in_fence = false
+  local fence_char
+  local fence_len
+
+  local function emit(line)
+    out[#out + 1] = line
+  end
+
+  local function flush_paragraph()
+    if #paragraph == 0 then
+      return
+    end
+
+    emit(table.concat(paragraph, " "))
+    paragraph = {}
+  end
+
+  for line in (text:gsub("\r", "") .. "\n"):gmatch("([^\n]*)\n") do
+    if in_fence then
+      emit(line)
+
+      if is_fence_close(line, fence_char, fence_len) then
+        in_fence = false
+      end
+    else
+      local char, len = fence_marker(line)
+
+      if char then
+        flush_paragraph()
+        emit(line)
+        in_fence = true
+        fence_char = char
+        fence_len = len
+      elseif is_blank(line) then
+        flush_paragraph()
+        emit(line)
+      elseif is_indented_code(line) or is_structural_line(line) then
+        flush_paragraph()
+        emit(line)
+      else
+        paragraph[#paragraph + 1] = trim(line)
+      end
+    end
+  end
+
+  flush_paragraph()
+
+  return table.concat(out, "\n"):gsub("\n$", "")
+end
+
 local function node_text(text, node)
   local _, start_col, _, end_col = node:range()
 
@@ -79,32 +167,34 @@ local function strip_reference_brackets(label)
 end
 
 local function reference_url(references, label)
-  return references[normalize_reference_label(label)]
+  return references[normalize_label(label)] or references[normalize_label(plain_label(label))]
+end
+
+local function child(node, node_type)
+  for child_node in node:iter_children() do
+    if child_node:type() == node_type then
+      return child_node
+    end
+  end
+
+  return nil
 end
 
 local function collect_links(text, node, links, references)
   local node_type = node:type()
-  local label_type = node_type == "image" and "image_description" or "link_text"
 
   if node_type == "inline_link" or node_type == "image" then
-    local label_node
-    local destination_node
-
-    for child in node:iter_children() do
-      if child:type() == label_type then
-        label_node = child
-      elseif child:type() == "link_destination" then
-        destination_node = child
-      end
-    end
+    local label_type = node_type == "image" and "image_description" or "link_text"
+    local label_node = child(node, label_type)
+    local destination_node = child(node, "link_destination")
 
     if label_node and destination_node then
       local _, full_start, _, full_end = node:range()
       local _, label_start, _, label_end = label_node:range()
 
       links[#links + 1] = {
-        full_start = full_start,
-        full_end = full_end,
+        from = full_start,
+        to = full_end,
         label = text:sub(label_start + 1, label_end),
         url = normalize_url(node_text(text, destination_node)),
       }
@@ -116,16 +206,8 @@ local function collect_links(text, node, links, references)
     or node_type == "collapsed_reference_link"
     or node_type == "full_reference_link"
   then
-    local label_node
-    local reference_node
-
-    for child in node:iter_children() do
-      if child:type() == "link_text" then
-        label_node = child
-      elseif child:type() == "link_label" then
-        reference_node = child
-      end
-    end
+    local label_node = child(node, "link_text")
+    local reference_node = child(node, "link_label")
 
     if label_node then
       local _, full_start, _, full_end = node:range()
@@ -136,8 +218,8 @@ local function collect_links(text, node, links, references)
 
       if url then
         links[#links + 1] = {
-          full_start = full_start,
-          full_end = full_end,
+          from = full_start,
+          to = full_end,
           label = label,
           url = url,
         }
@@ -153,19 +235,10 @@ local function collect_links(text, node, links, references)
 end
 
 local function parse_links(text, references)
-  if text == "" or not (vim.treesitter and vim.treesitter.get_string_parser) then
-    return {}
-  end
+  local parser = vim.treesitter.get_string_parser(text, "markdown_inline")
+  local ok, trees = pcall(parser.parse, parser)
 
-  local ok, parser = pcall(vim.treesitter.get_string_parser, text, "markdown_inline")
-
-  if not ok then
-    return {}
-  end
-
-  local parsed, trees = pcall(parser.parse, parser)
-
-  if not (parsed and trees and trees[1]) then
+  if not (ok and trees and trees[1]) then
     return {}
   end
 
@@ -173,16 +246,16 @@ local function parse_links(text, references)
 
   collect_links(text, trees[1]:root(), links, references or {})
   table.sort(links, function(a, b)
-    return a.full_start < b.full_start
+    return a.from < b.from
   end)
 
   return links
 end
 
-local function transform_line(text, references)
-  local ret = {}
+local function render_line(text, references)
+  local parts = {}
   local links = {}
-  local source_pos = 0
+  local source_pos = 1
   local output_len = 0
 
   local function append(chunk)
@@ -190,41 +263,25 @@ local function transform_line(text, references)
       return
     end
 
-    ret[#ret + 1] = chunk
+    parts[#parts + 1] = chunk
     output_len = output_len + #chunk
   end
 
   for _, link in ipairs(parse_links(text, references)) do
-    if link.full_start >= source_pos then
-      append(text:sub(source_pos + 1, link.full_start))
+    if link.from + 1 >= source_pos then
+      append(text:sub(source_pos, link.from))
 
       local from = output_len + 1
 
       append(link.label)
-
-      if link.url ~= "" and link.label ~= "" then
-        links[#links + 1] = { from = from, to = output_len, url = link.url }
-      end
-
-      source_pos = link.full_end
+      links[#links + 1] = { from = from, to = output_len, url = link.url }
+      source_pos = link.to + 1
     end
   end
 
-  append(text:sub(source_pos + 1))
+  append(text:sub(source_pos))
 
-  return table.concat(ret), links
-end
-
-function M.reference_definitions(text)
-  return parse_reference_definitions(text)
-end
-
-function M.visual_content(text, references)
-  return transform_line(text, references)
-end
-
-function M.is_reference_definition(line)
-  return is_reference_definition(line)
+  return table.concat(parts), links
 end
 
 local function attach_links(bufnr, lines, linenr_start)
@@ -232,36 +289,41 @@ local function attach_links(bufnr, lines, linenr_start)
     return
   end
 
-  linenr_start = linenr_start or 1
-
-  local existing = vim.b[bufnr]._ray_markdown_links
-  local buf_links = {}
-
-  if linenr_start ~= 1 and type(existing) == "table" then
-    buf_links = existing
-  end
+  local existing = linenr_start ~= 1
+      and type(vim.b[bufnr]._ray_markdown_links) == "table"
+      and vim.b[bufnr]._ray_markdown_links
+    or {}
 
   for index, line in ipairs(lines or {}) do
-    local linenr = linenr_start + index - 1
-    buf_links[tostring(linenr)] = line._ray_markdown_links
+    existing[tostring((linenr_start or 1) + index - 1)] = line._ray_markdown_links
   end
 
-  vim.b[bufnr]._ray_markdown_links = buf_links
+  vim.b[bufnr]._ray_markdown_links = existing
+end
+
+local function set_line_width(line, text)
+  if not line then
+    return
+  end
+
+  line._ray_markdown_width_source = text
+  line._ray_markdown_visual_width = vim.api.nvim_strwidth(text)
 end
 
 local function format_markdown(markdown, message, text, opts)
-  opts = opts or {}
-
   local noice_text = require("noice.text")
-  local references = parse_reference_definitions(text)
-  local blocks = markdown.parse(text, opts)
+  local normalized = reflow(text)
+  local references = parse_reference_definitions(normalized)
+  local blocks = markdown.parse(normalized, opts or {})
   local md_lines = 0
 
   local function emit_md()
-    if md_lines > 0 then
-      message:append(noice_text.syntax("markdown", md_lines))
-      md_lines = 0
+    if md_lines == 0 then
+      return
     end
+
+    message:append(noice_text.syntax("markdown", md_lines))
+    md_lines = 0
   end
 
   for _, block in ipairs(blocks) do
@@ -271,6 +333,7 @@ local function format_markdown(markdown, message, text, opts)
 
       for index, line in ipairs(block.code) do
         message:append(line)
+        set_line_width(message:last_line(), line)
 
         if index == #block.code then
           message:append(noice_text.syntax(block.lang, #block.code))
@@ -279,24 +342,22 @@ local function format_markdown(markdown, message, text, opts)
         end
       end
     elseif is_reference_definition(block.line) then
-      -- Reference definitions are rendered as clickable ranges on their visible
-      -- labels. Keep footnote definitions (`[^1]:`) visible by excluding them in
-      -- `is_reference_definition()`.
+      -- Keep reference definitions available for links, but don't render them.
     else
       message:newline()
 
       if markdown.is_rule(block.line) then
         markdown.horizontal_line(message)
       else
-        local line, links = transform_line(block.line, references)
+        local line, links = render_line(block.line, references)
 
         message:append(line)
 
         local last_line = message:last_line()
 
+        set_line_width(last_line, line)
+
         if last_line then
-          last_line._ray_markdown_width_source = line
-          last_line._ray_markdown_visual_width = vim.api.nvim_strwidth(line)
           last_line._ray_markdown_links = #links > 0 and links or nil
         end
 
@@ -323,11 +384,7 @@ end
 
 local function patch_keys(markdown)
   hacks.replace(markdown, "noice.markdown.keys", "keys", function(buf)
-    if not vim.api.nvim_buf_is_valid(buf) then
-      return
-    end
-
-    if vim.b[buf].markdown_keys then
+    if not vim.api.nvim_buf_is_valid(buf) or vim.b[buf].markdown_keys then
       return
     end
 
@@ -339,18 +396,8 @@ local function patch_keys(markdown)
         local links = vim.b[buf]._ray_markdown_links
         local line_links = type(links) == "table" and links[tostring(row)] or nil
 
-        if type(line_links) ~= "table" then
-          line_links = {}
-        end
-
-        for _, link in ipairs(line_links) do
-          if
-            type(link) == "table"
-            and type(link.from) == "number"
-            and type(link.to) == "number"
-            and col >= link.from
-            and col <= link.to
-          then
+        for _, link in ipairs(type(line_links) == "table" and line_links or {}) do
+          if col >= link.from and col <= link.to then
             return require("noice.util").open(link.url)
           end
         end
@@ -395,9 +442,7 @@ function M.patch()
 
   patch_keys(markdown)
 
-  local block = require("noice.text.block")
-
-  hacks.wrap(block, "noice.markdown.block.render", "render", function(render)
+  hacks.wrap(require("noice.text.block"), "noice.markdown.block.render", "render", function(render)
     return function(self, bufnr, ns_id, linenr_start, linenr_end)
       render(self, bufnr, ns_id, linenr_start, linenr_end)
       attach_links(bufnr, self._lines, linenr_start)
