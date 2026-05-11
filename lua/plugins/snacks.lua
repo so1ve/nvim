@@ -203,6 +203,13 @@ return {
         desc = "Command history",
       },
       {
+        "<leader>fl",
+        function()
+          Snacks.picker.lines()
+        end,
+        desc = "Search current buffer",
+      },
+      {
         "<leader>f/",
         function()
           Snacks.picker.search_history()
