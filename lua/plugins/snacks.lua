@@ -25,11 +25,11 @@ local function delete_startup_buffers()
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if window_util.is_dashboard(bufnr) then
-      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+      vim.api.nvim_buf_delete(bufnr, { force = true })
     elseif window_util.is_empty_unnamed_file(bufnr) and vim.fn.bufwinid(bufnr) == -1 then
       -- Remove only hidden, never-edited [No Name] placeholders; visible buffers
       -- or modified scratch buffers are intentionally left alone.
-      pcall(vim.api.nvim_buf_delete, bufnr, {})
+      vim.api.nvim_buf_delete(bufnr, {})
     end
   end
 end

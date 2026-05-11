@@ -32,10 +32,6 @@ local function round(x)
 end
 
 local function is_mounted(view)
-  if type(view.is_mounted) ~= "function" then
-    return false
-  end
-
   local ok, mounted = pcall(view.is_mounted, view)
 
   return ok and mounted or false
@@ -67,21 +63,13 @@ local function source_win(view)
 end
 
 local function source_bounds(win)
-  local ok_pos, pos = pcall(vim.api.nvim_win_get_position, win)
-  local ok_width, width = pcall(vim.api.nvim_win_get_width, win)
-
-  if not (ok_pos and ok_width and pos and type(width) == "number") then
-    return 0, vim.o.columns
-  end
+  local pos = vim.api.nvim_win_get_position(win)
+  local width = vim.api.nvim_win_get_width(win)
 
   return pos[2] or 0, width
 end
 
 local function cursor(win)
-  if not win then
-    return 0, -1
-  end
-
   local cur_pos = vim.api.nvim_win_get_cursor(win)
   -- screenrow()/screencol() read the active UI cursor. Once the hover is
   -- focused, that cursor belongs to the hover window, so ask for the source
@@ -105,6 +93,11 @@ local function place(view, layout)
   local bw = 2
   local bh = 1
   local src_win = source_win(view)
+
+  if not src_win then
+    return layout
+  end
+
   local src_left, src_width = source_bounds(src_win)
   local w = math.min(size.width, math.max(1, src_width - (pad + bw) * 2))
   local h = size.height
