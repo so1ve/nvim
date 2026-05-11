@@ -19,6 +19,7 @@ return {
       enable_git_status = false,
       hide_root_node = true,
       retain_hidden_root_indent = true,
+      use_libuv_file_watcher = true,
       default_component_configs = {
         indent = {
           with_expanders = true,
