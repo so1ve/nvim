@@ -5,7 +5,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Reload files changed outside Neovim",
   callback = function()
     if vim.bo.buftype ~= "nofile" then
