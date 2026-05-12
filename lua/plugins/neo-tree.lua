@@ -98,11 +98,34 @@ return {
         Snacks.rename.on_rename_file(data.source, data.destination)
       end
 
+      local function normalize_path(path)
+        local normalized = vim.fs.normalize(path)
+
+        if vim.fn.has("win32") == 1 then
+          normalized = normalized:lower()
+        end
+
+        return normalized
+      end
+
+      local function on_delete(path)
+        local deleted_path = normalize_path(path)
+
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.api.nvim_buf_is_valid(buf) and normalize_path(vim.api.nvim_buf_get_name(buf)) == deleted_path then
+            Snacks.bufdelete({ buf = buf, force = true })
+
+            break
+          end
+        end
+      end
+
       local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
         { event = events.FILE_MOVED, handler = on_move },
         { event = events.FILE_RENAMED, handler = on_move },
+        { event = events.FILE_DELETED, handler = on_delete },
       })
 
       require("neo-tree").setup(opts)
