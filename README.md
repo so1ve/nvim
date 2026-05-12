@@ -6,5 +6,5 @@
 - `git`
 - `rg`
 - `fd`
-- `tree-sitter`
+- `tree-sitter-cli`
 - `lazygit`
