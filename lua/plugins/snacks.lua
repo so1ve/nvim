@@ -226,14 +226,14 @@ return {
       {
         "<leader>tt",
         function()
-          Snacks.terminal()
+          Snacks.terminal(nil, { count = 1 })
         end,
         desc = "Toggle terminal",
       },
       {
         "<leader>tT",
         function()
-          Snacks.terminal(nil, { win = { position = "float" } })
+          Snacks.terminal(nil, { count = 2, win = { position = "float" } })
         end,
         desc = "Toggle floating terminal",
       },
