@@ -1,0 +1,89 @@
+-- Cursor-first page scrolling for Neoscroll.
+-- Neoscroll only supports window-only or window+cursor ticks. This patch keeps
+-- Neoscroll's timer/easing/teardown machinery and only changes who moves while
+-- our page-scroll mappings are active.
+
+local M = {}
+local hacks = require("utils.hacks")
+
+local active = false
+
+local function half_scroll_count()
+  return vim.v.count > 0 and vim.v.count or vim.wo.scroll
+end
+
+local function full_scroll_count()
+  return vim.fn.winheight(0) * (vim.v.count > 0 and vim.v.count or 1)
+end
+
+local function cursor_should_move_alone(data, direction)
+  local half_window = math.floor(data.window_height / 2)
+  local top_edge = data.scrolloff >= half_window and half_window or data.scrolloff + 1
+  local bottom_edge = data.scrolloff >= half_window and half_window or data.window_height - data.scrolloff
+
+  return direction < 0 and data.cursor_win_line > top_edge or direction > 0 and data.cursor_win_line < bottom_edge
+end
+
+local function patch_neoscroll()
+  local logic = require("neoscroll.logic")
+  local scroll = require("neoscroll.scroll")
+
+  hacks.wrap(logic, "neoscroll.cursor_first.who_scrolls", "who_scrolls", function(who_scrolls)
+    return function(data, move_cursor, direction)
+      if active and move_cursor then
+        if cursor_should_move_alone(data, direction) then
+          return false, true
+        end
+
+        scroll.initial_cursor_win_line = data.cursor_win_line
+      end
+
+      return who_scrolls(data, move_cursor, direction)
+    end
+  end)
+
+  hacks.wrap(scroll, "neoscroll.cursor_first.tear_down", "tear_down", function(tear_down)
+    return function(self, ...)
+      active = false
+
+      return tear_down(self, ...)
+    end
+  end)
+end
+
+local function scroll(lines, duration)
+  active = true
+
+  require("neoscroll").scroll(lines, {
+    move_cursor = true,
+    duration = duration,
+  })
+
+  if not require("neoscroll.scroll").scrolling then
+    active = false
+  end
+end
+
+local function map(lhs, lines, duration, desc)
+  vim.keymap.set({ "n", "v", "x" }, lhs, function()
+    scroll(lines(), duration)
+  end, { desc = desc, silent = true })
+end
+
+function M.setup()
+  patch_neoscroll()
+
+  map("<C-u>", function()
+    return -half_scroll_count()
+  end, 250, "Move cursor half page up")
+
+  map("<C-d>", half_scroll_count, 250, "Move cursor half page down")
+
+  map("<C-b>", function()
+    return -full_scroll_count()
+  end, 450, "Move cursor page up")
+
+  map("<C-f>", full_scroll_count, 450, "Move cursor page down")
+end
+
+return M
