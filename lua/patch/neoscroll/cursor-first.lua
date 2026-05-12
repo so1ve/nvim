@@ -1,7 +1,11 @@
 -- Cursor-first page scrolling for Neoscroll.
--- Neoscroll only supports window-only or window+cursor ticks. This patch keeps
--- Neoscroll's timer/easing/teardown machinery and only changes who moves while
--- our page-scroll mappings are active.
+-- Purpose: make <C-u>/<C-d>/<C-b>/<C-f> move the cursor inside the viewport
+-- first, then scroll the window once the cursor reaches the scrolloff edge.
+-- Behavior: page keys stay smooth and respect Neoscroll timing while avoiding
+-- the default behavior that pins the cursor near the wrong viewport edge.
+-- Implementation: wrap Neoscroll's per-tick movement decision with utils.hacks;
+-- only active page-scroll mappings use cursor-only ticks before falling back to
+-- Neoscroll's original window+cursor logic.
 
 local M = {}
 local hacks = require("utils.hacks")

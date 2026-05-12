@@ -1,3 +1,10 @@
+-- LSP hover provider aggregation patch.
+-- Purpose: show hover content from multiple named LSP providers through Noice.
+-- Behavior: request each configured provider, render the first available hover
+-- immediately, then refresh once all providers have responded.
+-- Implementation: builds a Noice hover message manually with separators between
+-- providers because noice.nvim does not natively aggregate hover responses.
+
 local M = {}
 
 local docs = require("noice.lsp.docs")
