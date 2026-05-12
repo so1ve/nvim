@@ -25,8 +25,10 @@ local function configure_lsp_buffer(event)
     navic.attach(client, bufnr)
   end
 
-  local function map(lhs, rhs, desc)
-    vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
+  local function map(lhs, rhs, desc, opts)
+    local keymap_opts = vim.tbl_extend("force", { buffer = bufnr, desc = desc }, opts or {})
+
+    vim.keymap.set("n", lhs, rhs, keymap_opts)
   end
 
   map("K", function()
@@ -58,7 +60,9 @@ local function configure_lsp_buffer(event)
     end, "Toggle inlay hints")
   end
 
-  map("<leader>cr", vim.lsp.buf.rename, "Rename symbol")
+  map("<leader>cr", function()
+    return ":IncRename " .. vim.fn.expand("<cword>")
+  end, "Rename symbol", { expr = true })
 end
 
 return {
