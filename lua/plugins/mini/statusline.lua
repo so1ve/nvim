@@ -137,7 +137,14 @@ local function redraw_statusline()
   end)
 end
 
-local function register_autocmds()
+function M.setup()
+  require("mini.statusline").setup({
+    content = {
+      active = statusline_active,
+      inactive = statusline_inactive,
+    },
+  })
+
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
     desc = "Redraw statusline when macro recording changes",
     callback = redraw_statusline,
@@ -148,16 +155,6 @@ local function register_autocmds()
     desc = "Redraw statusline when Git head changes",
     callback = redraw_statusline,
   })
-end
-
-function M.setup()
-  require("mini.statusline").setup({
-    content = {
-      active = statusline_active,
-      inactive = statusline_inactive,
-    },
-  })
-  register_autocmds()
 end
 
 return M

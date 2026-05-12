@@ -19,24 +19,6 @@ local function refresh_visible_diagnostics(winid)
   end)
 end
 
-local function register_scroll_refresh_autocmd()
-  vim.api.nvim_create_autocmd("WinScrolled", {
-    callback = function(event)
-      local winid = tonumber(event.match) or vim.api.nvim_get_current_win()
-      local changes = vim.v.event and vim.v.event[tostring(winid)]
-
-      if type(changes) == "table" and changes.topline == 0 and changes.leftcol == 0 and changes.skipcol == 0 then
-        return
-      end
-
-      vim.schedule(function()
-        refresh_visible_diagnostics(winid)
-      end)
-    end,
-    desc = "Refresh tiny inline diagnostics after scrolling",
-  })
-end
-
 return {
   "rachartier/tiny-inline-diagnostic.nvim",
   event = "LspAttach",
@@ -57,6 +39,21 @@ return {
   },
   config = function(_, opts)
     require("tiny-inline-diagnostic").setup(opts)
-    register_scroll_refresh_autocmd()
+
+    vim.api.nvim_create_autocmd("WinScrolled", {
+      callback = function(event)
+        local winid = tonumber(event.match) or vim.api.nvim_get_current_win()
+        local changes = vim.v.event and vim.v.event[tostring(winid)]
+
+        if type(changes) == "table" and changes.topline == 0 and changes.leftcol == 0 and changes.skipcol == 0 then
+          return
+        end
+
+        vim.schedule(function()
+          refresh_visible_diagnostics(winid)
+        end)
+      end,
+      desc = "Refresh tiny inline diagnostics after scrolling",
+    })
   end,
 }

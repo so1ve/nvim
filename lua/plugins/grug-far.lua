@@ -1,16 +1,5 @@
 local edgy = require("config.edgy")
 
-local function open_search_replace()
-  require("grug-far").open({ transient = true })
-end
-
-local function open_current_file_search_replace()
-  require("grug-far").open({
-    transient = true,
-    prefills = { paths = vim.fn.expand("%") },
-  })
-end
-
 return {
   {
     "MagicDuck/grug-far.nvim",
@@ -32,13 +21,20 @@ return {
     keys = {
       {
         "<leader>sr",
-        open_current_file_search_replace,
+        function()
+          require("grug-far").open({
+            transient = true,
+            prefills = { paths = vim.fn.expand("%") },
+          })
+        end,
         mode = { "n", "x" },
         desc = "Search and replace current file",
       },
       {
         "<leader>sR",
-        open_search_replace,
+        function()
+          require("grug-far").open({ transient = true })
+        end,
         mode = { "n", "x" },
         desc = "Search and replace",
       },

@@ -1,17 +1,3 @@
-local function configure_hover_movement()
-  vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("RayNoiceHoverMovement", { clear = true }),
-    desc = "Use visual-line movement in Noice hover windows",
-    pattern = "noice_hover",
-    callback = function(event)
-      local opts = { buffer = event.buf, nowait = true, silent = true }
-
-      vim.keymap.set("n", "j", "gj", vim.tbl_extend("force", opts, { desc = "Hover down visual line" }))
-      vim.keymap.set("n", "k", "gk", vim.tbl_extend("force", opts, { desc = "Hover up visual line" }))
-    end,
-  })
-end
-
 return {
   {
     "folke/noice.nvim",
@@ -111,8 +97,19 @@ return {
     },
     config = function(_, opts)
       require("patch.noice").patch()
-      configure_hover_movement()
       require("noice").setup(opts)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("RayNoiceHoverMovement", { clear = true }),
+        desc = "Use visual-line movement in Noice hover windows",
+        pattern = "noice_hover",
+        callback = function(event)
+          local keymap_opts = { buffer = event.buf, nowait = true, silent = true }
+
+          vim.keymap.set("n", "j", "gj", vim.tbl_extend("force", keymap_opts, { desc = "Hover down visual line" }))
+          vim.keymap.set("n", "k", "gk", vim.tbl_extend("force", keymap_opts, { desc = "Hover up visual line" }))
+        end,
+      })
     end,
   },
 }

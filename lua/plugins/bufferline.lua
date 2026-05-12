@@ -1,7 +1,3 @@
-local function delete_buffer(buffer)
-  Snacks.bufdelete(buffer)
-end
-
 return {
   "akinsho/bufferline.nvim",
   version = "*",
@@ -36,7 +32,9 @@ return {
         return " " .. (icons[level] or "• ") .. count
       end,
 
-      close_command = delete_buffer,
+      close_command = function(buffer)
+        Snacks.bufdelete(buffer)
+      end,
     },
   },
 }

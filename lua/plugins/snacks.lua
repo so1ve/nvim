@@ -34,15 +34,6 @@ local function delete_startup_buffers()
   end
 end
 
-local function register_dashboard_cleanup_autocmds()
-  vim.api.nvim_create_autocmd("BufEnter", {
-    desc = "Dismiss dashboard when entering a listed file buffer",
-    callback = delete_startup_buffers,
-  })
-
-  delete_startup_buffers()
-end
-
 return {
   {
     "folke/snacks.nvim",
@@ -122,7 +113,13 @@ return {
 
       require("patch.snacks.dashboard").patch()
       snacks.setup(opts)
-      register_dashboard_cleanup_autocmds()
+
+      vim.api.nvim_create_autocmd("BufEnter", {
+        desc = "Dismiss dashboard when entering a listed file buffer",
+        callback = delete_startup_buffers,
+      })
+
+      delete_startup_buffers()
     end,
     keys = {
       {

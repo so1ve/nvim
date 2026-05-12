@@ -35,20 +35,6 @@ local function register_treesitter_aliases(languages)
   end
 end
 
-local function register_treesitter_autocmd(languages)
-  vim.api.nvim_create_autocmd("FileType", {
-    desc = "Start Tree-sitter for configured parsers",
-    callback = function(event)
-      local filetype = vim.bo[event.buf].filetype
-      local parser = languages.get(filetype, "treesitter", vim.treesitter.language.get_lang)
-
-      if parser and vim.treesitter.language.add(parser) == true then
-        vim.treesitter.start(event.buf, parser)
-      end
-    end,
-  })
-end
-
 return {
   "nvim-treesitter/nvim-treesitter",
   lazy = false,
@@ -57,6 +43,17 @@ return {
     local languages = require("config.languages")
 
     register_treesitter_aliases(languages)
-    register_treesitter_autocmd(languages)
+
+    vim.api.nvim_create_autocmd("FileType", {
+      desc = "Start Tree-sitter for configured parsers",
+      callback = function(event)
+        local filetype = vim.bo[event.buf].filetype
+        local parser = languages.get(filetype, "treesitter", vim.treesitter.language.get_lang)
+
+        if parser and vim.treesitter.language.add(parser) == true then
+          vim.treesitter.start(event.buf, parser)
+        end
+      end,
+    })
   end,
 }

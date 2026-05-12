@@ -30,22 +30,6 @@ local function rust_lsp_command(command)
   end
 end
 
-local function refresh_rust_diagnostics(args)
-  local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "rust_analyzer" })
-
-  if #clients > 0 then
-    vim.lsp.diagnostic._refresh(args.buf)
-  end
-end
-
-local function setup_rust_autocmds()
-  vim.api.nvim_create_autocmd("FileChangedShellPost", {
-    desc = "Refresh Rust diagnostics after external file reload",
-    pattern = "*.rs",
-    callback = refresh_rust_diagnostics,
-  })
-end
-
 local function attach_rust_keymaps(_, bufnr)
   local commands = {
     RustCrateGraph = { "crateGraph", "View crate graph" },
@@ -163,7 +147,17 @@ return {
       config = function(_, opts)
         local user_config = type(vim.g.rustaceanvim) == "table" and vim.g.rustaceanvim or {}
 
-        setup_rust_autocmds()
+        vim.api.nvim_create_autocmd("FileChangedShellPost", {
+          desc = "Refresh Rust diagnostics after external file reload",
+          pattern = "*.rs",
+          callback = function(args)
+            local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "rust_analyzer" })
+
+            if #clients > 0 then
+              vim.lsp.diagnostic._refresh(args.buf)
+            end
+          end,
+        })
 
         vim.g.rustaceanvim = function()
           local config = vim.deepcopy(opts)
