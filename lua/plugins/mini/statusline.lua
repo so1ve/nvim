@@ -1,5 +1,6 @@
 local M = {}
 local trunc_width = 120
+local max_parts = 5
 
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
@@ -26,7 +27,7 @@ local function statusline_location()
   return "%l/%L:%v"
 end
 
-local function statusline_pretty_path(max_parts)
+local function statusline_pretty_path()
   local path = vim.api.nvim_buf_get_name(0)
 
   if path == "" then
@@ -97,7 +98,7 @@ local function statusline_file()
     return icon_part
   end
 
-  local path_part = statusline_highlighted_path(statusline_pretty_path(3))
+  local path_part = statusline_highlighted_path(statusline_pretty_path())
 
   return icon_part .. "%#MiniStatuslineFileinfo# " .. path_part
 end
