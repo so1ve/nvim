@@ -1,4 +1,4 @@
-vim.env.PRETTIERD_LOCAL_PRETTIER_ONLY = "1"
+require("config.formatters")
 
 return {
   "stevearc/conform.nvim",

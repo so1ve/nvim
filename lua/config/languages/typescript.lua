@@ -1,3 +1,4 @@
+local formatters = require("config.formatters")
 local unpack = require("utils").unpack
 
 local tsserver_language_settings = {
@@ -80,26 +81,26 @@ return {
     typescript = {
       treesitter = "typescript",
       lsp = { "vtsls", "eslint" },
-      tools = { "prettierd" },
-      formatters = { "prettierd" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     javascript = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      tools = { "prettierd" },
-      formatters = { "prettierd" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     typescriptreact = {
       treesitter = "tsx",
       lsp = { "vtsls", "eslint" },
-      tools = { "prettierd" },
-      formatters = { "prettierd" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     javascriptreact = {
       treesitter = "javascript",
       lsp = { "vtsls", "eslint" },
-      tools = { "prettierd" },
-      formatters = { "prettierd" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
   },
   servers = {
