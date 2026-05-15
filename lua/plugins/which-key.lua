@@ -8,6 +8,7 @@ local leader_groups = {
   { "<leader>m", group = "Multicursor", icon = { icon = "󰆿", color = "purple" } },
   { "<leader>n", group = "Noice", icon = { icon = "󰎟", color = "cyan" } },
   { "<leader>o", group = "AI", icon = { icon = "󰚩", color = "green" } },
+  { "<leader>p", group = "Project", icon = { icon = "", color = "blue" } },
   { "<leader>r", group = "Refactor", icon = { icon = "󰑕", color = "purple" } },
   { "<leader>s", group = "Search", icon = { icon = "", color = "blue" } },
   { "<leader>t", group = "Terminal", icon = { icon = "", color = "green" } },

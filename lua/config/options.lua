@@ -80,6 +80,10 @@ opt.fileformat = "unix"
 opt.undofile = true
 opt.autoread = true
 
+-- sessions
+opt.sessionoptions =
+  { "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "terminal", "localoptions" }
+
 -- responsiveness
 opt.updatetime = 250
 opt.timeoutlen = 300
