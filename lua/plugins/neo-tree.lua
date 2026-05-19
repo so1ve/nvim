@@ -1,6 +1,18 @@
 local edgy = require("config.edgy")
 local bufferline = require("config.bufferline")
 
+local function smooth_scroll_or_preview(tree_direction, preview_direction)
+  return function(state)
+    if require("neo-tree.sources.common.preview").is_active() then
+      state.config = { direction = preview_direction }
+
+      return state.commands.scroll_preview(state)
+    end
+
+    require("patch.neoscroll.cursor-first").scroll_page(tree_direction)
+  end
+end
+
 return {
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -25,11 +37,12 @@ return {
           with_expanders = true,
         },
       },
-      -- window = {
-      --   mappings = {
-      --     q = "close_window",
-      --   },
-      -- },
+      window = {
+        mappings = {
+          ["<C-b>"] = { smooth_scroll_or_preview(-1, 10), desc = "Smooth page up or scroll preview" },
+          ["<C-f>"] = { smooth_scroll_or_preview(1, -10), desc = "Smooth page down or scroll preview" },
+        },
+      },
       filesystem = {
         follow_current_file = {
           enabled = true,
