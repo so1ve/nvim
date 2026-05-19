@@ -40,10 +40,22 @@ return {
     vim.keymap.set("n", "<C-leftdrag>", mc.handleMouseDrag, { desc = "Drag cursor with mouse" })
     vim.keymap.set("n", "<C-leftrelease>", mc.handleMouseRelease, { desc = "Release cursor with mouse" })
 
+    local append_at_line_end = function()
+      mc.action(function(ctx)
+        ctx:forEachCursor(function(cursor)
+          cursor:feedkeys("$")
+        end)
+      end)
+      mc.feedkeys("a")
+    end
+
     mc.addKeymapLayer(function(layer_map)
       layer_map({ "n", "x" }, "<leader>mp", mc.prevCursor)
       layer_map({ "n", "x" }, "<leader>mP", mc.nextCursor)
       layer_map({ "n", "x" }, "<leader>mx", mc.deleteCursor)
+      layer_map("n", "A", append_at_line_end)
+      layer_map("x", "I", mc.insertVisual)
+      layer_map("x", "A", mc.appendVisual)
       layer_map("n", "<Esc>", function()
         if mc.cursorsEnabled() then
           mc.clearCursors()
