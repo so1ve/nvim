@@ -23,10 +23,6 @@ local function statusline_macro()
   return statusline_escape("recording @" .. register)
 end
 
-local function statusline_location()
-  return "%l/%L:%v"
-end
-
 local function statusline_pretty_path()
   local path = vim.api.nvim_buf_get_name(0)
 
@@ -50,7 +46,7 @@ local function statusline_pretty_path()
   return relative
 end
 
-local function statusline_fileinfo()
+local function statusline_metadata()
   if MiniStatusline.is_truncated(trunc_width) or vim.bo.buftype ~= "" then
     return ""
   end
@@ -100,31 +96,25 @@ local function statusline_file()
 
   local path_part = statusline_highlighted_path(statusline_pretty_path())
 
-  return icon_part .. "%#MiniStatuslineFileinfo# " .. path_part
+  return icon_part .. "%#MiniStatuslinePath# " .. path_part
 end
 
 local function statusline_active()
   local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
   local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
   local file = statusline_file()
-  local fileinfo = statusline_fileinfo()
+  local metadata = statusline_metadata()
   local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
-  local location = statusline_location()
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
-    {
-      hl = "MiniStatuslineDevinfo",
-      strings = {
-        statusline_section(git),
-        statusline_macro(),
-      },
-    },
+    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git) } },
     "%<",
-    { hl = "MiniStatuslineFileinfo", strings = { file } },
+    { hl = "MiniStatuslinePath", strings = { file } },
     "%=",
-    { hl = "MiniStatuslineFileinfo", strings = { statusline_section(fileinfo) } },
-    { hl = mode_hl, strings = { statusline_section(search), location } },
+    { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
+    { hl = "MiniStatuslineMetadata", strings = { statusline_section(metadata) } },
+    { hl = mode_hl, strings = { statusline_section(search), "%l/%L:%v" } },
   })
 end
 
