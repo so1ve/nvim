@@ -51,7 +51,6 @@ return {
   version = "1.*",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
-    "nvim-mini/mini.nvim",
     "xzbdmw/colorful-menu.nvim",
     "so1ve/blink-noice-docs.nvim",
   },
@@ -67,9 +66,6 @@ return {
   opts = {
     appearance = {
       kind_icons = require("config.icons").symbols,
-    },
-    snippets = {
-      preset = "mini_snippets",
     },
     keymap = {
       preset = "none",
@@ -98,6 +94,7 @@ return {
         "snippet_forward",
         "fallback",
       },
+      ["<S-Tab>"] = { "snippet_backward", "fallback" },
       ["<C-l>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-d>"] = { "scroll_documentation_down", "scroll_signature_down", "fallback" },
       ["<C-u>"] = { "scroll_documentation_up", "scroll_signature_up", "fallback" },
@@ -152,6 +149,15 @@ return {
           direction_priority = {
             menu_north = { "e", "n", "s" },
             menu_south = { "e", "s", "n" },
+          },
+        },
+      },
+    },
+    sources = {
+      providers = {
+        snippets = {
+          opts = {
+            friendly_snippets = false,
           },
         },
       },
