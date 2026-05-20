@@ -151,7 +151,7 @@ return {
           desc = "Refresh Rust diagnostics after external file reload",
           pattern = "*.rs",
           callback = function(args)
-            local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "rust_analyzer" })
+            local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "rust-analyzer" })
 
             if #clients > 0 then
               vim.lsp.diagnostic._refresh(args.buf)
