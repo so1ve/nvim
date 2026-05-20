@@ -1,5 +1,3 @@
-local schemastore = require("config.schemastore")
-
 return {
   languages = {
     json = {
@@ -12,7 +10,7 @@ return {
     },
     toml = {
       treesitter = "toml",
-      lsp = { "taplo" },
+      lsp = { "tombi" },
     },
     yaml = {
       treesitter = "yaml",
@@ -27,7 +25,7 @@ return {
             format = {
               enable = true,
             },
-            schemas = schemastore.json_schemas(),
+            schemas = require("schemastore").json.schemas(),
             validate = {
               enable = true,
             },
@@ -35,12 +33,32 @@ return {
         },
       }
     end,
-    taplo = {
-      before_init = schemastore.set_taplo_catalog,
+    tombi = {
       settings = {
-        evenBetterToml = {
-          schema = {
-            enabled = true,
+        tombi = {
+          extensions = {
+            ["tombi-toml/cargo"] = {
+              lsp = {
+                ["code-action"] = {
+                  ["update-dependency-to-latest-version"] = {
+                    enabled = false,
+                  },
+                },
+                completion = {
+                  ["dependency-feature"] = {
+                    enabled = false,
+                  },
+                  ["dependency-version"] = {
+                    enabled = false,
+                  },
+                },
+                ["inlay-hint"] = {
+                  ["dependency-version"] = {
+                    enabled = false,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -55,10 +73,8 @@ return {
         },
       },
       before_init = function(_, config)
-        config.settings = config.settings or {}
-        config.settings.yaml = config.settings.yaml or {}
         config.settings.yaml.schemas =
-          vim.tbl_deep_extend("force", config.settings.yaml.schemas or {}, schemastore.yaml_schemas())
+          vim.tbl_deep_extend("force", config.settings.yaml.schemas or {}, require("schemastore").yaml.schemas())
       end,
       settings = {
         redhat = {
