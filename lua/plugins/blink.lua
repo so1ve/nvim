@@ -46,6 +46,19 @@ local function label_highlight(ctx)
   return highlights
 end
 
+local function cargo_lsp_items(ctx, items)
+  if
+    vim.bo[ctx.bufnr].filetype ~= "toml"
+    or vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ctx.bufnr), ":t") ~= "Cargo.toml"
+  then
+    return items
+  end
+
+  return vim.tbl_filter(function(item)
+    return item.client_name ~= "crates.nvim" or (item.kind_name ~= "Version" and item.kind_name ~= "Feature")
+  end, items)
+end
+
 return {
   "saghen/blink.cmp",
   version = "1.*",
@@ -155,6 +168,9 @@ return {
     },
     sources = {
       providers = {
+        lsp = {
+          transform_items = cargo_lsp_items,
+        },
         snippets = {
           opts = {
             friendly_snippets = false,

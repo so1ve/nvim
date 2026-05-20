@@ -44,19 +44,6 @@ return {
                     enabled = false,
                   },
                 },
-                completion = {
-                  ["dependency-feature"] = {
-                    enabled = false,
-                  },
-                  ["dependency-version"] = {
-                    enabled = false,
-                  },
-                },
-                ["inlay-hint"] = {
-                  ["dependency-version"] = {
-                    enabled = false,
-                  },
-                },
               },
             },
           },
