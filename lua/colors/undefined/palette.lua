@@ -52,4 +52,13 @@ return {
   diff_add_bg = "#2f3f34",
   diff_change_fg = "#ffab70",
   diff_header = "#79b8ff",
+
+  markdown_heading_bg = {
+    "#2f3f34",
+    "#2d3a32",
+    "#2b352f",
+    "#29302d",
+    "#282c2a",
+    "#272928",
+  },
 }

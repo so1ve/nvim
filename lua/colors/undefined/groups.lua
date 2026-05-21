@@ -4,6 +4,10 @@ local styles = require("colors.undefined.styles")
 function M.get(p)
   local s = styles.get(p)
 
+  local function markdown_heading(level)
+    return styles.extend(s.title, { bg = p.markdown_heading_bg[level] })
+  end
+
   return {
     Normal = s.normal,
     NormalNC = s.normal_nc,
@@ -153,6 +157,18 @@ function M.get(p)
     ["@tag.delimiter"] = { fg = p.delimiter },
 
     ["@markup.heading"] = s.title,
+    ["@markup.heading.1"] = markdown_heading(1),
+    ["@markup.heading.2"] = markdown_heading(2),
+    ["@markup.heading.3"] = markdown_heading(3),
+    ["@markup.heading.4"] = markdown_heading(4),
+    ["@markup.heading.5"] = markdown_heading(5),
+    ["@markup.heading.6"] = markdown_heading(6),
+    ["@markup.heading.1.markdown"] = markdown_heading(1),
+    ["@markup.heading.2.markdown"] = markdown_heading(2),
+    ["@markup.heading.3.markdown"] = markdown_heading(3),
+    ["@markup.heading.4.markdown"] = markdown_heading(4),
+    ["@markup.heading.5.markdown"] = markdown_heading(5),
+    ["@markup.heading.6.markdown"] = markdown_heading(6),
     ["@markup.strong"] = { fg = p.fg, bold = true },
     ["@markup.italic"] = { fg = p.fg, italic = true },
     ["@markup.quote"] = { fg = p.interface },
