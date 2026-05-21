@@ -32,6 +32,36 @@ local function patch_neoscroll()
   local logic = require("neoscroll.logic")
   local scroll = require("neoscroll.scroll")
 
+  local function win_call(winid, fn)
+    if winid == 0 then
+      return fn()
+    end
+
+    return vim.api.nvim_win_call(winid, fn)
+  end
+
+  local function movement_state(winid)
+    local cursor = vim.api.nvim_win_get_cursor(winid)
+
+    return win_call(winid, function()
+      return {
+        col = cursor[2],
+        line = cursor[1],
+        topline = vim.fn.line("w0"),
+        virtcol = vim.fn.virtcol("."),
+        winline = vim.fn.winline(),
+      }
+    end)
+  end
+
+  local function same_state(before, after)
+    return before.line == after.line
+      and before.col == after.col
+      and before.virtcol == after.virtcol
+      and before.winline == after.winline
+      and before.topline == after.topline
+  end
+
   hacks.wrap(logic, "neoscroll.cursor_first.who_scrolls", "who_scrolls", function(who_scrolls)
     return function(data, move_cursor, direction)
       if active and move_cursor then
@@ -43,6 +73,20 @@ local function patch_neoscroll()
       end
 
       return who_scrolls(data, move_cursor, direction)
+    end
+  end)
+
+  hacks.wrap(scroll, "neoscroll.cursor_first.scroll_one_line", "scroll_one_line", function(scroll_one_line)
+    return function(self, ...)
+      local winid = self.opts.winid or 0
+      local before = movement_state(winid)
+      local success = scroll_one_line(self, ...)
+
+      if not success then
+        return false
+      end
+
+      return not same_state(before, movement_state(winid))
     end
   end)
 
