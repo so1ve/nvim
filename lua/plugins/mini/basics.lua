@@ -15,6 +15,13 @@ function M.setup()
   })
   require("mini.comment").setup()
   require("mini.move").setup()
+  require("mini.operators").setup({
+    evaluate = { prefix = "" },
+    exchange = { prefix = "gX" },
+    multiply = { prefix = "gm" },
+    replace = { prefix = "gR" },
+    sort = { prefix = "gs" },
+  })
   require("mini.splitjoin").setup()
   require("mini.bracketed").setup({
     buffer = { suffix = "" },
