@@ -7,6 +7,7 @@ require("config.options")
 require("config.filetypes")
 require("config.autocmds")
 require("config.keymaps")
+require("config.commands")
 
 vim.cmd.colorscheme("undefined")
 
