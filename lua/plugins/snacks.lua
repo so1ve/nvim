@@ -124,6 +124,13 @@ return {
     end,
     keys = {
       {
+        "<leader><space>",
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = "Smart find files",
+      },
+      {
         "<leader>gg",
         function()
           Snacks.lazygit()
@@ -220,6 +227,13 @@ return {
           Snacks.picker.git_status()
         end,
         desc = "Git status",
+      },
+      {
+        "<leader>gb",
+        function()
+          Snacks.picker.git_branches()
+        end,
+        desc = "Git branches",
       },
       {
         "<leader>tt",
