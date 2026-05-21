@@ -34,6 +34,10 @@ local function delete_startup_buffers()
   end
 end
 
+local function getcwd()
+  return vim.fn.getcwd(0)
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -133,7 +137,7 @@ return {
       {
         "<leader>gg",
         function()
-          Snacks.lazygit()
+          Snacks.lazygit({ cwd = getcwd() })
         end,
         desc = "LazyGit",
       },
@@ -238,14 +242,14 @@ return {
       {
         "<leader>tt",
         function()
-          Snacks.terminal(nil, { count = 1 })
+          Snacks.terminal(nil, { count = 1, cwd = getcwd() })
         end,
         desc = "Toggle terminal",
       },
       {
         "<leader>tT",
         function()
-          Snacks.terminal(nil, { count = 2, win = { position = "float" } })
+          Snacks.terminal(nil, { count = 2, cwd = getcwd(), win = { position = "float" } })
         end,
         desc = "Toggle floating terminal",
       },
