@@ -1,3 +1,11 @@
+local function find_files()
+  require("snacks-fff").find_files()
+end
+
+local function live_grep()
+  require("snacks-fff").live_grep()
+end
+
 return {
   {
     "dmtrKovalenko/fff.nvim",
@@ -19,26 +27,16 @@ return {
     end,
   },
   {
-    "so1ve/snacks-fff.nvim",
+    dir = "D:/Workspace/snacks-fff.nvim",
+    name = "snacks-fff.nvim",
     dependencies = {
       "folke/snacks.nvim",
       "dmtrKovalenko/fff.nvim",
     },
     keys = {
-      {
-        "<leader>ff",
-        function()
-          require("snacks-fff").find_files()
-        end,
-        desc = "Find files",
-      },
-      {
-        "<leader>fg",
-        function()
-          require("snacks-fff").live_grep()
-        end,
-        desc = "Live grep",
-      },
+      { "<leader><space>", find_files, desc = "Find files" },
+      { "<leader>ff", find_files, desc = "Find files" },
+      { "<leader>fg", live_grep, desc = "Live grep" },
     },
   },
 }
