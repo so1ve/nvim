@@ -167,7 +167,13 @@ return {
       },
     },
     sources = {
+      default = { "lazydev", "lsp", "path", "snippets", "buffer" },
       providers = {
+        lazydev = {
+          name = "LazyDev",
+          module = "lazydev.integrations.blink",
+          score_offset = 100,
+        },
         lsp = {
           transform_items = cargo_lsp_items,
         },
