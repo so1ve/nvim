@@ -21,6 +21,9 @@ function M.get(p)
     RenderMarkdownH4Bg = { bg = p.markdown_heading_bg[4] },
     RenderMarkdownH5Bg = { bg = p.markdown_heading_bg[5] },
     RenderMarkdownH6Bg = { bg = p.markdown_heading_bg[6] },
+    RenderMarkdownCode = { bg = p.bg },
+    RenderMarkdownCodeBorder = { bg = p.bg },
+    RenderMarkdownCodeInline = { bg = p.bg },
   }
 end
 
