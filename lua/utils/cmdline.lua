@@ -1,14 +1,17 @@
 local M = {}
 
+M.guard_commands = {
+  "IncRename",
+}
+
 local function command_span(cmdline)
   return cmdline:find("^%s*(%S+)")
 end
 
-local function command_accepts_args(command)
+local function is_guarded_command(command)
   local normalized_command = command:gsub("!$", "")
-  local command_info = vim.api.nvim_get_commands({ builtin = false })[normalized_command]
 
-  return command_info ~= nil and command_info.nargs ~= "0"
+  return vim.list_contains(M.guard_commands, normalized_command)
 end
 
 local function is_protected_prefix_boundary()
@@ -20,12 +23,11 @@ local function is_protected_prefix_boundary()
   local cmdpos = vim.fn.getcmdpos()
   local _, command_end, command = command_span(cmdline)
 
-  if command == nil or not command_accepts_args(command) then
+  if command == nil or not is_guarded_command(command) then
     return false
   end
 
-  local first_arg_start = cmdline:find("%S", command_end + 1)
-  local prefix_boundary = first_arg_start or #cmdline + 1
+  local prefix_boundary = command_end + 2
 
   if cmdpos <= command_end + 1 then
     return true
