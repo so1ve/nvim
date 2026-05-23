@@ -20,10 +20,6 @@ return {
         "help",
         "bigfile",
         "snacks_dashboard",
-        "snacks_picker_list",
-        "neo-tree",
-        "trouble",
-        "qf",
       },
     }
   end,
