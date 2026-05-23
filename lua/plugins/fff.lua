@@ -18,25 +18,7 @@ local function map_picker_buffer(mode, lhs, rhs, bufnr)
   vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true })
 end
 
-local function cycle_picker_window(picker)
-  return function()
-    local current = vim.api.nvim_get_current_win()
-
-    if current == picker.state.input_win then
-      picker.focus_list_win()
-    elseif
-      current == picker.state.list_win
-      and picker.state.preview_win
-      and vim.api.nvim_win_is_valid(picker.state.preview_win)
-    then
-      picker.focus_preview_win()
-    else
-      picker.focus_input_win()
-    end
-  end
-end
-
-local function patch_snacks_like_keymaps()
+local function bind_keymaps()
   local hacks = require("utils.hacks")
 
   hacks.on_module("fff.picker_ui", function(picker)
@@ -51,7 +33,6 @@ local function patch_snacks_like_keymaps()
         map_picker_buffer({ "i", "n" }, "<C-u>", list_scroll(picker, -1), picker.state.input_buf)
         map_picker_buffer({ "i", "n" }, "<C-b>", picker.scroll_preview_up, picker.state.input_buf)
         map_picker_buffer({ "i", "n" }, "<C-f>", picker.scroll_preview_down, picker.state.input_buf)
-        map_picker_buffer({ "i", "n" }, "<A-w>", cycle_picker_window(picker), picker.state.input_buf)
 
         map_picker_buffer("n", "/", picker.focus_input_win, picker.state.list_buf)
         map_picker_buffer("n", "<C-j>", picker.move_down, picker.state.list_buf)
@@ -62,12 +43,10 @@ local function patch_snacks_like_keymaps()
         map_picker_buffer("n", "<C-u>", list_scroll(picker, -1), picker.state.list_buf)
         map_picker_buffer("n", "<C-b>", picker.scroll_preview_up, picker.state.list_buf)
         map_picker_buffer("n", "<C-f>", picker.scroll_preview_down, picker.state.list_buf)
-        map_picker_buffer("n", "<A-w>", cycle_picker_window(picker), picker.state.list_buf)
 
         map_picker_buffer("n", "/", picker.focus_input_win, picker.state.preview_buf)
         map_picker_buffer("n", "<C-b>", picker.scroll_preview_up, picker.state.preview_buf)
         map_picker_buffer("n", "<C-f>", picker.scroll_preview_down, picker.state.preview_buf)
-        map_picker_buffer("n", "<A-w>", cycle_picker_window(picker), picker.state.preview_buf)
       end
     end)
   end)
@@ -123,7 +102,7 @@ return {
       },
     },
     config = function(_, opts)
-      patch_snacks_like_keymaps()
+      bind_keymaps()
       require("fff").setup(opts)
     end,
     keys = {
