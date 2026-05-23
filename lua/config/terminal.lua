@@ -2,13 +2,7 @@ local M = {}
 
 local is_windows = vim.fn.has("win32") == 1
 
-M.shell = {
-  shell = nil,
-  flag = nil,
-  shellcmdflag = nil,
-  shellpipe = nil,
-  shellredir = nil,
-}
+M.shell = {}
 
 if is_windows then
   M.shell = {

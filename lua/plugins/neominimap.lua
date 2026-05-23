@@ -14,8 +14,6 @@ return {
     vim.opt.wrap = false
     vim.opt.sidescrolloff = 36
     vim.g.neominimap = {
-      auto_enable = true,
-      layout = "float",
       exclude_filetypes = {
         "help",
         "bigfile",

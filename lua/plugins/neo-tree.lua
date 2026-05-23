@@ -49,7 +49,6 @@ return {
         },
         window = {
           mappings = {
-            ["<cr>"] = "open",
             ["<space>"] = "noop",
             ["/"] = "noop",
             ["f"] = "noop",

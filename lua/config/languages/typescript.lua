@@ -76,32 +76,21 @@ local function attach_vtsls(client)
   end
 end
 
+local function typescript_language(treesitter)
+  return {
+    treesitter = treesitter,
+    lsp = { "vtsls", "eslint" },
+    tools = formatters.prettier_tools,
+    formatters = formatters.prettier_formatters,
+  }
+end
+
 return {
   languages = {
-    typescript = {
-      treesitter = "typescript",
-      lsp = { "vtsls", "eslint" },
-      tools = formatters.prettier_tools,
-      formatters = formatters.prettier_formatters,
-    },
-    javascript = {
-      treesitter = "javascript",
-      lsp = { "vtsls", "eslint" },
-      tools = formatters.prettier_tools,
-      formatters = formatters.prettier_formatters,
-    },
-    typescriptreact = {
-      treesitter = "tsx",
-      lsp = { "vtsls", "eslint" },
-      tools = formatters.prettier_tools,
-      formatters = formatters.prettier_formatters,
-    },
-    javascriptreact = {
-      treesitter = "javascript",
-      lsp = { "vtsls", "eslint" },
-      tools = formatters.prettier_tools,
-      formatters = formatters.prettier_formatters,
-    },
+    typescript = typescript_language("typescript"),
+    javascript = typescript_language("javascript"),
+    typescriptreact = typescript_language("tsx"),
+    javascriptreact = typescript_language("javascript"),
   },
   servers = {
     vtsls = {

@@ -7,14 +7,6 @@ local edgy = require("config.edgy")
 local symbols = require("config.symbols")
 local window_util = require("utils.windows")
 
-local function snacks_position_filter(position)
-  return function(_, win)
-    local snacks_win = vim.w[win].snacks_win
-
-    return snacks_win and snacks_win.position == position and snacks_win.relative == "editor"
-  end
-end
-
 local function delete_startup_buffers()
   -- Neo-tree popups and sidebar windows can trigger BufEnter while the dashboard
   -- is still the only real editor buffer. Cleanup only after entering an actual
@@ -32,10 +24,6 @@ local function delete_startup_buffers()
       vim.api.nvim_buf_delete(bufnr, {})
     end
   end
-end
-
-local function getcwd()
-  return vim.fn.getcwd(0)
 end
 
 return {
@@ -56,9 +44,7 @@ return {
           },
         },
         actions = {
-          trouble_open = function(picker)
-            open_trouble(picker)
-          end,
+          trouble_open = open_trouble,
           trouble_open_selected = function(picker)
             open_trouble(picker, { type = "selected" })
           end,
@@ -78,7 +64,6 @@ return {
       image = {},
       notifier = {
         height = { min = 1, max = 0.4 },
-        style = "compact",
       },
       styles = {
         notification = {
@@ -130,7 +115,7 @@ return {
       {
         "<leader>gg",
         function()
-          Snacks.lazygit({ cwd = getcwd() })
+          Snacks.lazygit({ cwd = vim.fn.getcwd(0) })
         end,
         desc = "LazyGit",
       },
@@ -221,14 +206,14 @@ return {
       {
         "<leader>tt",
         function()
-          Snacks.terminal(nil, { count = 1, cwd = getcwd() })
+          Snacks.terminal(nil, { count = 1, cwd = vim.fn.getcwd(0) })
         end,
         desc = "Toggle terminal",
       },
       {
         "<leader>tT",
         function()
-          Snacks.terminal(nil, { count = 2, cwd = getcwd(), win = { position = "float" } })
+          Snacks.terminal(nil, { count = 2, cwd = vim.fn.getcwd(0), win = { position = "float" } })
         end,
         desc = "Toggle floating terminal",
       },
@@ -251,7 +236,11 @@ return {
   edgy.view_spec(
     "bottom",
     edgy.view("Terminal", "snacks_terminal", {
-      filter = snacks_position_filter("bottom"),
+      filter = function(_, win)
+        local snacks_win = vim.w[win].snacks_win
+
+        return snacks_win and snacks_win.position == "bottom" and snacks_win.relative == "editor"
+      end,
     })
   ),
 }

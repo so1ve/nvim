@@ -94,24 +94,13 @@ return {
       prompt_vim_mode = true,
       wrap_around = true,
       layout = {
-        width = 0.8,
-        height = 0.8,
         prompt_position = "top",
-        preview_position = "right",
-        preview_size = 0.5,
         flex = {
           size = 120,
           wrap = "bottom",
         },
-        min_list_height = 10,
-        show_scrollbar = true,
         path_shorten_strategy = "middle_number",
         anchor = "center",
-      },
-      preview = {
-        enabled = true,
-        line_numbers = false,
-        wrap_lines = false,
       },
       keymaps = {
         close = { "<Esc>", "q" },
@@ -131,9 +120,6 @@ return {
         send_to_quickfix = "<C-q>",
         focus_list = "/",
         focus_preview = "<A-p>",
-      },
-      git = {
-        status_text_color = false,
       },
     },
     config = function(_, opts)
