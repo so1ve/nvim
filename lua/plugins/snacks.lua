@@ -44,7 +44,9 @@ return {
           },
         },
         actions = {
-          trouble_open = open_trouble,
+          trouble_open = function(picker)
+            open_trouble(picker)
+          end,
           trouble_open_selected = function(picker)
             open_trouble(picker, { type = "selected" })
           end,
