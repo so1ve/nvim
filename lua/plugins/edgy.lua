@@ -1,5 +1,4 @@
-local edgy = require("config.edgy")
-local layout = edgy.layout
+local edgy = require("integrations.edgy")
 
 local function add_view(opts, position, view)
   opts[position] = opts[position] or {}
@@ -24,9 +23,9 @@ return {
         enabled = false,
       }
       opts.options = {
-        left = { size = layout.left.width },
-        right = { size = layout.right.width },
-        bottom = { size = layout.bottom.height },
+        left = { size = 0.25 },
+        right = { size = 0.25 },
+        bottom = { size = 12 },
       }
 
       add_view(opts, "bottom", edgy.view("Quickfix", "qf"))

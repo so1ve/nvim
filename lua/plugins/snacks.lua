@@ -3,7 +3,7 @@ local function open_trouble(picker, opts)
 end
 
 local terminal = require("config.terminal")
-local edgy = require("config.edgy")
+local edgy = require("integrations.edgy")
 local symbols = require("config.symbols")
 local window_util = require("utils.windows")
 

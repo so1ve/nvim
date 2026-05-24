@@ -1,5 +1,5 @@
-local edgy = require("config.edgy")
-local bufferline = require("config.bufferline")
+local bufferline = require("integrations.bufferline")
+local edgy = require("integrations.edgy")
 
 local explorer_view = edgy.view("Explorer", "neo-tree", {
   filter = function(buf)

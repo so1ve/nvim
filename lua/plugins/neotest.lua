@@ -1,5 +1,5 @@
-local bufferline = require("config.bufferline")
-local edgy = require("config.edgy")
+local bufferline = require("integrations.bufferline")
+local edgy = require("integrations.edgy")
 
 local function current_file()
   local path = vim.fn.expand("%:p")

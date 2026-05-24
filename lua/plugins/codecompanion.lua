@@ -1,4 +1,4 @@
-local edgy = require("config.edgy")
+local edgy = require("integrations.edgy")
 
 return {
   {
