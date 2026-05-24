@@ -33,6 +33,9 @@ return {
         opts,
         "bottom",
         edgy.view("Help", "help", {
+          filter = function(buf)
+            return vim.bo[buf].buftype == "help"
+          end,
           size = { height = 20 },
         })
       )
