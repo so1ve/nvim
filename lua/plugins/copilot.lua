@@ -12,9 +12,12 @@ local function restart_copilot(code)
 
   local now = vim.uv.now()
 
-  restart.times = vim.tbl_filter(function(time)
-    return now - time <= restart.window
-  end, restart.times)
+  restart.times = vim
+    .iter(restart.times)
+    :filter(function(time)
+      return now - time <= restart.window
+    end)
+    :totable()
 
   if #restart.times >= restart.limit then
     vim.notify(

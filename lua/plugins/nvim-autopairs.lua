@@ -11,7 +11,7 @@ return {
     npairs.setup(opts)
 
     for _, rule in ipairs(npairs.get_rules("'")) do
-      if vim.tbl_contains(rule.filetypes or {}, "rust") then
+      if vim.list_contains(rule.filetypes or {}, "rust") then
         rule:with_pair(rust_lifetime_quote.with_pair, 1)
       end
     end

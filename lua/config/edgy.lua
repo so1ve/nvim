@@ -13,7 +13,7 @@ M.layout = {
 }
 
 function M.view(title, ft, opts)
-  return vim.tbl_deep_extend("force", {
+  return vim.tbl_extend("force", {
     title = title,
     ft = ft,
   }, opts or {})
@@ -43,7 +43,7 @@ local function add_neo_tree_exclusions(opts, filetypes)
   local types = opts.open_files_do_not_replace_types
 
   for _, filetype in ipairs(as_list(filetypes)) do
-    if not vim.tbl_contains(types, filetype) then
+    if not vim.list_contains(types, filetype) then
       table.insert(types, filetype)
     end
   end

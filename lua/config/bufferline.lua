@@ -1,7 +1,7 @@
 local M = {}
 
 function M.offset(filetype, text, opts)
-  return vim.tbl_deep_extend("force", {
+  return vim.tbl_extend("force", {
     filetype = filetype,
     text = text,
     text_align = "left",

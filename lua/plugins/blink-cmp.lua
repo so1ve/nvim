@@ -54,9 +54,12 @@ local function cargo_lsp_items(ctx, items)
     return items
   end
 
-  return vim.tbl_filter(function(item)
-    return item.client_name ~= "crates.nvim" or (item.kind_name ~= "Version" and item.kind_name ~= "Feature")
-  end, items)
+  return vim
+    .iter(items)
+    :filter(function(item)
+      return item.client_name ~= "crates.nvim" or (item.kind_name ~= "Version" and item.kind_name ~= "Feature")
+    end)
+    :totable()
 end
 
 return {

@@ -34,7 +34,7 @@ local function current_node(opts)
 end
 
 local function is_treesitter_lifetime_context(node)
-  return vim.tbl_contains(lifetime_context_nodes, node:type()) or node:__has_ancestor(lifetime_context_ancestors)
+  return vim.list_contains(lifetime_context_nodes, node:type()) or node:__has_ancestor(lifetime_context_ancestors)
 end
 
 local function is_label_context(node)
