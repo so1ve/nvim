@@ -1,6 +1,16 @@
 local edgy = require("config.edgy")
 local bufferline = require("config.bufferline")
 
+local explorer_view = edgy.view("Explorer", "neo-tree", {
+  filter = function(buf)
+    local source = vim.b[buf].neo_tree_source
+
+    return source == nil or source == "filesystem"
+  end,
+  open = "Neotree show",
+  wo = { winbar = false },
+})
+
 local function smooth_scroll_or_preview(tree_direction, preview_direction)
   return function(state)
     if require("neo-tree.sources.common.preview").is_active() then
@@ -24,8 +34,8 @@ return {
       "nvim-mini/mini.nvim",
     },
     keys = {
-      { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle explorer" },
-      { "<leader>E", "<cmd>Neotree reveal<cr>", desc = "Reveal current file" },
+      { "<leader>e", edgy.with_focus(explorer_view, "Neotree toggle"), desc = "Toggle explorer" },
+      { "<leader>E", edgy.with_focus(explorer_view, "Neotree reveal"), desc = "Reveal current file" },
     },
     opts = {
       enable_git_status = false,
@@ -143,17 +153,6 @@ return {
       require("neo-tree").setup(opts)
     end,
   },
-  edgy.view_spec(
-    "left",
-    edgy.view("Explorer", "neo-tree", {
-      filter = function(buf)
-        local source = vim.b[buf].neo_tree_source
-
-        return source == nil or source == "filesystem"
-      end,
-      open = "Neotree show",
-      wo = { winbar = false },
-    })
-  ),
+  edgy.view_spec("left", explorer_view),
   bufferline.offset_spec(bufferline.offset("neo-tree", "Explorer")),
 }

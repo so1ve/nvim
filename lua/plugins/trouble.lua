@@ -13,6 +13,14 @@ local function trouble_filter(position)
   end
 end
 
+local lsp_view = edgy.view("LSP", "trouble", {
+  filter = trouble_filter("right"),
+})
+
+local problems_view = edgy.view("Problems", "trouble", {
+  filter = trouble_filter("bottom"),
+})
+
 return {
   {
     "folke/trouble.nvim",
@@ -25,28 +33,22 @@ return {
       },
     },
     keys = {
-      { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics" },
-      { "<leader>xD", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace diagnostics" },
-      { "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols" },
+      {
+        "<leader>xd",
+        edgy.with_focus(problems_view, "Trouble diagnostics toggle filter.buf=0"),
+        desc = "Buffer diagnostics",
+      },
+      { "<leader>xD", edgy.with_focus(problems_view, "Trouble diagnostics toggle"), desc = "Workspace diagnostics" },
+      { "<leader>xs", edgy.with_focus(lsp_view, "Trouble symbols toggle"), desc = "Symbols" },
       {
         "<leader>xl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        edgy.with_focus(lsp_view, "Trouble lsp toggle win.position=right"),
         desc = "LSP definitions/references",
       },
-      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
-      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list" },
+      { "<leader>xL", edgy.with_focus(problems_view, "Trouble loclist toggle"), desc = "Location list" },
+      { "<leader>xQ", edgy.with_focus(problems_view, "Trouble qflist toggle"), desc = "Quickfix list" },
     },
   },
-  edgy.view_spec(
-    "right",
-    edgy.view("LSP", "trouble", {
-      filter = trouble_filter("right"),
-    })
-  ),
-  edgy.view_spec(
-    "bottom",
-    edgy.view("Problems", "trouble", {
-      filter = trouble_filter("bottom"),
-    })
-  ),
+  edgy.view_spec("right", lsp_view),
+  edgy.view_spec("bottom", problems_view),
 }
