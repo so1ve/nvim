@@ -1,4 +1,4 @@
-local windows = require("utils.windows")
+local focus = require("integrations.edgy.focus")
 
 local M = {}
 
@@ -59,62 +59,23 @@ function M.neo_tree_exclusion_spec(filetypes)
   }
 end
 
-function M.find_view_win(view, tabpage)
-  tabpage = tabpage or vim.api.nvim_get_current_tabpage()
-
-  if not vim.api.nvim_tabpage_is_valid(tabpage) then
-    return nil
-  end
-
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
-    if windows.is_normal_win(win) then
-      local buf = vim.api.nvim_win_get_buf(win)
-
-      if vim.bo[buf].filetype == view.ft and (not view.filter or view.filter(buf, win)) then
-        return win
-      end
-    end
-  end
-
-  return nil
-end
-
-function M.focus_view(view, opts)
-  opts = opts or {}
-
-  local attempts = opts.attempts ~= nil and opts.attempts or 10
-  local interval = opts.interval ~= nil and opts.interval or 20
-  local tabpage = opts.tabpage or vim.api.nvim_get_current_tabpage()
-
-  local function focus(remaining)
-    if not vim.api.nvim_tabpage_is_valid(tabpage) or vim.api.nvim_get_current_tabpage() ~= tabpage then
-      return false
-    end
-
-    local win = M.find_view_win(view, tabpage)
-
-    if win then
-      vim.api.nvim_set_current_win(win)
-
-      return true
-    end
-
-    if remaining > 0 then
-      vim.defer_fn(function()
-        focus(remaining - 1)
-      end, interval)
-    end
-
-    return false
-  end
-
-  return focus(attempts)
-end
+M.find_view_win = focus.find_view_win
+M.focus_view = focus.focus_view
+M.focus_view_when_available = focus.focus_view_when_available
 
 function M.with_focus(view, open, opts)
   return function(...)
+    local focus_opts = vim.tbl_extend("force", opts or {}, {
+      tabpage = opts and opts.tabpage or vim.api.nvim_get_current_tabpage(),
+    })
+    local had_view = M.find_view_win(view, focus_opts.tabpage) ~= nil
     local result = open_view(open, ...)
-    M.focus_view(view, opts)
+
+    if had_view and not M.find_view_win(view, focus_opts.tabpage) then
+      return result
+    end
+
+    M.focus_view_when_available(view, focus_opts)
 
     return result
   end
