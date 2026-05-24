@@ -7,15 +7,6 @@ local function filename(props)
   return vim.fn.fnamemodify(name, ":t")
 end
 
-local function file_icon(name)
-  local ok, devicons = pcall(require, "nvim-web-devicons")
-  if not ok then
-    return nil, nil
-  end
-
-  return devicons.get_icon_color(name)
-end
-
 local function diagnostics(bufnr)
   local counts = vim.diagnostic.count(bufnr)
   local diagnostic_config = require("config.diagnostics")
@@ -45,8 +36,8 @@ local function diagnostics(bufnr)
 end
 
 local function breadcrumbs(bufnr)
-  local ok, navic = pcall(require, "nvim-navic")
-  if not ok or not navic.is_available(bufnr) then
+  local navic = require("nvim-navic")
+  if not navic.is_available(bufnr) then
     return {}
   end
 
@@ -100,12 +91,12 @@ return {
     },
     render = function(props)
       local name = filename(props)
-      local icon, color = file_icon(name)
+      local icon, icon_hl = require("mini.icons").get("file", name), nil
       local modified = vim.bo[props.buf].modified
 
       return {
         diagnostics(props.buf),
-        icon and { icon .. " ", guifg = color } or "",
+        icon and { icon .. " ", group = icon_hl } or "",
         { name, gui = modified and "bold,italic" or "bold" },
         modified and { " +", guifg = "#a8a29e", gui = "bold" } or "",
         props.focused and breadcrumbs(props.buf) or {},

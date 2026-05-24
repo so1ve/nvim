@@ -17,8 +17,7 @@ for mode, keys in pairs(conflict_keymaps) do
 end
 
 local function quit_all()
-  local ok, picker = pcall(require, "snacks.picker")
-  local active_pickers = ok and picker.get({ tab = false }) or {}
+  local active_pickers = require("snacks.picker").get({ tab = false })
 
   if #active_pickers > 0 then
     for _, active_picker in ipairs(active_pickers) do
