@@ -13,7 +13,6 @@ function M.setup()
       start_jumping = "<leader>j",
     },
   })
-  require("mini.comment").setup()
   require("mini.move").setup()
   require("mini.operators").setup({
     evaluate = { prefix = "" },
