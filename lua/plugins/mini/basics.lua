@@ -25,6 +25,8 @@ function M.setup()
   require("mini.bracketed").setup({
     buffer = { suffix = "" },
     comment = { suffix = "" },
+    file = { suffix = "" },
+    treesitter = { suffix = "" },
   })
 
   local hipatterns = require("mini.hipatterns")
