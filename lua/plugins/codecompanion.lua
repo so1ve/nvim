@@ -12,7 +12,7 @@ return {
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "so1ve/tiny-treesitter.nvim",
       "zbirenbaum/copilot.lua",
     },
     opts = {

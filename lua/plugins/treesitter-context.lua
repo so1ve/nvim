@@ -2,7 +2,7 @@ return {
   "nvim-treesitter/nvim-treesitter-context",
   event = { "BufReadPost", "BufNewFile" },
   dependencies = {
-    "nvim-treesitter/nvim-treesitter",
+    "so1ve/tiny-treesitter.nvim",
   },
   opts = {
     max_lines = 4,

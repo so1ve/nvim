@@ -3,7 +3,7 @@ return {
   event = { "BufReadPost", "BufNewFile" },
   main = "rainbow-delimiters.setup",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter",
+    "so1ve/tiny-treesitter.nvim",
   },
   opts = {
     blacklist = {

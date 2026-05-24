@@ -4,7 +4,7 @@ return {
     ft = { "markdown" },
     dependencies = {
       "nvim-mini/mini.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "so1ve/tiny-treesitter.nvim",
     },
     opts = {
       heading = {
