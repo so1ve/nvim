@@ -94,7 +94,7 @@ map("n", "<leader>zm", "zm", { desc = "Fold more" })
 map("n", "<leader>zr", "zr", { desc = "Fold less" })
 
 map("n", "<leader>cd", function()
-  vim.diagnostic.open_float({ scope = "line" })
+  require("config.diagnostics").open_float({ scope = "line" })
 end, { desc = "Line diagnostics" })
 map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location list" })
 

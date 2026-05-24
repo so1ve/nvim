@@ -15,7 +15,22 @@ M.signs = {
 }
 
 local function diagnostic_format(diagnostic)
-  return diagnostic.message:gsub("\n", " \n") .. " "
+  local message = diagnostic.message:gsub("\n", " \n")
+
+  if diagnostic.code then
+    return message
+  end
+
+  return message .. " "
+end
+
+local function map_float_navigation(bufnr)
+  if not bufnr then
+    return
+  end
+
+  vim.keymap.set("n", "j", "gj", { buffer = bufnr, desc = "Move down display line", silent = true })
+  vim.keymap.set("n", "k", "gk", { buffer = bufnr, desc = "Move up display line", silent = true })
 end
 
 function M.sign(severity)
@@ -45,7 +60,7 @@ function M.float_suffix(diagnostic)
     return ""
   end
 
-  return "  " .. diagnostic.code .. " ", "Comment"
+  return " [" .. diagnostic.code .. "] ", "Comment"
 end
 
 function M.float_options()
@@ -59,6 +74,13 @@ function M.float_options()
     source = "if_many",
     suffix = M.float_suffix,
   }
+end
+
+function M.open_float(opts)
+  local bufnr, winid = vim.diagnostic.open_float(opts)
+  map_float_navigation(bufnr)
+
+  return bufnr, winid
 end
 
 function M.setup()
