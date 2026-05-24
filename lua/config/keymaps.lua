@@ -93,7 +93,9 @@ map("n", "<leader>zR", "zR", { desc = "Open all folds" })
 map("n", "<leader>zm", "zm", { desc = "Fold more" })
 map("n", "<leader>zr", "zr", { desc = "Fold less" })
 
-map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
+map("n", "<leader>cd", function()
+  vim.diagnostic.open_float({ scope = "line" })
+end, { desc = "Line diagnostics" })
 map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location list" })
 
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })

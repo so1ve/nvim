@@ -1,7 +1,9 @@
+local diagnostic_icon = require("config.diagnostics").sign(vim.diagnostic.severity.WARN)
+
 local leader_groups = {
   { "<leader>b", group = "Buffer", icon = { icon = "󰈔", color = "cyan" } },
   { "<leader>c", group = "Code", icon = { icon = "󰅩", color = "azure" } },
-  { "<leader>d", group = "Diagnostics", icon = { icon = "", color = "yellow" } },
+  { "<leader>d", group = "Diagnostics", icon = { icon = diagnostic_icon, color = "yellow" } },
   { "<leader>f", group = "Find", icon = { icon = "󰍉", color = "blue" } },
   { "<leader>g", group = "Git", icon = { icon = "", color = "orange" } },
   { "<leader>gh", group = "Git hunk", icon = { icon = "", color = "orange" } },

@@ -18,18 +18,22 @@ end
 
 local function diagnostics(bufnr)
   local counts = vim.diagnostic.count(bufnr)
+  local diagnostic_config = require("config.diagnostics")
   local severities = {
-    { severity = vim.diagnostic.severity.ERROR, icon = "", group = "DiagnosticSignError" },
-    { severity = vim.diagnostic.severity.WARN, icon = "", group = "DiagnosticSignWarn" },
-    { severity = vim.diagnostic.severity.INFO, icon = "", group = "DiagnosticSignInfo" },
-    { severity = vim.diagnostic.severity.HINT, icon = "󰌵", group = "DiagnosticSignHint" },
+    vim.diagnostic.severity.ERROR,
+    vim.diagnostic.severity.WARN,
+    vim.diagnostic.severity.INFO,
+    vim.diagnostic.severity.HINT,
   }
   local items = {}
 
-  for _, item in ipairs(severities) do
-    local count = counts[item.severity] or 0
+  for _, severity in ipairs(severities) do
+    local count = counts[severity] or 0
     if count > 0 then
-      table.insert(items, { item.icon .. " " .. count .. " ", group = item.group })
+      table.insert(
+        items,
+        { diagnostic_config.sign(severity) .. " " .. count .. " ", group = diagnostic_config.sign_group(severity) }
+      )
     end
   end
 

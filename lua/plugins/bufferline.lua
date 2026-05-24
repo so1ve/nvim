@@ -22,14 +22,16 @@ return {
 
       diagnostics = "nvim_lsp",
       diagnostics_indicator = function(count, level)
-        local icons = {
-          error = " ",
-          warning = " ",
-          info = " ",
-          hint = "󰌵 ",
+        local severities = {
+          error = vim.diagnostic.severity.ERROR,
+          warning = vim.diagnostic.severity.WARN,
+          info = vim.diagnostic.severity.INFO,
+          hint = vim.diagnostic.severity.HINT,
         }
+        local severity = severities[level]
+        local icon = severity and require("config.diagnostics").sign(severity) or "•"
 
-        return " " .. (icons[level] or "• ") .. count
+        return " " .. icon .. " " .. count
       end,
 
       close_command = function(buffer)

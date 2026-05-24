@@ -89,16 +89,6 @@ return {
   config = function(_, opts)
     local languages = require("config.languages")
 
-    vim.diagnostic.config({
-      update_in_insert = false,
-      severity_sort = true,
-      virtual_text = false,
-      virtual_lines = false,
-      float = {
-        source = true,
-      },
-    })
-
     vim.lsp.config("*", server_defaults(opts))
 
     for server_name, server_config in pairs(languages.lsp_configs()) do
