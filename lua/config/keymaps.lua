@@ -1,5 +1,4 @@
 local map = vim.keymap.set
-local cmdline_util = require("utils.cmdline")
 local window_util = require("utils.windows")
 
 -- delete them since when lsp is not ready for references, `gr` triggers the builtin key hint menu instead of a warning indicating that no references are found
@@ -83,11 +82,8 @@ map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
 map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
 map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
 
-map("c", "<A-h>", cmdline_util.guard_prefix("<Left>"), { desc = "Move left in command line", expr = true })
+map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
 map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
-map("c", "<Left>", cmdline_util.guard_prefix("<Left>"), { desc = "Move left in command line", expr = true })
-map("c", "<BS>", cmdline_util.guard_prefix("<BS>"), { desc = "Keep command prefix", expr = true })
-map("c", "<C-h>", cmdline_util.guard_prefix("<BS>"), { desc = "Keep command prefix", expr = true })
 
 map("n", "<leader>za", "za", { desc = "Toggle fold" })
 map("n", "<leader>zc", "zc", { desc = "Close fold" })

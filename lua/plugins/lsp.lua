@@ -1,8 +1,25 @@
+local input = require("utils.input")
+
 local function server_defaults(opts)
   local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
   local servers = opts.servers or {}
 
   return vim.tbl_deep_extend("force", { capabilities = capabilities }, servers["*"] or {})
+end
+
+local function rename_symbol()
+  local current_name = vim.fn.expand("<cword>")
+
+  input.relative({
+    prompt = "Rename symbol:",
+    default = current_name,
+  }, function(new_name)
+    if new_name == nil or new_name == "" or new_name == current_name then
+      return
+    end
+
+    vim.lsp.buf.rename(new_name)
+  end)
 end
 
 local function configure_lsp_buffer(event)
@@ -60,9 +77,7 @@ local function configure_lsp_buffer(event)
     end, "Toggle inlay hints")
   end
 
-  map("<leader>cr", function()
-    return ":IncRename " .. vim.fn.expand("<cword>")
-  end, "Rename symbol", { expr = true })
+  map("<leader>cr", rename_symbol, "Rename symbol")
 end
 
 return {
