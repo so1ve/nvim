@@ -23,7 +23,9 @@ return {
   },
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
-    event = "VeryLazy",
+    -- Its startup installer is wired through the plugin's VimEnter hook, so it
+    -- needs to be loaded before VimEnter rather than on VeryLazy.
+    lazy = false,
     opts_extend = { "ensure_installed" },
     dependencies = {
       "mason-org/mason.nvim",
