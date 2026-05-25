@@ -14,6 +14,13 @@ return {
       desc = "Restore project session",
     },
     {
+      "<leader>pw",
+      function()
+        require("persistence").save()
+      end,
+      desc = "Save session",
+    },
+    {
       "<leader>ps",
       function()
         require("persistence").select()
