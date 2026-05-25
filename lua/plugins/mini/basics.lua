@@ -27,21 +27,18 @@ function M.setup()
     sort = { prefix = "gs" },
   })
   require("mini.splitjoin").setup()
+  require("mini.trailspace").setup()
   require("mini.bracketed").setup({
     buffer = { suffix = "" },
     comment = { suffix = "" },
     file = { suffix = "" },
     treesitter = { suffix = "" },
   })
-
-  local hipatterns = require("mini.hipatterns")
-  hipatterns.setup({
+  require("mini.hipatterns").setup({
     highlighters = {
-      hex_color = hipatterns.gen_highlighter.hex_color(),
+      hex_color = (require("mini.hipatterns")).gen_highlighter.hex_color(),
     },
   })
-
-  require("mini.trailspace").setup()
 end
 
 return M
