@@ -9,6 +9,11 @@ function M.setup()
   require("mini.surround").setup()
   -- require("mini.jump").setup()
   require("mini.jump2d").setup({
+    labels = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    view = {
+      dim = true,
+      n_steps_ahead = 2,
+    },
     mappings = {
       start_jumping = "<leader>j",
     },

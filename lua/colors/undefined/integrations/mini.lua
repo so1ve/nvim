@@ -25,6 +25,7 @@ function M.get(p)
     MiniJump = { fg = p.bg, bg = p.yellow, bold = true },
     MiniJump2dSpot = { fg = p.bg, bg = p.yellow, bold = true, nocombine = true },
     MiniJump2dSpotUnique = { fg = p.bg, bg = p.yellow, bold = true, nocombine = true },
+    MiniJump2dSpotAhead = { fg = p.bg, bg = p.orange, nocombine = true },
     MiniIconsAzure = { fg = p.blue },
     MiniIconsBlue = { fg = p.blue },
     MiniIconsCyan = { fg = p.cyan },
