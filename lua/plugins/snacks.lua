@@ -227,7 +227,7 @@ return {
         desc = "Rename file",
       },
       {
-        "<leader>cs",
+        "gs",
         function()
           Snacks.scope.jump()
         end,

@@ -24,7 +24,7 @@ function M.setup()
     exchange = { prefix = "gX" },
     multiply = { prefix = "gm" },
     replace = { prefix = "gR" },
-    sort = { prefix = "gs" },
+    sort = { prefix = "" },
   })
   require("mini.splitjoin").setup()
   require("mini.trailspace").setup()
