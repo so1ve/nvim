@@ -33,9 +33,6 @@ return {
     opts = function()
       return {
         ensure_installed = require("config.languages").collect("tools"),
-        run_on_start = true,
-        start_delay = 3000,
-        debounce_hours = 12,
       }
     end,
   },
