@@ -12,12 +12,12 @@ local hacks = require("utils.hacks")
 
 local active = false
 
-local function half_scroll_count()
-  return vim.v.count > 0 and vim.v.count or vim.wo.scroll
-end
+local function scroll_count(winid, full)
+  if full then
+    return vim.api.nvim_win_get_height(winid) * (vim.v.count > 0 and vim.v.count or 1)
+  end
 
-local function full_scroll_count()
-  return vim.fn.winheight(0) * (vim.v.count > 0 and vim.v.count or 1)
+  return vim.v.count > 0 and vim.v.count or vim.wo[winid].scroll
 end
 
 local function cursor_should_move_alone(data, direction)
@@ -32,40 +32,34 @@ local function patch_neoscroll()
   local logic = require("neoscroll.logic")
   local scroll = require("neoscroll.scroll")
 
-  local function win_call(winid, fn)
-    if winid == 0 then
-      return fn()
-    end
+  local function movement(winid)
+    return vim.api.nvim_win_call(winid, function()
+      local cursor = vim.api.nvim_win_get_cursor(0)
+      local view = vim.fn.winsaveview()
 
-    return vim.api.nvim_win_call(winid, fn)
-  end
-
-  local function movement_state(winid)
-    local cursor = vim.api.nvim_win_get_cursor(winid)
-
-    return win_call(winid, function()
       return {
-        col = cursor[2],
-        line = cursor[1],
-        topline = vim.fn.line("w0"),
-        virtcol = vim.fn.virtcol("."),
-        winline = vim.fn.winline(),
+        cursor[1],
+        cursor[2],
+        view.topline,
+        view.skipcol,
+        vim.fn.winline(),
+        vim.fn.virtcol("."),
       }
     end)
   end
 
-  local function same_state(before, after)
-    return before.line == after.line
-      and before.col == after.col
-      and before.virtcol == after.virtcol
-      and before.winline == after.winline
-      and before.topline == after.topline
+  local function move_visual_line(winid, direction)
+    vim.api.nvim_win_call(winid, function()
+      vim.cmd.normal({ bang = true, args = { direction > 0 and "gj" or "gk" } })
+    end)
   end
 
   hacks.wrap(logic, "neoscroll.cursor_first.who_scrolls", "who_scrolls", function(who_scrolls)
     return function(data, move_cursor, direction)
       if active and move_cursor then
-        if cursor_should_move_alone(data, direction) then
+        local winid = scroll.opts.winid or 0
+
+        if vim.wo[winid].wrap or cursor_should_move_alone(data, direction) then
           return false, true
         end
 
@@ -77,16 +71,28 @@ local function patch_neoscroll()
   end)
 
   hacks.wrap(scroll, "neoscroll.cursor_first.scroll_one_line", "scroll_one_line", function(scroll_one_line)
-    return function(self, ...)
+    return function(self, lines_to_scroll, window_scrolls, cursor_scrolls)
       local winid = self.opts.winid or 0
-      local before = movement_state(winid)
-      local success = scroll_one_line(self, ...)
+      local before = movement(winid)
+
+      if active and cursor_scrolls and not window_scrolls and vim.wo[winid].wrap then
+        local success = pcall(move_visual_line, winid, lines_to_scroll)
+        local moved = success and not vim.deep_equal(before, movement(winid))
+
+        if moved then
+          self.relative_line = self.relative_line + (lines_to_scroll > 0 and 1 or -1)
+        end
+
+        return moved
+      end
+
+      local success = scroll_one_line(self, lines_to_scroll, window_scrolls, cursor_scrolls)
 
       if not success then
         return false
       end
 
-      return not same_state(before, movement_state(winid))
+      return not vim.deep_equal(before, movement(winid))
     end
   end)
 
@@ -99,12 +105,13 @@ local function patch_neoscroll()
   end)
 end
 
-local function scroll(lines, duration)
+local function scroll(lines, duration, winid)
   active = true
 
   require("neoscroll").scroll(lines, {
     move_cursor = true,
     duration = duration,
+    winid = winid,
   })
 
   if not require("neoscroll.scroll").scrolling then
@@ -114,24 +121,28 @@ end
 
 local function map(lhs, lines, duration, desc)
   vim.keymap.set({ "n", "v", "x" }, lhs, function()
-    scroll(lines(), duration)
+    local winid = vim.api.nvim_get_current_win()
+
+    scroll(lines(winid), duration, winid)
   end, { desc = desc, silent = true })
 end
 
 function M.setup()
   patch_neoscroll()
 
-  map("<C-u>", function()
-    return -half_scroll_count()
+  map("<C-u>", function(winid)
+    return -scroll_count(winid)
   end, 250, "Move cursor half page up")
 
-  map("<C-d>", half_scroll_count, 250, "Move cursor half page down")
+  map("<C-d>", scroll_count, 250, "Move cursor half page down")
 
-  map("<C-b>", function()
-    return -full_scroll_count()
+  map("<C-b>", function(winid)
+    return -scroll_count(winid, true)
   end, 450, "Move cursor page up")
 
-  map("<C-f>", full_scroll_count, 450, "Move cursor page down")
+  map("<C-f>", function(winid)
+    return scroll_count(winid, true)
+  end, 450, "Move cursor page down")
 end
 
 return M
