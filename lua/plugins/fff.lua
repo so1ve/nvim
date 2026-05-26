@@ -100,6 +100,9 @@ return {
         focus_list = "/",
         focus_preview = "<A-p>",
       },
+      hl = {
+        grep_match = "Search",
+      },
     },
     config = function(_, opts)
       bind_keymaps()
