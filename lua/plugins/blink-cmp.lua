@@ -1,3 +1,5 @@
+local tab = require("utils.tab")
+
 local function label_text(ctx)
   local highlights_info = require("colorful-menu").blink_highlights(ctx)
 
@@ -46,22 +48,6 @@ local function label_highlight(ctx)
   return highlights
 end
 
-local function cargo_lsp_items(ctx, items)
-  if
-    vim.bo[ctx.bufnr].filetype ~= "toml"
-    or vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ctx.bufnr), ":t") ~= "Cargo.toml"
-  then
-    return items
-  end
-
-  return vim
-    .iter(items)
-    :filter(function(item)
-      return item.client_name ~= "crates.nvim" or (item.kind_name ~= "Version" and item.kind_name ~= "Feature")
-    end)
-    :totable()
-end
-
 return {
   "saghen/blink.cmp",
   version = "1.*",
@@ -86,28 +72,9 @@ return {
     keymap = {
       preset = "none",
       ["<Tab>"] = {
-        function(cmp)
-          local has_sidekick, sidekick = pcall(require, "sidekick")
-
-          if has_sidekick and sidekick.nes_jump_or_apply() then
-            return true
-          end
-
-          local has_copilot, suggestion = pcall(require, "copilot.suggestion")
-
-          if has_copilot and suggestion.is_visible() then
-            suggestion.accept()
-
-            return true
-          end
-
-          if cmp.snippet_active() then
-            return cmp.accept()
-          end
-
-          return cmp.select_and_accept()
-        end,
+        tab.blink_cmp,
         "snippet_forward",
+        tab.sidekick_nes_jump_or_apply,
         "fallback",
       },
       ["<S-Tab>"] = { "snippet_backward", "fallback" },
@@ -178,7 +145,22 @@ return {
           score_offset = 100,
         },
         lsp = {
-          transform_items = cargo_lsp_items,
+          transform_items = function(ctx, items)
+            if
+              vim.bo[ctx.bufnr].filetype ~= "toml"
+              or vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ctx.bufnr), ":t") ~= "Cargo.toml"
+            then
+              return items
+            end
+
+            return vim
+              .iter(items)
+              :filter(function(item)
+                return item.client_name ~= "crates.nvim"
+                  or (item.kind_name ~= "Version" and item.kind_name ~= "Feature")
+              end)
+              :totable()
+          end,
         },
         snippets = {
           opts = {
