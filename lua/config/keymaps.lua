@@ -64,6 +64,10 @@ local function close_buffer_or_window()
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+
+-- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
+map("n", "q", "<Nop>", { noremap = true, silent = true })
+
 -- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
 -- the cursor when no leader sequence is completed.
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
