@@ -1,31 +1,16 @@
-local eslint_fix_group = vim.api.nvim_create_augroup("RayEslintFixAll", { clear = false })
-
-local function eslint_fix_all(client, bufnr)
-  client:request_sync("workspace/executeCommand", {
-    command = "eslint.applyAllFixes",
-    arguments = {
-      {
-        uri = vim.uri_from_bufnr(bufnr),
-        version = vim.lsp.util.buf_versions[bufnr],
-      },
-    },
-  }, nil, bufnr)
-end
-
 local function attach_eslint(client, bufnr)
   pcall(vim.api.nvim_buf_del_user_command, bufnr, "LspEslintFixAll")
   vim.api.nvim_buf_create_user_command(bufnr, "LspEslintFixAll", function()
-    eslint_fix_all(client, bufnr)
+    client:request("workspace/executeCommand", {
+      command = "eslint.applyAllFixes",
+      arguments = {
+        {
+          uri = vim.uri_from_bufnr(bufnr),
+          version = vim.lsp.util.buf_versions[bufnr],
+        },
+      },
+    }, nil, bufnr)
   end, {})
-
-  vim.api.nvim_clear_autocmds({ group = eslint_fix_group, buffer = bufnr })
-  vim.api.nvim_create_autocmd("BufWritePre", {
-    buffer = bufnr,
-    group = eslint_fix_group,
-    callback = function()
-      eslint_fix_all(client, bufnr)
-    end,
-  })
 end
 
 return {
