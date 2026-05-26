@@ -25,9 +25,9 @@ return {
   servers = {
     vue_ls = {},
   },
-  extend = function(servers, lsp)
-    lsp.extend(servers.vtsls, "filetypes", { "vue" })
-    lsp.extend(servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
+  extend = function(catalog, helpers)
+    helpers.extend(catalog.servers.vtsls, "filetypes", { "vue" })
+    helpers.extend(catalog.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
       {
         name = "@vue/typescript-plugin",
         location = vue_language_server_path(),
@@ -37,7 +37,7 @@ return {
       },
     })
 
-    lsp.extend(servers.eslint, "filetypes", { "vue" })
-    lsp.extend(servers.stylelint_lsp, "filetypes", { "vue" })
+    helpers.extend(catalog.servers.eslint, "filetypes", { "vue" })
+    helpers.extend(catalog.servers.stylelint_lsp, "filetypes", { "vue" })
   end,
 }

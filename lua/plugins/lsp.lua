@@ -91,8 +91,8 @@ return {
 
     vim.lsp.config("*", server_defaults(opts))
 
-    for server_name, server_config in pairs(languages.lsp_configs()) do
-      vim.lsp.config(server_name, server_config)
+    for server_name, server_config in pairs(languages.servers) do
+      vim.lsp.config(server_name, type(server_config) == "function" and server_config() or server_config)
     end
 
     vim.api.nvim_create_autocmd("LspAttach", {

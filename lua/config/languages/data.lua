@@ -51,6 +51,7 @@ return {
       },
     },
     yamlls = {
+      filetypes = { "yaml" },
       capabilities = {
         textDocument = {
           foldingRange = {
