@@ -1,6 +1,6 @@
 local function attach_eslint(client, bufnr)
-  pcall(vim.api.nvim_buf_del_user_command, bufnr, "LspEslintFixAll")
-  vim.api.nvim_buf_create_user_command(bufnr, "LspEslintFixAll", function()
+  pcall(vim.api.nvim_buf_del_user_command, bufnr, "EslintFixAll")
+  vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", function()
     client:request("workspace/executeCommand", {
       command = "eslint.applyAllFixes",
       arguments = {
