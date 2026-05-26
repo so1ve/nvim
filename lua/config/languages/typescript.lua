@@ -119,27 +119,6 @@ return {
         javascript = tsserver_language_settings,
       },
     },
-    eslint = {
-      before_init = function(_, config)
-        if not config.root_dir then
-          return
-        end
-
-        -- vscode-eslint expects a file URI here. On Windows, the upstream
-        -- default raw path can make projectService resolve test files wrong.
-        config.settings.workspaceFolder = {
-          name = vim.fn.fnamemodify(config.root_dir, ":t"),
-          uri = vim.uri_from_fname(config.root_dir),
-        }
-      end,
-      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-      settings = {
-        format = false,
-        workingDirectory = {
-          mode = "location",
-        },
-      },
-    },
   },
   plugins = {
     {

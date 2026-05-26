@@ -1,12 +1,17 @@
 return {
+  filetypes = {
+    extension = {
+      json5 = "jsonc",
+    },
+  },
   languages = {
     json = {
       treesitter = "json",
-      lsp = { "jsonls" },
+      lsp = { "jsonls", "eslint" },
     },
     jsonc = {
       treesitter = "json",
-      lsp = { "jsonls" },
+      lsp = { "jsonls", "eslint" },
     },
     toml = {
       treesitter = "toml",
