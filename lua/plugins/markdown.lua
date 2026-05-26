@@ -61,6 +61,10 @@ return {
   {
     "YousefHadder/markdown-plus.nvim",
     ft = "markdown",
-    opts = {},
+    opts = {
+      keymaps = {
+        enabled = false,
+      },
+    },
   },
 }
