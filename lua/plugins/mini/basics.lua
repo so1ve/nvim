@@ -29,7 +29,6 @@ function M.setup()
     replace = { prefix = "gR" },
     sort = { prefix = "" },
   })
-  require("mini.splitjoin").setup()
   require("mini.trailspace").setup()
   require("mini.bracketed").setup({
     buffer = { suffix = "" },

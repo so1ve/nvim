@@ -227,7 +227,7 @@ return {
         desc = "Rename file",
       },
       {
-        "gs",
+        "gS",
         function()
           Snacks.scope.jump()
         end,
