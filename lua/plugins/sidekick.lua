@@ -4,12 +4,8 @@ local cli_view = edgy.view("AI CLI", "sidekick_terminal", {
   filter = function(_, win)
     return vim.api.nvim_win_get_config(win).relative == ""
   end,
-  size = {
-    width = 1 / 3,
-  },
-  wo = {
-    winbar = false,
-  },
+  size = { width = 1 / 3 },
+  wo = { winbar = false },
 })
 
 return {
