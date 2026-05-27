@@ -14,6 +14,9 @@ function M.setup()
       dim = true,
       n_steps_ahead = 2,
     },
+    allowed_windows = {
+      not_current = false,
+    },
     mappings = {
       start_jumping = "<leader>j",
     },
