@@ -3,7 +3,14 @@ return {
   event = "InsertEnter",
   keys = {
     {
-      "<leader>aa",
+      "<leader>a.",
+      function()
+        require("sidekick.cli").focus()
+      end,
+      desc = "Focus AI CLI",
+    },
+    {
+      "<leader>ao",
       function()
         require("sidekick.cli").toggle({ name = "opencode", focus = true })
       end,
@@ -69,8 +76,12 @@ return {
     cli = {
       mux = {
         backend = "zellij",
-        enabled = vim.fn.has("win32") == 0,
+        enabled = true,
       },
     },
   },
+  config = function(_, opts)
+    require("patch.sidekick").patch()
+    require("sidekick").setup(opts)
+  end,
 }
