@@ -72,8 +72,9 @@ return {
     keymap = {
       preset = "none",
       ["<Tab>"] = {
-        tab.blink_cmp,
+        tab.super_tab,
         "snippet_forward",
+        tab.accept_ai,
         tab.sidekick_nes_jump_or_apply,
         "fallback",
       },
@@ -100,6 +101,13 @@ return {
       },
     },
     completion = {
+      list = {
+        selection = {
+          preselect = function()
+            return not require("blink.cmp").snippet_active({ direction = 1 })
+          end,
+        },
+      },
       menu = {
         draw = {
           gap = 2,

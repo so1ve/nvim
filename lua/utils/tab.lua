@@ -1,20 +1,33 @@
 local M = {}
 
-local function next_sidekick_action(edit, bufnr, cursor)
+local function cursor_in_edit(edit, bufnr, cursor)
   if edit.buf ~= bufnr then
-    return "jump"
+    return false
   end
 
-  local cursor_row = cursor[1] - 1
-  local from_row = edit.from[1]
-  local to_row = edit.to[1]
-  local start_row = math.min(from_row, to_row)
-  local end_row = math.max(from_row, to_row)
+  local row = cursor[1] - 1
+  local from = edit.from[1]
+  local to = edit.to[1]
 
-  return cursor_row >= start_row and cursor_row <= end_row and "apply" or "jump"
+  if from > to then
+    from, to = to, from
+  end
+
+  return row >= from and row <= to
 end
 
-local function accept_copilot_suggestion()
+---@param cmp blink.cmp.API
+---@return boolean?
+function M.super_tab(cmp)
+  if cmp.snippet_active() then
+    return cmp.accept()
+  end
+
+  return cmp.select_and_accept()
+end
+
+---@return boolean
+function M.accept_ai()
   local suggestion = require("copilot.suggestion")
 
   if not suggestion.is_visible() then
@@ -24,16 +37,6 @@ local function accept_copilot_suggestion()
   suggestion.accept()
 
   return true
-end
-
----@param cmp blink.cmp.API
----@return boolean?
-function M.blink_cmp(cmp)
-  if cmp.is_menu_visible() then
-    return cmp.select_and_accept()
-  end
-
-  return accept_copilot_suggestion()
 end
 
 ---@return boolean
@@ -46,9 +49,7 @@ function M.sidekick_nes_jump_or_apply()
 
   local bufnr = vim.api.nvim_get_current_buf()
   local edit = nes.get(bufnr)[1]
-  local action = next_sidekick_action(edit, bufnr, vim.api.nvim_win_get_cursor(0))
-
-  if action == "apply" then
+  if cursor_in_edit(edit, bufnr, vim.api.nvim_win_get_cursor(0)) then
     return nes.apply()
   end
 
