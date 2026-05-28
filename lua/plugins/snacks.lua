@@ -63,7 +63,6 @@ return {
         },
       },
       input = {},
-      image = {},
       notifier = {
         height = { min = 1, max = 0.4 },
       },
