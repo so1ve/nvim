@@ -16,16 +16,6 @@ local function cursor_in_edit(edit, bufnr, cursor)
   return row >= from and row <= to
 end
 
----@param cmp blink.cmp.API
----@return boolean?
-function M.super_tab(cmp)
-  if cmp.snippet_active() then
-    return cmp.accept()
-  end
-
-  return cmp.select_and_accept()
-end
-
 ---@return boolean
 function M.accept_ai()
   local suggestion = require("copilot.suggestion")

@@ -72,14 +72,15 @@ return {
     keymap = {
       preset = "none",
       ["<Tab>"] = {
-        tab.super_tab,
-        "snippet_forward",
+        "select_and_accept",
         tab.accept_ai,
         tab.sidekick_nes_jump_or_apply,
         "fallback",
       },
+      ["<C-h>"] = { "snippet_backward", "fallback" },
+      ["<C-l>"] = { "snippet_forward", "fallback" },
       ["<S-Tab>"] = { "snippet_backward", "fallback" },
-      ["<C-l>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-d>"] = { "scroll_documentation_down", "scroll_signature_down", "fallback" },
       ["<C-u>"] = { "scroll_documentation_up", "scroll_signature_up", "fallback" },
       ["<C-j>"] = { "select_next", "fallback_to_mappings" },
@@ -101,13 +102,6 @@ return {
       },
     },
     completion = {
-      list = {
-        selection = {
-          preselect = function()
-            return not require("blink.cmp").snippet_active({ direction = 1 })
-          end,
-        },
-      },
       menu = {
         draw = {
           gap = 2,
