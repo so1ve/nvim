@@ -10,16 +10,9 @@ function M.setup()
   -- require("mini.jump").setup()
   require("mini.jump2d").setup({
     labels = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    view = {
-      dim = true,
-      n_steps_ahead = 2,
-    },
-    allowed_windows = {
-      not_current = false,
-    },
-    mappings = {
-      start_jumping = "<leader>j",
-    },
+    view = { dim = true, n_steps_ahead = 2 },
+    allowed_windows = { not_current = false },
+    mappings = { start_jumping = "<leader>j" },
   })
   require("mini.move").setup()
   require("mini.operators").setup({
