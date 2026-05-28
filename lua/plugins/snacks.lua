@@ -95,6 +95,7 @@ return {
         shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
       },
       lazygit = {},
+      gh = {},
       rename = {},
       scope = {},
       words = {},
@@ -119,6 +120,41 @@ return {
           Snacks.lazygit({ cwd = vim.fn.getcwd(0) })
         end,
         desc = "LazyGit",
+      },
+      {
+        "<leader>gb",
+        function()
+          Snacks.picker.git_branches()
+        end,
+        desc = "Git branches",
+      },
+      {
+        "<leader>gi",
+        function()
+          Snacks.picker.gh_issue()
+        end,
+        desc = "GitHub Issues (open)",
+      },
+      {
+        "<leader>gI",
+        function()
+          Snacks.picker.gh_issue({ state = "all" })
+        end,
+        desc = "GitHub Issues (all)",
+      },
+      {
+        "<leader>gp",
+        function()
+          Snacks.picker.gh_pr()
+        end,
+        desc = "GitHub Pull Requests (open)",
+      },
+      {
+        "<leader>gP",
+        function()
+          Snacks.picker.gh_pr({ state = "all" })
+        end,
+        desc = "GitHub Pull Requests (all)",
       },
       {
         "<leader>fb",
@@ -196,13 +232,6 @@ return {
           Snacks.picker.git_status()
         end,
         desc = "Git status",
-      },
-      {
-        "<leader>gb",
-        function()
-          Snacks.picker.git_branches()
-        end,
-        desc = "Git branches",
       },
       {
         "<leader>tt",
