@@ -78,7 +78,7 @@ opt.splitbelow = true
 opt.splitkeep = "screen"
 
 -- files
-opt.fileformat = "unix"
+opt.fileformats = { "unix", "dos", "mac" }
 opt.undofile = true
 opt.autoread = true
 
