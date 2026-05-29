@@ -53,6 +53,7 @@ return {
   version = "1.*",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
+    "nvim-mini/mini.nvim",
     "xzbdmw/colorful-menu.nvim",
     "so1ve/blink-noice-docs.nvim",
   },
@@ -68,6 +69,9 @@ return {
   opts = {
     appearance = {
       kind_icons = require("config.icons").symbols,
+    },
+    snippets = {
+      preset = "mini_snippets",
     },
     keymap = {
       preset = "none",
@@ -166,7 +170,8 @@ return {
         },
         snippets = {
           opts = {
-            friendly_snippets = false,
+            use_items_cache = true,
+            use_label_description = true,
           },
         },
       },
