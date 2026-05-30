@@ -15,7 +15,10 @@ M.signs = {
 }
 
 local function diagnostic_format(diagnostic)
-  local message = diagnostic.message:gsub("\n", " \n")
+  local message = tostring(diagnostic.message or ""):gsub("\n", " \n")
+  if not message:find("%S") then
+    message = diagnostic.source or severity_names[diagnostic.severity] or "Diagnostic"
+  end
 
   if diagnostic.code then
     return message
