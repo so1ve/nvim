@@ -8,7 +8,7 @@ return {
       engines = {
         ripgrep = {
           defaults = {
-            flags = "--smart-case --multiline --multiline-dotall",
+            flags = "--smart-case",
           },
         },
       },
