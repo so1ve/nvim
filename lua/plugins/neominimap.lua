@@ -18,6 +18,7 @@ return {
         "help",
         "bigfile",
         "snacks_dashboard",
+        "markdown",
       },
     }
   end,
