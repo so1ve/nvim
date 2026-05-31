@@ -17,7 +17,7 @@ function M.get(p)
     ColorColumn = { bg = p.bg_alt },
     CursorLine = { bg = p.bg_alt },
     CursorColumn = { bg = p.bg_alt },
-    CursorLineNr = { fg = p.fg_dim, bold = true },
+    CursorLineNr = { fg = p.green, bg = p.selection, bold = true },
     LineNr = { fg = p.subtle },
     Folded = { fg = p.muted, bg = p.bg_alt },
     FoldColumn = { fg = p.muted, bg = p.bg },
