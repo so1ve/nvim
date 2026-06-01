@@ -77,7 +77,12 @@ return {
             { icon = " ", key = "f", desc = "Find File", action = ":lua require('fff').find_files()" },
             { icon = " ", key = "g", desc = "Find Text", action = ":lua require('fff').live_grep()" },
             { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-            { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+            {
+              icon = " ",
+              key = "s",
+              desc = "Restore Session",
+              action = ":lua require('plugins.mini.sessions').load()",
+            },
             {
               icon = " ",
               key = "c",
@@ -94,7 +99,6 @@ return {
       terminal = {
         shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
       },
-      lazygit = {},
       gh = {},
       rename = {},
       scope = {},
@@ -114,13 +118,6 @@ return {
       delete_startup_buffers()
     end,
     keys = {
-      {
-        "<leader>gg",
-        function()
-          Snacks.lazygit({ cwd = vim.fn.getcwd(0) })
-        end,
-        desc = "LazyGit",
-      },
       {
         "<leader>gb",
         function()
