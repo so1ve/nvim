@@ -2,6 +2,8 @@ local M = {}
 
 function M.setup()
   local icons = require("mini.icons")
+  local hipatterns = require("mini.hipatterns")
+
   icons.setup()
   icons.mock_nvim_web_devicons()
 
@@ -29,9 +31,9 @@ function M.setup()
     file = { suffix = "" },
     treesitter = { suffix = "" },
   })
-  require("mini.hipatterns").setup({
+  hipatterns.setup({
     highlighters = {
-      hex_color = (require("mini.hipatterns")).gen_highlighter.hex_color(),
+      hex_color = hipatterns.gen_highlighter.hex_color(),
     },
   })
 end
