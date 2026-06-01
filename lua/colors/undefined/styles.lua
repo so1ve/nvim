@@ -3,7 +3,7 @@ local M = {}
 local function copy(spec)
   local result = {}
 
-  for key, value in pairs(spec or {}) do
+  for key, value in pairs(spec) do
     result[key] = value
   end
 
@@ -13,57 +13,11 @@ end
 function M.extend(spec, overrides)
   local result = copy(spec)
 
-  for key, value in pairs(overrides or {}) do
+  for key, value in pairs(overrides) do
     result[key] = value
   end
 
   return result
-end
-
-function M.resolve_links(groups)
-  local resolved = {}
-  local resolving = {}
-
-  local function resolve(group)
-    if resolved[group] then
-      return resolved[group]
-    end
-
-    local spec = groups[group]
-    if not spec then
-      return {}
-    end
-
-    if not spec.link then
-      resolved[group] = spec
-
-      return spec
-    end
-
-    if resolving[group] then
-      return {}
-    end
-
-    resolving[group] = true
-
-    local result = copy(resolve(spec.link))
-    for key, value in pairs(spec) do
-      if key ~= "link" then
-        result[key] = value
-      end
-    end
-
-    resolving[group] = nil
-    resolved[group] = result
-
-    return result
-  end
-
-  for group in pairs(groups) do
-    groups[group] = resolve(group)
-  end
-
-  return groups
 end
 
 function M.get(p)
