@@ -1,5 +1,7 @@
 local extra_parsers = {
   "bash",
+  "diff",
+  "gitcommit",
   "lua",
   "markdown",
   "markdown_inline",

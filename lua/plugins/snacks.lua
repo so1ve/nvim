@@ -100,6 +100,7 @@ return {
         shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
       },
       gh = {},
+      lazygit = {},
       rename = {},
       scope = {},
       words = {},
@@ -118,6 +119,13 @@ return {
       delete_startup_buffers()
     end,
     keys = {
+      {
+        "<leader>gg",
+        function()
+          Snacks.lazygit()
+        end,
+        desc = "Lazygit",
+      },
       {
         "<leader>gb",
         function()
