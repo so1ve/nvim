@@ -5,86 +5,33 @@
 -- resize it with the picker and always close it with the picker.
 
 local M = {}
+local Backdrop = require("utils.backdrop")
 local hacks = require("utils.hacks")
 
 local BACKDROP_ZINDEX = 50
-local BACKDROP_BLEND = 60
-local BACKDROP_GROUP = "SnacksBackdrop_000000"
 
-local function valid_win(win)
-  return type(win) == "number" and vim.api.nvim_win_is_valid(win)
-end
-
-local function valid_buf(buf)
-  return type(buf) == "number" and vim.api.nvim_buf_is_valid(buf)
-end
-
-local function backdrop_config()
-  return {
-    relative = "editor",
-    row = 0,
-    col = 0,
-    width = math.max(1, vim.o.columns),
-    height = math.max(1, vim.o.lines - vim.o.cmdheight),
-    style = "minimal",
-    border = "none",
-    focusable = false,
-    noautocmd = true,
+local function create_backdrop()
+  return Backdrop.new({
+    filetype = "fff_backdrop",
     zindex = BACKDROP_ZINDEX,
-  }
-end
-
-local function ensure_highlight()
-  vim.api.nvim_set_hl(0, BACKDROP_GROUP, { bg = "#000000" })
-end
-
-local function set_window_options(win)
-  vim.api.nvim_set_option_value(
-    "winhighlight",
-    "Normal:" .. BACKDROP_GROUP .. ",EndOfBuffer:" .. BACKDROP_GROUP,
-    { win = win }
-  )
-  vim.api.nvim_set_option_value("winblend", BACKDROP_BLEND, { win = win })
-  vim.api.nvim_set_option_value("colorcolumn", "", { win = win })
-  vim.api.nvim_set_option_value("number", false, { win = win })
-  vim.api.nvim_set_option_value("relativenumber", false, { win = win })
-  vim.api.nvim_set_option_value("signcolumn", "no", { win = win })
-  vim.api.nvim_set_option_value("foldcolumn", "0", { win = win })
-  vim.api.nvim_set_option_value("fillchars", "eob: ", { win = win })
-end
-
-local function create_buffer()
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
-  vim.api.nvim_set_option_value("buftype", "nofile", { buf = buf })
-  vim.api.nvim_set_option_value("filetype", "fff_backdrop", { buf = buf })
-  vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
-  return buf
+  })
 end
 
 local function close_backdrop(picker)
   local state = picker.state
 
-  if valid_win(state.backdrop_win) then
-    vim.api.nvim_win_close(state.backdrop_win, true)
+  if state.backdrop then
+    state.backdrop:close()
   end
-  state.backdrop_win = nil
-
-  if valid_buf(state.backdrop_buf) then
-    vim.api.nvim_buf_delete(state.backdrop_buf, { force = true })
-  end
-  state.backdrop_buf = nil
+  state.backdrop = nil
 end
 
 local function open_backdrop(picker)
   local state = picker.state
 
   close_backdrop(picker)
-  ensure_highlight()
-
-  state.backdrop_buf = create_buffer()
-  state.backdrop_win = vim.api.nvim_open_win(state.backdrop_buf, false, backdrop_config())
-  set_window_options(state.backdrop_win)
+  state.backdrop = create_backdrop()
+  state.backdrop:open()
 end
 
 local function sync_backdrop(picker)
@@ -95,8 +42,8 @@ local function sync_backdrop(picker)
     return
   end
 
-  if valid_win(state.backdrop_win) then
-    vim.api.nvim_win_set_config(state.backdrop_win, backdrop_config())
+  if state.backdrop then
+    state.backdrop:sync()
     return
   end
 
