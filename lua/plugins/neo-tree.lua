@@ -52,7 +52,7 @@ return {
     keys = {
       { "<leader>e", edgy.with_focus(explorer_view, "Neotree toggle"), desc = "Toggle explorer" },
       { "<leader>E", edgy.with_focus(explorer_view, "Neotree reveal"), desc = "Reveal current file" },
-      { "<leader>gT", edgy.with_focus(explorer_view, "Neotree git_status"), desc = "Toggle git tree" },
+      { "<leader>gt", edgy.with_focus(explorer_view, "Neotree git_status"), desc = "Toggle git tree" },
     },
     opts = {
       hide_root_node = true,
@@ -74,6 +74,15 @@ return {
         mappings = {
           ["<C-b>"] = { smooth_scroll_or_preview(-1, 10), desc = "Smooth page up or scroll preview" },
           ["<C-f>"] = { smooth_scroll_or_preview(1, -10), desc = "Smooth page down or scroll preview" },
+          ["O"] = { "show_help", nowait = false, config = { title = "Open", prefix_key = "O" } },
+          ["Os"] = "open_split",
+          ["Ot"] = "open_tabnew",
+          ["Ov"] = "open_vsplit",
+          ["Ow"] = "open_with_window_picker",
+          ["S"] = "noop",
+          ["s"] = "noop",
+          ["t"] = "noop",
+          ["w"] = "noop",
         },
       },
       filesystem = {
@@ -111,7 +120,18 @@ return {
       git_status = {
         window = {
           mappings = {
-            ["<space>"] = "noop",
+            ["<space>"] = "git_toggle_file_stage",
+            ["a"] = "git_add_file",
+            ["u"] = "git_unstage_file",
+            ["r"] = "git_revert_file",
+            ["ga"] = "noop",
+            ["gu"] = "noop",
+            ["gU"] = "noop",
+            ["gt"] = "noop",
+            ["gr"] = "noop",
+            ["gc"] = "noop",
+            ["gp"] = "noop",
+            ["gg"] = "noop",
           },
         },
       },
