@@ -1,7 +1,7 @@
 local bufferline = require("integrations.bufferline")
 local edgy = require("integrations.edgy")
 
-local explorer_view = edgy.view("Explorer", "neo-tree", {
+local neotree_view = edgy.view("Neo Tree", "neo-tree", {
   filter = function(buf)
     local source = vim.b[buf].neo_tree_source
 
@@ -20,6 +20,92 @@ local function smooth_scroll_or_preview(tree_direction, preview_direction)
     end
 
     require("patch.neoscroll.cursor-first").scroll_page(tree_direction)
+  end
+end
+
+local function is_deleted_git_node(node)
+  local status = node and node.extra and node.extra.git_status
+
+  return node and node.type == "file" and type(status) == "string" and status:find("D", 1, true) ~= nil
+end
+
+local function split_lines(text)
+  local normalized = text:gsub("\r\n", "\n")
+  local lines = vim.split(normalized, "\n", { plain = true })
+
+  if lines[#lines] == "" then
+    table.remove(lines)
+  end
+
+  return lines
+end
+
+local function open_buffer_from_git(state, path, open_cmd, buf)
+  if open_cmd == "tabnew" then
+    vim.cmd.tabnew()
+    vim.api.nvim_win_set_buf(0, buf)
+    vim.bo[buf].buflisted = true
+
+    return
+  end
+
+  require("neo-tree.utils").open_file(state, path, open_cmd, buf)
+end
+
+local function open_deleted_git_file(state, open_cmd)
+  local node = state.tree:get_node()
+
+  if not is_deleted_git_node(node) then
+    return false
+  end
+
+  local path = node.path or node:get_id()
+  local root = assert(vim.fs.root(state.path or path, ".git") or vim.fs.root(path, ".git"), "Git root not found")
+  local relative = assert(vim.fs.relpath(root, path), "Deleted file is outside Git root"):gsub("\\", "/")
+  local name = ("deleted://HEAD/%s"):format(relative)
+  local existing = vim.fn.bufnr(name)
+
+  if existing > 0 then
+    open_buffer_from_git(state, name, open_cmd, existing)
+
+    return true
+  end
+
+  local result = vim.system({ "git", "-C", root, "show", ("HEAD:%s"):format(relative) }, { text = true }):wait()
+
+  if result.code ~= 0 then
+    vim.notify(result.stderr, vim.log.levels.ERROR, { title = "Git deleted file" })
+
+    return true
+  end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  local filetype = vim.filetype.match({ filename = path })
+
+  vim.api.nvim_buf_set_name(buf, name)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, split_lines(result.stdout))
+  vim.api.nvim_set_option_value("buftype", "nofile", { buf = buf })
+  vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
+  vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+  vim.api.nvim_set_option_value("readonly", true, { buf = buf })
+  vim.api.nvim_set_option_value("swapfile", false, { buf = buf })
+
+  if filetype then
+    vim.api.nvim_set_option_value("filetype", filetype, { buf = buf })
+  end
+
+  open_buffer_from_git(state, name, open_cmd, buf)
+
+  return true
+end
+
+local function git_open(command, open_cmd)
+  return function(state, toggle_directory)
+    if open_deleted_git_file(state, open_cmd) then
+      return
+    end
+
+    require("neo-tree.sources.common.commands")[command](state, toggle_directory)
   end
 end
 
@@ -50,9 +136,9 @@ return {
       })
     end,
     keys = {
-      { "<leader>e", edgy.with_focus(explorer_view, "Neotree toggle"), desc = "Toggle explorer" },
-      { "<leader>E", edgy.with_focus(explorer_view, "Neotree reveal"), desc = "Reveal current file" },
-      { "<leader>gt", edgy.with_focus(explorer_view, "Neotree git_status"), desc = "Toggle git tree" },
+      { "<leader>e", edgy.with_focus(neotree_view, "Neotree toggle"), desc = "Toggle explorer" },
+      { "<leader>E", edgy.with_focus(neotree_view, "Neotree reveal"), desc = "Reveal current file" },
+      { "<leader>gt", edgy.with_focus(neotree_view, "Neotree git_status"), desc = "Toggle git tree" },
     },
     opts = {
       hide_root_node = true,
@@ -118,8 +204,15 @@ return {
         },
       },
       git_status = {
+        commands = {
+          open = git_open("open", "e"),
+          open_split = git_open("open_split", "split"),
+          open_vsplit = git_open("open_vsplit", "vsplit"),
+          open_tabnew = git_open("open_tabnew", "tabnew"),
+        },
         window = {
           mappings = {
+            ["<space>"] = "noop",
             ["s"] = "git_toggle_file_stage",
             ["a"] = "git_add_file",
             ["u"] = "git_unstage_file",
@@ -204,6 +297,6 @@ return {
       require("neo-tree").setup(opts)
     end,
   },
-  edgy.view_spec("left", explorer_view),
+  edgy.view_spec("left", neotree_view),
   bufferline.offset_spec(bufferline.offset("neo-tree", "Neo Tree")),
 }

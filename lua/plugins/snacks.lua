@@ -126,13 +126,6 @@ return {
     end,
     keys = {
       {
-        "<leader>gd",
-        function()
-          Snacks.picker.git_diff()
-        end,
-        desc = "Git diff hunks",
-      },
-      {
         "<leader>gb",
         function()
           Snacks.picker.git_branches()
