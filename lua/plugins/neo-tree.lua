@@ -120,7 +120,7 @@ return {
       git_status = {
         window = {
           mappings = {
-            ["<space>"] = "git_toggle_file_stage",
+            ["s"] = "git_toggle_file_stage",
             ["a"] = "git_add_file",
             ["u"] = "git_unstage_file",
             ["r"] = "git_revert_file",
