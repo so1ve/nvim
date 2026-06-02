@@ -29,7 +29,7 @@ return {
       messages = {
         view = "mini",
         view_error = "notify",
-        view_warn = "mini",
+        view_warn = "notify",
       },
       notify = {
         view = "notify",
