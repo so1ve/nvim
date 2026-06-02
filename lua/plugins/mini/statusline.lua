@@ -1,6 +1,8 @@
 local M = {}
 local trunc_width = 120
 local max_parts = 5
+local copilot_status = ""
+local copilot_status_registered = false
 
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
@@ -88,6 +90,14 @@ local function statusline_diff()
   return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
 end
 
+local function statusline_copilot()
+  if MiniStatusline.is_truncated(90) or copilot_status ~= "InProgress" then
+    return ""
+  end
+
+  return statusline_highlight("MiniStatuslineCopilot", "🤔") .. "%#MiniStatuslineDevinfo#"
+end
+
 local function statusline_path_parts(path)
   local directory, filename = path:match("^(.*[/\\])([^/\\]+)$")
 
@@ -140,7 +150,7 @@ local function statusline_active()
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
-    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git), diff } },
+    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git), diff, statusline_copilot() } },
     "%<",
     { hl = "MiniStatuslinePath", strings = { file } },
     "%=",
@@ -160,7 +170,34 @@ local function redraw_statusline()
   end)
 end
 
+local function setup_copilot_status()
+  if copilot_status_registered then
+    return
+  end
+
+  local ok, status = pcall(require, "copilot.status")
+  if not ok then
+    return
+  end
+
+  if type(status) ~= "table" or type(status.register_status_notification_handler) ~= "function" then
+    return
+  end
+
+  local function update_copilot_status(data)
+    copilot_status = type(data) == "table" and data.status or ""
+    redraw_statusline()
+  end
+
+  local registered = pcall(status.register_status_notification_handler, update_copilot_status)
+  if registered then
+    copilot_status_registered = true
+  end
+end
+
 function M.setup()
+  vim.api.nvim_set_hl(0, "MiniStatuslineCopilot", { link = "MiniStatuslineModeInsert", default = true })
+
   require("mini.statusline").setup({
     content = {
       active = statusline_active,
@@ -178,6 +215,20 @@ function M.setup()
     desc = "Redraw statusline when Git state changes",
     callback = redraw_statusline,
   })
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "LazyLoad",
+    desc = "Track Copilot progress in statusline",
+    callback = function(args)
+      if args.data == "copilot.lua" then
+        setup_copilot_status()
+      end
+    end,
+  })
+
+  if package.loaded["copilot.status"] ~= nil then
+    setup_copilot_status()
+  end
 end
 
 return M
