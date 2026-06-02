@@ -127,6 +127,12 @@ local function map(lhs, lines, duration, desc)
   end, { desc = desc, silent = true })
 end
 
+function M.scroll_page(direction, winid)
+  winid = winid or vim.api.nvim_get_current_win()
+
+  scroll(direction * scroll_count(winid, true), 450, winid)
+end
+
 function M.setup()
   patch_neoscroll()
 
