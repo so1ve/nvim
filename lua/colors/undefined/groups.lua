@@ -49,6 +49,8 @@ function M.get(p)
     TabLine = { fg = p.muted, bg = p.bg },
     TabLineFill = { bg = p.bg },
     TabLineSel = { fg = p.fg, bg = p.bg_alt, bold = true },
+    WinBar = s.tabline.current,
+    WinBarNC = s.tabline.hidden,
 
     Comment = s.syntax.comment,
     Constant = { fg = p.constant },

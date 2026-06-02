@@ -53,6 +53,8 @@ return {
         right = { size = 0.25 },
         bottom = { size = 12 },
       }
+      opts.wo = opts.wo or {}
+      opts.wo.winhighlight = "Normal:Normal"
       opts.keys = {
         ["<C-Right>"] = function(win)
           resize_view(win, "width", resize_step)

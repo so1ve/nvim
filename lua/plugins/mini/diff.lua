@@ -23,7 +23,7 @@ function M.setup()
     diff.toggle_overlay(0)
   end, { desc = "Toggle diff overlay" })
 
-  vim.keymap.set("n", "<leader>gq", function()
+  vim.keymap.set("n", "<leader>gh", function()
     local hunks = diff.export("qf", { scope = "current" })
 
     if #hunks == 0 then
