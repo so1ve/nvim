@@ -7,21 +7,25 @@ local edgy = require("integrations.edgy")
 local symbols = require("config.symbols")
 local window_util = require("utils.windows")
 
+local function has_non_dashboard_normal_window()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if window_util.is_normal_win(win) and not window_util.is_dashboard(vim.api.nvim_win_get_buf(win)) then
+      return true
+    end
+  end
+
+  return false
+end
+
 local function delete_startup_buffers()
-  -- Neo-tree popups and sidebar windows can trigger BufEnter while the dashboard
-  -- is still the only real editor buffer. Cleanup only after entering an actual
-  -- file window, otherwise Neovim may create a lingering [No Name] replacement.
-  if not window_util.is_work_win(vim.api.nvim_get_current_win()) then
+  -- Dismiss the dashboard once any other non-floating window appears.
+  if not has_non_dashboard_normal_window() then
     return
   end
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if window_util.is_dashboard(bufnr) then
-      vim.api.nvim_buf_delete(bufnr, { force = true })
-    elseif window_util.is_empty_unnamed_file(bufnr) and vim.fn.bufwinid(bufnr) == -1 then
-      -- Remove only hidden, never-edited [No Name] placeholders; visible buffers
-      -- or modified scratch buffers are intentionally left alone.
-      vim.api.nvim_buf_delete(bufnr, {})
+      Snacks.bufdelete({ buf = bufnr, force = true, wipe = true })
     end
   end
 end
