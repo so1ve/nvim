@@ -57,6 +57,37 @@ local function statusline_metadata()
   return string.format("%s[%s]", encoding, format)
 end
 
+local function statusline_highlight(hl, text)
+  return "%#" .. hl .. "#" .. statusline_section(text)
+end
+
+local function statusline_diff()
+  if MiniStatusline.is_truncated(75) or type(vim.b.minidiff_summary) ~= "table" then
+    return ""
+  end
+
+  local summary = vim.b.minidiff_summary
+  local parts = {}
+
+  if (summary.add or 0) > 0 then
+    table.insert(parts, statusline_highlight("MiniStatuslineDiffAdd", "+" .. summary.add))
+  end
+
+  if (summary.change or 0) > 0 then
+    table.insert(parts, statusline_highlight("MiniStatuslineDiffChange", "~" .. summary.change))
+  end
+
+  if (summary.delete or 0) > 0 then
+    table.insert(parts, statusline_highlight("MiniStatuslineDiffDelete", "-" .. summary.delete))
+  end
+
+  if #parts == 0 then
+    return ""
+  end
+
+  return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
+end
+
 local function statusline_path_parts(path)
   local directory, filename = path:match("^(.*[/\\])([^/\\]+)$")
 
@@ -102,13 +133,14 @@ end
 local function statusline_active()
   local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
   local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
+  local diff = statusline_diff()
   local file = statusline_file()
   local metadata = statusline_metadata()
   local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
-    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git) } },
+    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git), diff } },
     "%<",
     { hl = "MiniStatuslinePath", strings = { file } },
     "%=",
@@ -142,8 +174,8 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd("User", {
-    pattern = "GitSignsUpdate",
-    desc = "Redraw statusline when Git head changes",
+    pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
+    desc = "Redraw statusline when Git state changes",
     callback = redraw_statusline,
   })
 end

@@ -5,7 +5,7 @@ local explorer_view = edgy.view("Explorer", "neo-tree", {
   filter = function(buf)
     local source = vim.b[buf].neo_tree_source
 
-    return source == nil or source == "filesystem"
+    return source == nil or source == "filesystem" or source == "git_status"
   end,
   open = "Neotree show",
   wo = { winbar = false },
@@ -33,14 +33,38 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-mini/mini.nvim",
     },
+    init = function()
+      vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "WinEnter" }, {
+        desc = "Keep Neo-tree windows free of sign columns",
+        callback = function(args)
+          if vim.bo[args.buf].filetype ~= "neo-tree" then
+            return
+          end
+
+          for _, win in ipairs(vim.fn.win_findbuf(args.buf)) do
+            if vim.api.nvim_win_is_valid(win) then
+              vim.api.nvim_set_option_value("signcolumn", "no", { scope = "local", win = win })
+            end
+          end
+        end,
+      })
+    end,
     keys = {
       { "<leader>e", edgy.with_focus(explorer_view, "Neotree toggle"), desc = "Toggle explorer" },
       { "<leader>E", edgy.with_focus(explorer_view, "Neotree reveal"), desc = "Reveal current file" },
+      { "<leader>gT", edgy.with_focus(explorer_view, "Neotree git_status"), desc = "Toggle git tree" },
     },
     opts = {
-      enable_git_status = false,
       hide_root_node = true,
-      retain_hidden_root_indent = true,
+      source_selector = {
+        winbar = true,
+        content_layout = "center",
+        tabs_layout = "equal",
+        sources = {
+          { source = "filesystem", display_name = "Files" },
+          { source = "git_status", display_name = "Git" },
+        },
+      },
       default_component_configs = {
         indent = {
           with_expanders = true,
@@ -81,6 +105,13 @@ return {
           },
           never_show_by_pattern = {
             "%.tsbuildinfo$",
+          },
+        },
+      },
+      git_status = {
+        window = {
+          mappings = {
+            ["<space>"] = "noop",
           },
         },
       },
@@ -154,5 +185,5 @@ return {
     end,
   },
   edgy.view_spec("left", explorer_view),
-  bufferline.offset_spec(bufferline.offset("neo-tree", "Explorer")),
+  bufferline.offset_spec(bufferline.offset("neo-tree", "Neo Tree")),
 }

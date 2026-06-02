@@ -100,7 +100,6 @@ return {
         shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
       },
       gh = {},
-      lazygit = {},
       rename = {},
       scope = {},
       words = {},
@@ -122,9 +121,30 @@ return {
       {
         "<leader>gg",
         function()
-          Snacks.lazygit()
+          Snacks.picker.git_status()
         end,
-        desc = "Lazygit",
+        desc = "Git status",
+      },
+      {
+        "<leader>gd",
+        function()
+          Snacks.picker.git_diff()
+        end,
+        desc = "Git diff hunks",
+      },
+      {
+        "<leader>gf",
+        function()
+          Snacks.picker.git_files({ untracked = true })
+        end,
+        desc = "Git files",
+      },
+      {
+        "<leader>gF",
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = "Git log",
       },
       {
         "<leader>gb",

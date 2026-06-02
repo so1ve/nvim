@@ -8,7 +8,6 @@
 - `fd`
 - `tree-sitter-cli`
 - `gh`
-- `lazygit`
 - `node`
 - `python`
 - `pwsh`

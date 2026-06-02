@@ -28,8 +28,8 @@ opt.keywordprg = ":RayKeywordPrg"
 require("config.terminal").setup()
 
 -- scrolling
-opt.scrolloff = 5
-opt.sidescrolloff = 5
+opt.scrolloff = 3
+opt.sidescrolloff = 3
 
 -- wrapping
 opt.linebreak = true

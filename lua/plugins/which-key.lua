@@ -6,7 +6,6 @@ local leader_groups = {
   { "<leader>d", group = "Diagnostics", icon = { icon = diagnostic_icon, color = "yellow" } },
   { "<leader>f", group = "Find", icon = { icon = "󰍉", color = "blue" } },
   { "<leader>g", group = "Git", icon = { icon = "", color = "orange" } },
-  { "<leader>gh", group = "Git hunk", icon = { icon = "", color = "orange" } },
   { "<leader>m", group = "Multicursor", icon = { icon = "󰆿", color = "purple" } },
   { "<leader>n", group = "Noice", icon = { icon = "󰎟", color = "cyan" } },
   { "<leader>a", group = "AI", icon = { icon = "󰚩", color = "green" } },

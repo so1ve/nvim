@@ -30,7 +30,6 @@ function M.check()
   executable("fd", "file finding workflows use fd")
   executable("tree-sitter", "parser workflows need tree-sitter-cli")
   executable("gh", "GitHub CLI is used for various GitHub workflows")
-  executable("lazygit", "<leader>gg uses lazygit")
   executable("node", "TypeScript, ESLint, Prettier, and markdown tools need Node.js")
   executable("python", "Python LSP, DAP, and test adapters need Python")
 
