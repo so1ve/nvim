@@ -91,11 +91,7 @@ local function statusline_diff()
 end
 
 local function statusline_copilot()
-  if MiniStatusline.is_truncated(90) or copilot_status ~= "InProgress" then
-    return ""
-  end
-
-  return statusline_highlight("MiniStatuslineCopilot", "🤔") .. "%#MiniStatuslineDevinfo#"
+  return statusline_section(copilot_status == "InProgress" and "" or "")
 end
 
 local function statusline_path_parts(path)
@@ -150,11 +146,12 @@ local function statusline_active()
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
-    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git), diff, statusline_copilot() } },
+    { hl = "MiniStatuslineDevinfo", strings = { statusline_section(git), diff } },
     "%<",
     { hl = "MiniStatuslinePath", strings = { file } },
     "%=",
     { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
+    { hl = "MiniStatuslineInputState", strings = { statusline_copilot() } },
     { hl = "MiniStatuslineMetadata", strings = { statusline_section(metadata) } },
     { hl = mode_hl, strings = { statusline_section(search), "%l/%L:%v" } },
   })
@@ -196,8 +193,6 @@ local function setup_copilot_status()
 end
 
 function M.setup()
-  vim.api.nvim_set_hl(0, "MiniStatuslineCopilot", { link = "MiniStatuslineModeInsert", default = true })
-
   require("mini.statusline").setup({
     content = {
       active = statusline_active,
