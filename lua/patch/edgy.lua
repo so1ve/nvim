@@ -11,7 +11,7 @@ function M.patch()
   local window = require("edgy.window")
 
   hacks.replace(window, "edgy.window.winbar.without_button", "winbar", function(self)
-    return "%<%#EdgyTitle# " .. self.view.get_title() .. "%*"
+    return "%<%#EdgyTitle#" .. self.view.get_title() .. "%*"
   end)
 end
 
