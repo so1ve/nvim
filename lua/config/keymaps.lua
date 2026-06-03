@@ -88,7 +88,7 @@ map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
 map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
 
-map("n", "<leader>za", "za", { desc = "Toggle fold" })
+map("n", "<leader>zt", "za", { desc = "Toggle fold" })
 map("n", "<leader>zc", "zc", { desc = "Close fold" })
 map("n", "<leader>zo", "zo", { desc = "Open fold" })
 map("n", "<leader>zM", "zM", { desc = "Close all folds" })
