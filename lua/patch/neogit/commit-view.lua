@@ -7,26 +7,12 @@ local function current_filetype()
   return vim.bo[vim.api.nvim_get_current_buf()].filetype
 end
 
-local function preferred_work_window()
-  local previous = vim.fn.win_getid(vim.fn.winnr("#"))
-
-  if windows.is_work_win(previous) then
-    return previous
-  end
-
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if windows.is_work_win(win) then
-      return win
-    end
-  end
-end
-
 local function open_in_work_window(open, self, kind)
   if kind or current_filetype() ~= "NeogitStatus" then
     return open(self, kind)
   end
 
-  local win = preferred_work_window()
+  local win = windows.preferred_work_window()
 
   if not win then
     return open(self, kind)

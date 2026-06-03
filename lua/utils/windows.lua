@@ -40,6 +40,20 @@ function M.is_work_win(win)
   return M.is_normal_win(win) and M.is_work_file(vim.api.nvim_win_get_buf(win))
 end
 
+function M.preferred_work_window()
+  local previous = vim.fn.win_getid(vim.fn.winnr("#"))
+
+  if M.is_work_win(previous) then
+    return previous
+  end
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if M.is_work_win(win) then
+      return win
+    end
+  end
+end
+
 -- Used by close-buffer logic to decide whether deleting a file buffer would leave
 -- another real file visible in the tabpage.
 function M.has_many_files(wins)
