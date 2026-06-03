@@ -242,11 +242,18 @@ function M.commit()
   pending = true
 
   require("neogit.lib.async").void(function()
-    require("neogit.popups.commit.actions").commit({
+    local ok, err = pcall(require("neogit.popups.commit.actions").commit, {
       get_arguments = function()
         return {}
       end,
     })
+
+    pending = false
+    require("neogit.watcher").instance():dispatch_refresh()
+
+    if not ok then
+      error(err)
+    end
   end)()
 end
 
