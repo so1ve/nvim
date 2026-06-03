@@ -35,6 +35,7 @@ local function quit_all()
 end
 
 local function close_buffer_or_window()
+  local win = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
   if window_util.is_dashboard(bufnr) then
@@ -45,22 +46,28 @@ local function close_buffer_or_window()
 
   local wins = vim.api.nvim_tabpage_list_wins(0)
   local has_multiple_windows = #wins > 1
-  local should_delete_buffer = window_util.is_file(bufnr)
-    and (not has_multiple_windows or not window_util.has_many_files(wins))
+  local is_file_buffer = window_util.is_file(bufnr)
+  local window_owns_buffer = not window_util.is_normal_win(win) or vim.wo[win].winfixwidth or vim.wo[win].winfixheight
 
-  if should_delete_buffer then
-    Snacks.bufdelete()
-
-    return
-  end
-
-  if has_multiple_windows then
+  -- Extra file splits are layout, not buffer ownership. Close the window and
+  -- keep the file buffer alive elsewhere.
+  if is_file_buffer and has_multiple_windows and window_util.has_many_files(wins) then
     vim.cmd.close()
 
     return
   end
 
-  vim.cmd.bdelete()
+  -- Fixed panels, sidebars, and floats own their windows. Close the window
+  -- instead of turning it into a random file buffer.
+  if not is_file_buffer and has_multiple_windows and window_owns_buffer then
+    vim.cmd.close()
+
+    return
+  end
+
+  -- Everything else is a buffer living in an editor window: delete the buffer
+  -- with Snacks so the window layout is preserved and a fallback buffer appears.
+  Snacks.bufdelete()
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })

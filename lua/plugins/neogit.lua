@@ -23,6 +23,7 @@ return {
       treesitter_diff_highlight = true,
     },
     config = function(_, opts)
+      require("patch.neogit.commit-view").patch()
       require("patch.neogit.hunk-paths").patch()
       require("neogit").setup(opts)
     end,
