@@ -47,11 +47,12 @@ local function close_buffer_or_window()
   local wins = vim.api.nvim_tabpage_list_wins(0)
   local has_multiple_windows = #wins > 1
   local is_file_buffer = window_util.is_file(bufnr)
+  local is_work_buffer = window_util.is_work_file(bufnr)
   local window_owns_buffer = not window_util.is_normal_win(win) or vim.wo[win].winfixwidth or vim.wo[win].winfixheight
 
   -- Extra file splits are layout, not buffer ownership. Close the window and
   -- keep the file buffer alive elsewhere.
-  if is_file_buffer and has_multiple_windows and window_util.has_many_files(wins) then
+  if is_work_buffer and has_multiple_windows and window_util.has_many_files(wins) then
     vim.cmd.close()
 
     return

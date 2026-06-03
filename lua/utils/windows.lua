@@ -27,9 +27,11 @@ function M.is_empty_unnamed_file(bufnr)
   return vim.api.nvim_buf_line_count(bufnr) == 1 and vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] == ""
 end
 
--- Work files are regular file buffers excluding startup/dashboard UI buffers.
+-- Work files are regular listed buffers that keep normal buffer lifecycle.
+-- Temporary editor buffers can still be real files, but they opt into
+-- bufhidden cleanup and should be deleted without closing their window.
 function M.is_work_file(bufnr)
-  return M.is_file(bufnr) and not M.is_dashboard(bufnr)
+  return M.is_file(bufnr) and not M.is_dashboard(bufnr) and vim.bo[bufnr].bufhidden == ""
 end
 
 -- A work window is both a normal editor window and currently showing a work file.
