@@ -1,3 +1,24 @@
+local rendered_doc_filetypes = { "noice_hover", "blink-cmp-documentation" }
+
+local render_options = {
+  render_modes = true,
+  bullet = { enabled = false },
+  checkbox = { enabled = false },
+  code = { enabled = false },
+  dash = { enabled = false },
+  document = { enabled = false },
+  heading = { enabled = true },
+  html = { enabled = false },
+  indent = { enabled = false },
+  inline_highlight = { enabled = true },
+  latex = { enabled = false },
+  link = { enabled = false },
+  paragraph = { enabled = false },
+  pipe_table = { enabled = false },
+  quote = { enabled = true },
+  sign = { enabled = true },
+}
+
 return {
   {
     "folke/noice.nvim",
@@ -106,7 +127,9 @@ return {
       { "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss notifications" },
     },
     config = function(_, opts)
-      vim.treesitter.language.register("markdown", "noice_hover")
+      for _, filetype in ipairs(rendered_doc_filetypes) do
+        vim.treesitter.language.register("markdown", filetype)
+      end
 
       require("patch.noice").patch()
       require("noice").setup(opts)
@@ -115,30 +138,14 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     optional = true,
-    ft = "noice_hover",
+    ft = rendered_doc_filetypes,
     opts_extend = { "file_types" },
     opts = {
-      file_types = { "noice_hover" },
+      file_types = rendered_doc_filetypes,
       overrides = {
         filetype = {
-          noice_hover = {
-            render_modes = true,
-            bullet = { enabled = false },
-            checkbox = { enabled = false },
-            code = { enabled = false },
-            dash = { enabled = false },
-            document = { enabled = false },
-            heading = { enabled = true },
-            html = { enabled = false },
-            indent = { enabled = false },
-            inline_highlight = { enabled = true },
-            latex = { enabled = false },
-            link = { enabled = false },
-            paragraph = { enabled = false },
-            pipe_table = { enabled = false },
-            quote = { enabled = true },
-            sign = { enabled = true },
-          },
+          ["noice_hover"] = render_options,
+          ["blink-cmp-documentation"] = render_options,
         },
       },
     },

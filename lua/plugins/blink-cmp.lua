@@ -1,5 +1,16 @@
 local tab = require("utils.tab")
 
+local blink_documentation_filetype = "blink-cmp-documentation"
+
+local function draw_documentation(opts)
+  require("blink-noice-docs").draw(opts)
+  require("render-markdown").render({
+    buf = opts.window:get_buf(),
+    win = opts.window:get_win(),
+    event = "BlinkDocumentation",
+  })
+end
+
 local function label_text(ctx)
   local highlights_info = require("colorful-menu").blink_highlights(ctx)
 
@@ -58,13 +69,18 @@ return {
     "so1ve/blink-noice-docs.nvim",
   },
   config = function(_, opts)
+    vim.treesitter.language.register("markdown", blink_documentation_filetype)
+
     require("colorful-menu").setup({
       ls = {
         fallback = false,
       },
     })
+
+    opts.completion.documentation.draw = draw_documentation
+
     require("blink.cmp").setup(opts)
-    require("blink-noice-docs").setup()
+    require("blink-noice-docs").setup({ override_draw = false })
   end,
   opts = {
     appearance = {
