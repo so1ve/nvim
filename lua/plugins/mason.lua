@@ -33,6 +33,11 @@ return {
     opts = function()
       return {
         ensure_installed = require("config.languages").collect("tools"),
+        integrations = {
+          ["mason-lspconfig"] = false,
+          ["mason-null-ls"] = false,
+          ["mason-nvim-dap"] = false,
+        },
       }
     end,
   },

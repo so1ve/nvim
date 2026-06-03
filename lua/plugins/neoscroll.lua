@@ -1,7 +1,7 @@
 -- Snacks.scroll has issues when scrolling multiple times in a short time so we use neoscroll instead for a smoother experience.
 return {
   "karb94/neoscroll.nvim",
-  lazy = false,
+  event = "VeryLazy",
   opts = {
     -- Keep this empty so Neoscroll does not register its built-in page mappings;
     -- patch.neoscroll.cursor-first installs cursor-first replacements below.
