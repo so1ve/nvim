@@ -20,9 +20,17 @@ return {
     },
     opts = {
       kind = "vsplit",
+      mappings = {
+        status = {
+          C = function()
+            require("integrations.neogit.ai-commit").commit()
+          end,
+        },
+      },
       treesitter_diff_highlight = true,
     },
     config = function(_, opts)
+      require("integrations.neogit.ai-commit").setup()
       require("patch.neogit.commit-view").patch()
       require("patch.neogit.hunk-paths").patch()
       require("neogit").setup(opts)
