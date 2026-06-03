@@ -1,7 +1,7 @@
 return {
   "akinsho/bufferline.nvim",
   version = "*",
-  event = { "BufReadPost", "BufNewFile" },
+  event = "VeryLazy",
   dependencies = {
     "nvim-mini/mini.nvim",
   },
@@ -19,7 +19,6 @@ return {
     options = {
       max_name_length = 24,
       show_buffer_close_icons = false,
-
       diagnostics = "nvim_lsp",
       diagnostics_indicator = function(count, level)
         local severities = {
@@ -33,7 +32,6 @@ return {
 
         return " " .. icon .. " " .. count
       end,
-
       close_command = function(buffer)
         Snacks.bufdelete(buffer)
       end,

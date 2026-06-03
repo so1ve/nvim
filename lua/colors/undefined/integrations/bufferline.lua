@@ -27,6 +27,7 @@ function M.get(p)
     BufferLinePick = { fg = p.red, bg = p.bg, bold = true },
     BufferLinePickVisible = { fg = p.red, bg = p.bg, bold = true },
     BufferLinePickSelected = { fg = p.red, bg = p.bg_alt, bold = true },
+    BufferLineOffset = { fg = p.green, bg = p.bg, bold = true },
     BufferLineOffsetSeparator = { fg = p.border, bg = p.bg },
     BufferLineTab = { fg = p.muted, bg = p.bg },
     BufferLineTabSelected = { fg = p.fg, bg = p.bg_alt, bold = true },

@@ -5,7 +5,7 @@ function M.offset(filetype, text, opts)
     filetype = filetype,
     text = text,
     text_align = "left",
-    highlight = "Directory",
+    highlight = "BufferLineOffset",
     separator = true,
   }, opts or {})
 end

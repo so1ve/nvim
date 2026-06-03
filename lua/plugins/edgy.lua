@@ -85,6 +85,10 @@ return {
         })
       )
     end,
+    config = function(_, opts)
+      require("patch.edgy").patch()
+      require("edgy").setup(opts)
+    end,
   },
   edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),
 }
