@@ -33,22 +33,6 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-mini/mini.nvim",
     },
-    init = function()
-      vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "WinEnter" }, {
-        desc = "Keep Neo-tree windows free of sign columns",
-        callback = function(args)
-          if vim.bo[args.buf].filetype ~= "neo-tree" then
-            return
-          end
-
-          for _, win in ipairs(vim.fn.win_findbuf(args.buf)) do
-            if vim.api.nvim_win_is_valid(win) then
-              vim.api.nvim_set_option_value("signcolumn", "no", { scope = "local", win = win })
-            end
-          end
-        end,
-      })
-    end,
     keys = {
       { "<leader>e", edgy.with_focus(neotree_view, "Neotree toggle"), desc = "Toggle explorer" },
       { "<leader>E", edgy.with_focus(neotree_view, "Neotree reveal"), desc = "Reveal current file" },
