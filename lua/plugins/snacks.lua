@@ -174,9 +174,9 @@ return {
       {
         "<leader>fr",
         function()
-          Snacks.picker.recent()
+          Snacks.picker.registers()
         end,
-        desc = "Recent files",
+        desc = "Registers",
       },
       {
         "<leader>fu",
