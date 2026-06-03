@@ -6,13 +6,22 @@ return {
   opts = {},
   keys = {
     {
-      "<leader>re",
+      "<leader>rf",
       function()
         return require("refactoring").extract_func()
       end,
       mode = "x",
       expr = true,
       desc = "Extract function",
+    },
+    {
+      "<leader>rF",
+      function()
+        return require("refactoring").extract_func_to_file()
+      end,
+      mode = "x",
+      expr = true,
+      desc = "Extract function to file",
     },
     {
       "<leader>rv",
