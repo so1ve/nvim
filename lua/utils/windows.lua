@@ -12,11 +12,6 @@ function M.is_normal_win(win)
   return vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_config(win).relative == ""
 end
 
--- Snacks dashboard buffers are unlisted nofile startup UI, not real work files.
-function M.is_dashboard(bufnr)
-  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].filetype == "snacks_dashboard"
-end
-
 -- Empty unnamed file buffers are Neovim placeholders. They are safe to clean up
 -- only when they were never edited and contain exactly the initial blank line.
 function M.is_empty_unnamed_file(bufnr)
@@ -31,7 +26,7 @@ end
 -- Temporary editor buffers can still be real files, but they opt into
 -- bufhidden cleanup and should be deleted without closing their window.
 function M.is_work_file(bufnr)
-  return M.is_file(bufnr) and not M.is_dashboard(bufnr) and vim.bo[bufnr].bufhidden == ""
+  return M.is_file(bufnr) and vim.bo[bufnr].bufhidden == ""
 end
 
 -- A work window is both a normal editor window and currently showing a work file.

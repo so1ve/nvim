@@ -149,13 +149,6 @@ function M.get(p)
     SnacksDiffHeader = { fg = p.fg_dim, bg = p.bg_alt },
     SnacksDiffLabel = { fg = p.property, bg = p.bg_alt, bold = true },
 
-    SnacksDashboardNormal = s.float.normal,
-    SnacksDashboardTerminal = { fg = p.green },
-    SnacksDashboardHeader = s.title,
-    SnacksDashboardFooter = s.dim,
-    SnacksDashboardIcon = { fg = p.green },
-    SnacksDashboardKey = s.key,
-    SnacksDashboardDesc = s.dim,
     SnacksNotifierHistory = s.float.normal,
     SnacksNotifierHistoryTitle = s.title,
     SnacksNotifierHistoryDateTime = s.muted,

@@ -17,7 +17,6 @@ return {
       exclude_filetypes = {
         "help",
         "bigfile",
-        "snacks_dashboard",
         "markdown",
       },
     }

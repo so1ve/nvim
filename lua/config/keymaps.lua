@@ -38,12 +38,6 @@ local function close_buffer_or_window()
   local win = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  if window_util.is_dashboard(bufnr) then
-    quit_all()
-
-    return
-  end
-
   local wins = vim.api.nvim_tabpage_list_wins(0)
   local has_multiple_windows = #wins > 1
   local is_file_buffer = window_util.is_file(bufnr)

@@ -5,30 +5,6 @@ end
 local terminal = require("config.terminal")
 local edgy = require("integrations.edgy")
 local symbols = require("config.symbols")
-local window_util = require("utils.windows")
-
-local function has_non_dashboard_normal_window()
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if window_util.is_normal_win(win) and not window_util.is_dashboard(vim.api.nvim_win_get_buf(win)) then
-      return true
-    end
-  end
-
-  return false
-end
-
-local function delete_startup_buffers()
-  -- Dismiss the dashboard once any other non-floating window appears.
-  if not has_non_dashboard_normal_window() then
-    return
-  end
-
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if window_util.is_dashboard(bufnr) then
-      Snacks.bufdelete({ buf = bufnr, force = true, wipe = true })
-    end
-  end
-end
 
 return {
   {
@@ -75,29 +51,6 @@ return {
           ft = "snacks_notif",
         },
       },
-      dashboard = {
-        preset = {
-          keys = {
-            { icon = " ", key = "f", desc = "Find File", action = ":lua require('fff').find_files()" },
-            { icon = " ", key = "g", desc = "Find Text", action = ":lua require('fff').live_grep()" },
-            { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-            {
-              icon = " ",
-              key = "s",
-              desc = "Restore Session",
-              action = ":lua require('plugins.mini.sessions').load()",
-            },
-            {
-              icon = " ",
-              key = "c",
-              desc = "Config",
-              action = ":lua require('fff').find_files_in_dir(vim.fn.stdpath('config'))",
-            },
-            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
-            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
-          },
-        },
-      },
       indent = {},
       scroll = {
         filter = function(buf)
@@ -115,19 +68,6 @@ return {
       scope = {},
       words = {},
     },
-    config = function(_, opts)
-      local snacks = require("snacks")
-
-      require("patch.snacks.dashboard").patch()
-      snacks.setup(opts)
-
-      vim.api.nvim_create_autocmd("BufEnter", {
-        desc = "Dismiss dashboard when entering a listed file buffer",
-        callback = delete_startup_buffers,
-      })
-
-      delete_startup_buffers()
-    end,
     keys = {
       {
         "<leader>gb",
