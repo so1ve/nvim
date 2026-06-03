@@ -44,26 +44,17 @@ end
 function M.patch()
   local block = require("noice.text.block")
 
-  hacks.wrap(block, "noice.markdown.block.width", "width", function(width)
+  hacks.wrap(block, "noice.markdown.block.width", "width", function()
     -- Prefer cached visual widths for lines produced by the link-aware markdown
     -- formatter; fall back to Noice's upstream width calculation otherwise.
     return function(self)
-      local has_markdown_width = false
       local ret = 0
 
-      for _, line in ipairs(self._lines or {}) do
-        if line._ray_markdown_visual_width then
-          has_markdown_width = true
-        end
-
+      for _, line in ipairs(self._lines) do
         ret = math.max(ret, line_width(line))
       end
 
-      if has_markdown_width then
-        return ret
-      end
-
-      return width(self)
+      return ret
     end
   end)
 end

@@ -74,28 +74,17 @@ function M.show(providers)
   end
 
   local pending = #clients
+  local response_count = 0
   local shown_count = 0
 
-  local function response_count()
-    local count = 0
-
-    for _ in pairs(responses) do
-      count = count + 1
-    end
-
-    return count
-  end
-
   local function render(force)
-    local count = response_count()
-
-    if count == 0 or count == shown_count then
+    if response_count == 0 or response_count == shown_count then
       return
     end
 
     if force or shown_count == 0 then
       show_hover(responses, providers)
-      shown_count = count
+      shown_count = response_count
     end
   end
 
@@ -109,6 +98,7 @@ function M.show(providers)
 
   local function handle_response(entry, result, ctx)
     if has_hover_content(result) then
+      response_count = response_count + 1
       responses[entry.index] = { result = result, ctx = ctx }
       render(false)
     end

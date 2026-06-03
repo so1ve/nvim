@@ -65,9 +65,7 @@ M.focus_view_when_available = focus.focus_view_when_available
 
 function M.with_focus(view, open, opts)
   return function(...)
-    local focus_opts = vim.tbl_extend("force", opts or {}, {
-      tabpage = opts and opts.tabpage or vim.api.nvim_get_current_tabpage(),
-    })
+    local focus_opts = vim.tbl_extend("force", { tabpage = vim.api.nvim_get_current_tabpage() }, opts or {})
     local had_view = M.find_view_win(view, focus_opts.tabpage) ~= nil
     local result = open_view(open, ...)
 

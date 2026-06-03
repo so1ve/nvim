@@ -108,7 +108,7 @@ return {
       },
       statuscolumn = {},
       terminal = {
-        shell = terminal.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
+        shell = terminal.shell.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
       },
       gh = {},
       rename = {},

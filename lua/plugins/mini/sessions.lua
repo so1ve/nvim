@@ -31,10 +31,6 @@ local function is_file_buffer(bufnr)
 end
 
 local function has_enough_buffers()
-  if minimum_buffers <= 0 then
-    return true
-  end
-
   local count = 0
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if is_file_buffer(bufnr) then

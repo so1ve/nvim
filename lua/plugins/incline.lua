@@ -91,12 +91,12 @@ return {
     },
     render = function(props)
       local name = filename(props)
-      local icon, icon_hl = require("mini.icons").get("file", name), nil
+      local icon = require("mini.icons").get("file", name)
       local modified = vim.bo[props.buf].modified
 
       return {
         diagnostics(props.buf),
-        icon and { icon .. " ", group = icon_hl } or "",
+        icon and { icon .. " " } or "",
         { name, gui = modified and "bold,italic" or "bold" },
         modified and { " +", guifg = "#a8a29e", gui = "bold" } or "",
         props.focused and breadcrumbs(props.buf) or {},
