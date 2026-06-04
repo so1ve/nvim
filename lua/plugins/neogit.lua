@@ -1,7 +1,3 @@
-local edgy = require("integrations.edgy")
-
-local neogit_view = edgy.view("Neogit", "NeogitStatus")
-
 return {
   {
     "NeogitOrg/neogit",
@@ -12,14 +8,14 @@ return {
     keys = {
       {
         "<leader>gg",
-        edgy.with_focus(neogit_view, function()
+        function()
           require("neogit").open()
-        end),
+        end,
         desc = "Git status",
       },
     },
     opts = {
-      kind = "vsplit",
+      kind = "replace",
       commit_editor = {
         kind = "replace",
       },
@@ -27,11 +23,9 @@ return {
     },
     config = function(_, opts)
       require("integrations.neogit.ai-commit").setup()
-      require("patch.neogit.commit-view").patch()
+      require("patch.neogit.status").patch()
       require("patch.neogit.hunk-paths").patch()
       require("neogit").setup(opts)
     end,
   },
-  edgy.view_spec("right", neogit_view),
-  edgy.neo_tree_exclusion_spec("NeogitStatus"),
 }

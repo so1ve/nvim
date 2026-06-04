@@ -84,7 +84,7 @@ return {
     },
     ignore = {
       buftypes = "special",
-      filetypes = { "snacks_picker_list" },
+      filetypes = { "NeogitStatus", "snacks_picker_list" },
       floating_wins = true,
       unlisted_buffers = true,
       wintypes = "special",
