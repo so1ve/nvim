@@ -16,6 +16,7 @@ return {
     },
     opts = {
       kind = "replace",
+      disable_insert_on_commit = true,
       commit_editor = {
         kind = "replace",
       },
