@@ -1,17 +1,8 @@
 local hacks = require("utils.hacks")
+local editor_windows = require("utils.editor_windows")
 local windows = require("utils.windows")
 
 local M = {}
-
-local function status_window()
-  local current = vim.api.nvim_get_current_win()
-
-  if windows.is_work_win(current) then
-    return current
-  end
-
-  return windows.preferred_work_window()
-end
 
 local function restore_replaced_buffer(buffer)
   local old_buf = buffer.old_buf
@@ -21,7 +12,13 @@ local function restore_replaced_buffer(buffer)
     return
   end
 
-  for _, win in ipairs(vim.fn.win_findbuf(buffer.handle)) do
+  local status_wins = vim.fn.win_findbuf(buffer.handle)
+
+  if editor_windows.discard_placeholder(old_buf, status_wins) then
+    return
+  end
+
+  for _, win in ipairs(status_wins) do
     if vim.api.nvim_win_is_valid(win) then
       vim.api.nvim_win_set_buf(win, old_buf)
     end
@@ -36,7 +33,7 @@ function M.patch()
           return open(self, kind)
         end
 
-        local win = status_window()
+        local win = editor_windows.pick()
 
         if win then
           vim.api.nvim_set_current_win(win)

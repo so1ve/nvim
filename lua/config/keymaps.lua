@@ -1,5 +1,7 @@
 local map = vim.keymap.set
-local window_util = require("utils.windows")
+local close = require("utils.close")
+
+close.setup()
 
 -- delete them since when lsp is not ready for references, `gr` triggers the builtin key hint menu instead of a warning indicating that no references are found
 local conflict_keymaps = {
@@ -16,55 +18,6 @@ for mode, keys in pairs(conflict_keymaps) do
   end
 end
 
-local function quit_all()
-  local active_pickers = require("snacks.picker").get({ tab = false })
-
-  if #active_pickers > 0 then
-    for _, active_picker in ipairs(active_pickers) do
-      active_picker:close()
-    end
-
-    vim.schedule(function()
-      vim.cmd("confirm qall")
-    end)
-
-    return
-  end
-
-  vim.cmd("confirm qall")
-end
-
-local function close_buffer_or_window()
-  local win = vim.api.nvim_get_current_win()
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  local wins = vim.api.nvim_tabpage_list_wins(0)
-  local has_multiple_windows = #wins > 1
-  local is_file_buffer = window_util.is_file(bufnr)
-  local is_work_buffer = window_util.is_work_file(bufnr)
-  local window_owns_buffer = not window_util.is_normal_win(win) or vim.wo[win].winfixwidth or vim.wo[win].winfixheight
-
-  -- Extra file splits are layout, not buffer ownership. Close the window and
-  -- keep the file buffer alive elsewhere.
-  if is_work_buffer and has_multiple_windows and window_util.has_many_files(wins) then
-    vim.cmd.close()
-
-    return
-  end
-
-  -- Fixed panels, sidebars, and floats own their windows. Close the window
-  -- instead of turning it into a random file buffer.
-  if not is_file_buffer and has_multiple_windows and window_owns_buffer then
-    vim.cmd.close()
-
-    return
-  end
-
-  -- Everything else is a buffer living in an editor window: delete the buffer
-  -- with Snacks so the window layout is preserved and a fallback buffer appears.
-  Snacks.bufdelete()
-end
-
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
@@ -75,8 +28,8 @@ map("n", "q", "<Nop>", { noremap = true, silent = true })
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
-map("n", "<leader>q", close_buffer_or_window, { desc = "Close buffer or window" })
-map("n", "<leader>Q", quit_all, { desc = "Quit all" })
+map("n", "<leader>q", close.close_current, { desc = "Close buffer or window" })
+map("n", "<leader>Q", close.quit_all, { desc = "Quit all" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })

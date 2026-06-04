@@ -1,0 +1,81 @@
+local windows = require("utils.windows")
+
+local M = {}
+
+local main_window_key = "ray_main_editing_window"
+
+local function remember(win)
+  if windows.is_work_win(win) then
+    vim.w[win][main_window_key] = true
+  end
+end
+
+local function is_main(win)
+  return windows.is_normal_win(win) and (vim.w[win][main_window_key] == true or windows.is_work_win(win))
+end
+
+local function is_placeholder(win)
+  return is_main(win) and windows.is_empty_unnamed_file(vim.api.nvim_win_get_buf(win))
+end
+
+function M.setup()
+  remember(vim.api.nvim_get_current_win())
+
+  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+    callback = function()
+      remember(vim.api.nvim_get_current_win())
+    end,
+  })
+end
+
+function M.pick()
+  local current = vim.api.nvim_get_current_win()
+
+  if windows.is_work_win(current) or is_placeholder(current) then
+    return current
+  end
+
+  local previous = vim.fn.win_getid(vim.fn.winnr("#"))
+
+  if windows.is_work_win(previous) or is_placeholder(previous) then
+    return previous
+  end
+
+  local placeholder
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if windows.is_work_win(win) then
+      return win
+    elseif not placeholder and is_placeholder(win) then
+      placeholder = win
+    end
+  end
+
+  return placeholder
+end
+
+function M.should_close(win, bufnr)
+  return not is_main(win) and #vim.api.nvim_tabpage_list_wins(0) > 1 and #vim.fn.win_findbuf(bufnr) == 1
+end
+
+function M.discard_placeholder(bufnr, owner_wins)
+  if not windows.is_empty_unnamed_file(bufnr) then
+    return false
+  end
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if not vim.tbl_contains(owner_wins, win) and windows.is_work_win(win) then
+      for _, owner in ipairs(owner_wins) do
+        pcall(vim.api.nvim_win_close, owner, false)
+      end
+
+      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+
+      return true
+    end
+  end
+
+  return false
+end
+
+return M
