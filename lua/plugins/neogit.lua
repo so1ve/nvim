@@ -20,12 +20,8 @@ return {
     },
     opts = {
       kind = "vsplit",
-      mappings = {
-        status = {
-          C = function()
-            require("integrations.neogit.ai-commit").commit()
-          end,
-        },
+      commit_editor = {
+        kind = "replace",
       },
       treesitter_diff_highlight = true,
     },
