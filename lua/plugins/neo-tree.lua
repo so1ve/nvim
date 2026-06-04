@@ -39,6 +39,7 @@ return {
     },
     opts = {
       hide_root_node = true,
+      retain_hidden_root_indent = true,
       default_component_configs = {
         indent = {
           with_expanders = true,
