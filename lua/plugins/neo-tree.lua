@@ -66,6 +66,7 @@ return {
         },
         window = {
           mappings = {
+            ["<Tab>"] = "toggle_node",
             ["<space>"] = "noop",
             ["/"] = "noop",
             ["f"] = "noop",
