@@ -18,6 +18,12 @@ opt.title = true
 opt.titlestring = "nvim: %t"
 opt.winborder = "rounded"
 
+-- neovide
+if vim.g.neovide then
+  vim.o.guifont = "R_Maple_Mono_NF_CN:h10:#h-full:#e-antialias"
+  vim.g.neovide_title_background_color = "#212221"
+end
+
 -- interaction
 opt.mouse = "a"
 opt.mousemodel = "extend"
