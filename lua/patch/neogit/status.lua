@@ -14,10 +14,6 @@ local function restore_replaced_buffer(buffer)
 
   local status_wins = vim.fn.win_findbuf(buffer.handle)
 
-  if editor_windows.discard_placeholder(old_buf, status_wins) then
-    return
-  end
-
   for _, win in ipairs(status_wins) do
     if vim.api.nvim_win_is_valid(win) then
       vim.api.nvim_win_set_buf(win, old_buf)

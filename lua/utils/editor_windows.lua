@@ -58,24 +58,4 @@ function M.should_close(win, bufnr)
   return not is_main(win) and #vim.api.nvim_tabpage_list_wins(0) > 1 and #vim.fn.win_findbuf(bufnr) == 1
 end
 
-function M.discard_placeholder(bufnr, owner_wins)
-  if not windows.is_empty_unnamed_file(bufnr) then
-    return false
-  end
-
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if not vim.tbl_contains(owner_wins, win) and windows.is_work_win(win) then
-      for _, owner in ipairs(owner_wins) do
-        pcall(vim.api.nvim_win_close, owner, false)
-      end
-
-      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
-
-      return true
-    end
-  end
-
-  return false
-end
-
 return M

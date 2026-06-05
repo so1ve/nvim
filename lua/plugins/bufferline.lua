@@ -35,6 +35,16 @@ return {
       close_command = function(buffer)
         Snacks.bufdelete(buffer)
       end,
+      custom_filter = function(buffer)
+        if vim.bo[buffer].buftype ~= "" then
+          return false
+        end
+        if vim.api.nvim_buf_get_name(buffer) == "" then
+          return false
+        end
+
+        return true
+      end,
     },
   },
 }

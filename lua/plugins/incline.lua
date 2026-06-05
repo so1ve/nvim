@@ -36,6 +36,10 @@ local function diagnostics(bufnr)
 end
 
 local function breadcrumbs(bufnr)
+  if not require("utils.windows").is_work_file(bufnr) then
+    return {}
+  end
+
   local navic = require("nvim-navic")
   if not navic.is_available(bufnr) then
     return {}
