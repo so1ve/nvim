@@ -4,10 +4,16 @@ local M = {}
 
 local TIMEOUT_MS = 15000
 local MAX_DIFF_CHARS = 20000
+local NEXT_COMMIT_TIMEOUT_MS = 10000
 
 local running = {}
 local token
 local expires_at = 0
+local generate_on_next_commit = false
+
+local function is_commit_edit_message(bufnr)
+  return vim.api.nvim_buf_get_name(bufnr):match("COMMIT_EDITMSG$") ~= nil
+end
 
 local function json(body)
   local ok, data = pcall(vim.json.decode, body or "")
@@ -230,17 +236,41 @@ function M.generate(bufnr)
   end)
 end
 
+function M.commit_with_generated_message()
+  generate_on_next_commit = true
+  vim.defer_fn(function()
+    generate_on_next_commit = false
+  end, NEXT_COMMIT_TIMEOUT_MS)
+
+  require("neogit.lib.async").void(function()
+    require("neogit.popups.commit.actions").commit({
+      get_arguments = function()
+        return {}
+      end,
+    })
+
+    require("neogit.watcher").instance():dispatch_refresh()
+  end)()
+end
+
 function M.setup()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "gitcommit",
     callback = function(event)
-      if not vim.api.nvim_buf_get_name(event.buf):match("COMMIT_EDITMSG$") then
+      if not is_commit_edit_message(event.buf) then
         return
       end
 
       vim.keymap.set("n", "<leader>ac", function()
         M.generate(event.buf)
       end, { buffer = event.buf, desc = "AI commit message" })
+
+      if generate_on_next_commit then
+        generate_on_next_commit = false
+        vim.schedule(function()
+          M.generate(event.buf)
+        end)
+      end
     end,
   })
 end

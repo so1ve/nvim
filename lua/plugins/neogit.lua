@@ -20,6 +20,13 @@ return {
       commit_editor = {
         kind = "replace",
       },
+      mappings = {
+        status = {
+          ["C"] = function()
+            require("integrations.neogit.ai-commit").commit_with_generated_message()
+          end,
+        },
+      },
       treesitter_diff_highlight = true,
     },
     config = function(_, opts)
