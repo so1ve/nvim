@@ -84,6 +84,15 @@ return {
           size = { height = 20 },
         })
       )
+      add_view(
+        opts,
+        "bottom",
+        edgy.view("Terminal Buffer", "", {
+          filter = function(buf, win)
+            return vim.bo[buf].buftype == "terminal" and vim.api.nvim_win_get_config(win).relative == ""
+          end,
+        })
+      )
     end,
     config = function(_, opts)
       require("patch.edgy").patch()
