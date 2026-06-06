@@ -97,7 +97,6 @@ return {
       },
       ["<C-h>"] = { "snippet_backward" },
       ["<C-l>"] = { "snippet_forward" },
-      ["<S-Tab>"] = { "snippet_backward", "fallback" },
       ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-d>"] = { "scroll_documentation_down", "scroll_signature_down", "fallback" },
       ["<C-u>"] = { "scroll_documentation_up", "scroll_signature_up", "fallback" },
