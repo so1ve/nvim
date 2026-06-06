@@ -163,7 +163,33 @@ return {
       {
         "<leader>fl",
         function()
-          Snacks.picker.lines()
+          local buf = vim.api.nvim_get_current_buf()
+
+          Snacks.picker.pick({
+            finder = function()
+              local extmarks = require("snacks.picker.util.highlight").get_highlights({ buf = buf, extmarks = true })
+              local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+              local items = {}
+
+              for lnum, line in ipairs(lines) do
+                items[#items + 1] = {
+                  buf = buf,
+                  text = line,
+                  pos = { lnum, (line:find("%S") or 1) - 1 },
+                  highlights = extmarks[lnum],
+                }
+              end
+
+              return items
+            end,
+            format = "lines",
+            matcher = { regex = true },
+            title = "Buffer Lines",
+            layout = {
+              preset = "vertical",
+              preview = "main",
+            },
+          })
         end,
         desc = "Search current buffer",
       },
