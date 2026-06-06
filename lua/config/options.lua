@@ -89,8 +89,7 @@ opt.undofile = true
 opt.autoread = true
 
 -- sessions
-opt.sessionoptions =
-  { "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "terminal", "localoptions" }
+opt.sessionoptions = { "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "localoptions" }
 
 -- responsiveness
 opt.updatetime = 250
