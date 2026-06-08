@@ -49,15 +49,18 @@ return {
         mappings = {
           ["<C-b>"] = { smooth_scroll_or_preview(-1, 10), desc = "Smooth page up or scroll preview" },
           ["<C-f>"] = { smooth_scroll_or_preview(1, -10), desc = "Smooth page down or scroll preview" },
+          ["<C-r>"] = "refresh",
           ["O"] = { "show_help", nowait = false, config = { title = "Open", prefix_key = "O" } },
           ["Os"] = "open_split",
           ["Ot"] = "open_tabnew",
           ["Ov"] = "open_vsplit",
           ["Ow"] = "open_with_window_picker",
+          ["R"] = "noop",
           ["S"] = "noop",
           ["s"] = "noop",
           ["t"] = "noop",
           ["w"] = "noop",
+          ["Y"] = "clear_clipboard",
         },
       },
       filesystem = {
