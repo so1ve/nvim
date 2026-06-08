@@ -23,7 +23,7 @@ local function map_picker_buffer(mode, lhs, rhs, bufnr)
 end
 
 function M.patch()
-  hacks.on_module("fff.picker_ui", function(picker)
+  hacks.on_module("fff.picker_ui.picker_ui", function(picker)
     hacks.wrap(picker, "snacks_like_keymaps", "setup_keymaps", function(original)
       return function(...)
         original(...)

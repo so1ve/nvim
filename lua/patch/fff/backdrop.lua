@@ -51,7 +51,7 @@ local function sync_backdrop(picker)
 end
 
 function M.patch()
-  hacks.on_module("fff.picker_ui", function(picker)
+  hacks.on_module("fff.picker_ui.picker_ui", function(picker)
     hacks.wrap(picker, "fff.backdrop.create_ui", "create_ui", function(create_ui)
       return function(...)
         open_backdrop(picker)
