@@ -14,9 +14,11 @@ return {
       opts = {
         library = {
           { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          { path = "wezterm-types", mods = { "wezterm" } },
         },
       },
     },
+    { "DrKJeff16/wezterm-types", lazy = true },
     { "Bilal2453/luvit-meta", lazy = true },
   },
   servers = {
