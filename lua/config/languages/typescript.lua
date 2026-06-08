@@ -79,7 +79,7 @@ end
 local function typescript_language(treesitter)
   return {
     treesitter = treesitter,
-    lsp = { "vtsls", "eslint" },
+    lsp = { "vtsls", "eslint", "unocss" },
     tools = formatters.prettier_tools,
     formatters = formatters.prettier_formatters,
   }

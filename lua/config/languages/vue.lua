@@ -16,7 +16,7 @@ return {
   languages = {
     vue = {
       treesitter = "vue",
-      lsp = { "vtsls", "vue_ls", "eslint", "stylelint_lsp" },
+      lsp = { "vtsls", "vue_ls", "eslint", "stylelint_lsp", "unocss" },
       tools = formatters.prettier_tools,
       formatters = formatters.prettier_formatters,
       hover = { "vue_ls", "vtsls" },

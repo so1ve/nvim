@@ -3,7 +3,7 @@ local formatters = require("config.formatters")
 local function css_language(treesitter)
   return {
     treesitter = treesitter,
-    lsp = { "cssls", "stylelint_lsp" },
+    lsp = { "cssls", "stylelint_lsp", "unocss" },
     tools = formatters.prettier_tools,
     formatters = formatters.prettier_formatters,
   }
@@ -13,7 +13,7 @@ return {
   languages = {
     html = {
       treesitter = "html",
-      lsp = { "html", "stylelint_lsp" },
+      lsp = { "html", "stylelint_lsp", "unocss" },
       tools = formatters.prettier_tools,
       formatters = formatters.prettier_formatters,
     },
@@ -31,5 +31,6 @@ return {
         },
       },
     },
+    unocss = {},
   },
 }
