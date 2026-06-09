@@ -23,7 +23,7 @@ local function session_name()
 end
 
 local function session_path(name)
-  return session_dir .. "/" .. name
+  return vim.fs.normalize(session_dir .. "/" .. name)
 end
 
 local function is_file_buffer(bufnr)
@@ -114,6 +114,17 @@ function M.load_last()
 end
 
 function M.start()
+  vim.api.nvim_create_autocmd("DirChanged", {
+    desc = "Update current Mini.sessions session after directory change",
+    callback = function()
+      if vim.v.this_session == "" then
+        return
+      end
+
+      vim.v.this_session = session_path(session_name())
+    end,
+  })
+
   vim.api.nvim_create_autocmd("VimLeavePre", {
     desc = "Auto-write current Mini.sessions session",
     callback = function()
