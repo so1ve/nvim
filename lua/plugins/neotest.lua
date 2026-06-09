@@ -13,6 +13,7 @@ return {
     dependencies = {
       "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
+      "nvimtools/hydra.nvim",
       "so1ve/tiny-treesitter.nvim",
     },
     opts = {
@@ -26,6 +27,7 @@ return {
       },
     },
     config = function(_, opts)
+      local Hydra = require("integrations.hydra")
       local neotest_namespace = vim.api.nvim_create_namespace("neotest")
 
       vim.diagnostic.config({
@@ -101,33 +103,95 @@ return {
 
       opts.adapters = adapters
       require("neotest").setup(opts)
+
+      Hydra({
+        name = "Test",
+        mode = "n",
+        body = "<leader>T",
+        heads = {
+          {
+            "r",
+            function()
+              require("neotest").run.run()
+            end,
+            { desc = "Nearest", group = "Run" },
+          },
+          {
+            "t",
+            function()
+              require("neotest").run.run(current_file())
+            end,
+            { desc = "File", group = "Run" },
+          },
+          {
+            "T",
+            function()
+              require("neotest").run.run(vim.uv.cwd())
+            end,
+            { desc = "All files", group = "Run" },
+          },
+          {
+            "l",
+            function()
+              require("neotest").run.run_last()
+            end,
+            { desc = "Last", group = "Run" },
+          },
+          {
+            "s",
+            function()
+              require("neotest").summary.toggle()
+            end,
+            { desc = "Summary", group = "Inspect" },
+          },
+          {
+            "o",
+            function()
+              require("neotest").output.open({ enter = true, auto_close = true })
+            end,
+            { exit = true, desc = "Output", group = "Inspect" },
+          },
+          {
+            "O",
+            function()
+              require("neotest").output_panel.toggle()
+            end,
+            { desc = "Output panel", group = "Inspect" },
+          },
+          {
+            "a",
+            function()
+              require("neotest").run.attach()
+            end,
+            { exit = true, desc = "Attach", group = "Inspect" },
+          },
+          {
+            "w",
+            function()
+              require("neotest").watch.toggle(current_file())
+            end,
+            { desc = "Watch", group = "Control" },
+          },
+          {
+            "S",
+            function()
+              require("neotest").run.stop()
+            end,
+            { desc = "Stop", group = "Control" },
+          },
+          {
+            "d",
+            function()
+              require("neotest").run.run({ strategy = "dap" })
+            end,
+            { exit = true, desc = "Debug nearest", group = "Control" },
+          },
+        },
+      })
     end,
     -- stylua: ignore
     keys = {
-      { "<leader>T", "", desc = "+test" },
-      { "<leader>Ta", function() require("neotest").run.attach() end, desc = "Attach to test" },
-      { "<leader>Tt", function() require("neotest").run.run(current_file()) end, desc = "Run test file" },
-      { "<leader>TT", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run all test files" },
-      { "<leader>Tr", function() require("neotest").run.run() end, desc = "Run nearest test" },
-      { "<leader>Tl", function() require("neotest").run.run_last() end, desc = "Run last test" },
-      { "<leader>Ts", function() require("neotest").summary.toggle() end, desc = "Toggle test summary" },
-      { "<leader>To", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show test output" },
-      { "<leader>TO", function() require("neotest").output_panel.toggle() end, desc = "Toggle test output panel" },
-      { "<leader>TS", function() require("neotest").run.stop() end, desc = "Stop tests" },
-      { "<leader>Tw", function() require("neotest").watch.toggle(current_file()) end, desc = "Toggle test watch" },
-    },
-  },
-  {
-    "mfussenegger/nvim-dap",
-    optional = true,
-    keys = {
-      {
-        "<leader>Td",
-        function()
-          require("neotest").run.run({ strategy = "dap" })
-        end,
-        desc = "Debug nearest test",
-      },
+      { "<leader>T", desc = "Test Hydra" },
     },
   },
   edgy.view_spec("left", edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })),

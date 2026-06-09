@@ -1,21 +1,81 @@
 return {
   "niekdomi/conflict.nvim",
+  dependencies = {
+    "nvimtools/hydra.nvim",
+  },
   cmd = "Conflict",
   event = { "BufReadPost", "BufNewFile" },
   keys = {
-    { "<leader>gcl", "<cmd>Conflict list<cr>", desc = "Git conflict files" },
-    { "<leader>gcq", "<cmd>Conflict qflist<cr>", desc = "Git conflicts quickfix" },
-    { "<leader>gcr", "<cmd>Conflict refresh<cr>", desc = "Refresh git conflicts" },
+    { "<leader>gc", desc = "Git Conflict Hydra" },
   },
   opts = {
     default_mappings = {
-      current = "<leader>gcc",
-      incoming = "<leader>gci",
-      both = "<leader>gcb",
-      base = "<leader>gcB",
+      current = false,
+      incoming = false,
+      both = false,
+      base = false,
       none = false,
-      next = "<leader>gcn",
-      prev = "<leader>gcp",
+      next = false,
+      prev = false,
     },
   },
+  config = function(_, opts)
+    local Hydra = require("integrations.hydra")
+    local conflict = require("conflict")
+
+    conflict.setup(opts)
+
+    Hydra({
+      name = "Git Conflicts",
+      mode = "n",
+      body = "<leader>gc",
+      heads = {
+        {
+          "n",
+          function()
+            conflict.navigate("next")
+          end,
+          { desc = "Next", group = "Move" },
+        },
+        {
+          "p",
+          function()
+            conflict.navigate("prev")
+          end,
+          { desc = "Previous", group = "Move" },
+        },
+        { "r", "<cmd>Conflict refresh<cr>", { desc = "Refresh", group = "Move" } },
+        {
+          "c",
+          function()
+            conflict.choose("current")
+          end,
+          { desc = "Current", group = "Accept" },
+        },
+        {
+          "i",
+          function()
+            conflict.choose("incoming")
+          end,
+          { desc = "Incoming", group = "Accept" },
+        },
+        {
+          "b",
+          function()
+            conflict.choose("both")
+          end,
+          { desc = "Both", group = "Accept" },
+        },
+        {
+          "B",
+          function()
+            conflict.choose("base")
+          end,
+          { desc = "Base", group = "Accept" },
+        },
+        { "l", conflict.list, { exit = true, desc = "Files", group = "Lists" } },
+        { "Q", conflict.qflist, { exit = true, desc = "Quickfix", group = "Lists" } },
+      },
+    })
+  end,
 }

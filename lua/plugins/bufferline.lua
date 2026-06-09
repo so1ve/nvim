@@ -3,17 +3,13 @@ return {
   version = "*",
   event = "VeryLazy",
   dependencies = {
+    "nvimtools/hydra.nvim",
     "nvim-mini/mini.nvim",
   },
   keys = {
     { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous buffer tab" },
     { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer tab" },
-    { "<leader>bb", "<cmd>BufferLinePick<cr>", desc = "Pick buffer tab" },
-    { "<leader>bd", "<cmd>BufferLinePickClose<cr>", desc = "Pick close buffer tab" },
-    { "<leader>bD", "<cmd>BufferLineCloseOthers<cr>", desc = "Close other buffer tabs" },
-    { "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", desc = "Close buffer tabs left" },
-    { "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Pin buffer tab" },
-    { "<leader>br", "<cmd>BufferLineCloseRight<cr>", desc = "Close buffer tabs right" },
+    { "<leader>b", desc = "Buffer Hydra" },
   },
   opts = {
     options = {
@@ -47,4 +43,25 @@ return {
       end,
     },
   },
+  config = function(_, opts)
+    local Hydra = require("integrations.hydra")
+
+    require("bufferline").setup(opts)
+
+    Hydra({
+      name = "Buffer",
+      mode = "n",
+      body = "<leader>b",
+      heads = {
+        { "h", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous", group = "Move" } },
+        { "l", "<cmd>BufferLineCycleNext<cr>", { desc = "Next", group = "Move" } },
+        { "b", "<cmd>BufferLinePick<cr>", { exit = true, desc = "Pick", group = "Move" } },
+        { "d", "<cmd>BufferLinePickClose<cr>", { exit = true, desc = "Pick close", group = "Close" } },
+        { "D", "<cmd>BufferLineCloseOthers<cr>", { desc = "Close rest", group = "Close" } },
+        { "L", "<cmd>BufferLineCloseLeft<cr>", { desc = "Close left", group = "Close" } },
+        { "R", "<cmd>BufferLineCloseRight<cr>", { desc = "Close right", group = "Close" } },
+        { "p", "<cmd>BufferLineTogglePin<cr>", { desc = "Pin", group = "State" } },
+      },
+    })
+  end,
 }
