@@ -44,7 +44,19 @@ return {
     },
   },
   config = function(_, opts)
+    local groups = require("bufferline.groups")
     local Hydra = require("integrations.hydra")
+
+    opts.options.groups = {
+      items = {
+        groups.builtin.pinned:with({ icon = false }),
+      },
+    }
+    opts.options.numbers = function(buffer)
+      if groups._is_pinned({ id = buffer.id }) then
+        return ""
+      end
+    end
 
     require("bufferline").setup(opts)
 
