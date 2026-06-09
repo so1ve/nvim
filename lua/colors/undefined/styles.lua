@@ -34,6 +34,8 @@ function M.get(p)
     title = { fg = p.green, bold = true },
     key = { fg = p.orange, bold = true },
     separator = { fg = p.border },
+    search = { fg = p.bg, bg = p.yellow },
+    inc_search = { fg = p.bg, bg = p.orange },
     match = { fg = p.orange, bold = true },
     url = { fg = p.link, underline = true },
   }
