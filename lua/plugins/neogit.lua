@@ -25,6 +25,7 @@ return {
           ["q"] = false,
         },
         status = {
+          ["q"] = false,
           ["C"] = function()
             require("integrations.neogit.ai-commit").commit_with_generated_message()
           end,
