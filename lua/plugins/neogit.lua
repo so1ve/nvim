@@ -21,6 +21,9 @@ return {
         kind = "replace",
       },
       mappings = {
+        commit_editor = {
+          ["q"] = false,
+        },
         status = {
           ["C"] = function()
             require("integrations.neogit.ai-commit").commit_with_generated_message()
@@ -31,7 +34,6 @@ return {
     },
     config = function(_, opts)
       require("integrations.neogit.ai-commit").setup()
-      require("patch.neogit.status").patch()
       require("patch.neogit.hunk-paths").patch()
       require("neogit").setup(opts)
     end,
