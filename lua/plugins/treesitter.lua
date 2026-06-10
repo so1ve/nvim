@@ -16,12 +16,6 @@ local function configured_parsers()
   })
 end
 
-local function install_configured_parsers()
-  if not require("tiny-treesitter").install(configured_parsers(), { summary = true, wait = true }) then
-    error("Failed to install one or more Tree-sitter parsers")
-  end
-end
-
 local function register_treesitter_aliases(languages)
   local aliases = {}
 
@@ -42,7 +36,6 @@ end
 return {
   "so1ve/tiny-treesitter.nvim",
   lazy = false,
-  build = install_configured_parsers,
   opts = {
     ensure_installed = configured_parsers(),
     auto_install = true,
