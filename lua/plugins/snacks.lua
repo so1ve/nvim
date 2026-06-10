@@ -209,7 +209,9 @@ return {
             title = "Buffer Lines",
             layout = {
               preset = "vertical",
-              preview = "main",
+              layout = {
+                backdrop = 60,
+              },
             },
           })
         end,
