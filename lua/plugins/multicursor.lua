@@ -38,6 +38,14 @@ return {
       },
       heads = {
         { "t", mc.toggleCursor, { desc = "Toggle", group = "Actions" } },
+        {
+          "a",
+          function()
+            mc.matchAllAddCursors()
+            mc.feedkeys("e")
+          end,
+          { desc = "All", exit = true, group = "Add" },
+        },
       },
     })
 
