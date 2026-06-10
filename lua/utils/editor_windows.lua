@@ -5,7 +5,7 @@ local M = {}
 local main_windows = {}
 
 local function remember(win)
-  if windows.is_work_win(win) then
+  if windows.is_normal_win(win) and windows.is_work_file(vim.api.nvim_win_get_buf(win)) then
     main_windows[win] = true
   elseif windows.is_normal_win(win) then
     vim.schedule(function()
@@ -17,7 +17,7 @@ local function remember(win)
 end
 
 local function is_main(win)
-  return windows.is_normal_win(win) and (main_windows[win] == true or windows.is_work_win(win))
+  return windows.is_normal_win(win) and (main_windows[win] == true or windows.is_work_file(vim.api.nvim_win_get_buf(win)))
 end
 
 local function is_placeholder(win)
@@ -61,9 +61,23 @@ function M.pick()
 end
 
 function M.should_close(win, bufnr)
-  return (not is_main(win) or vim.bo[bufnr].buftype ~= "")
-    and #vim.api.nvim_tabpage_list_wins(0) > 1
-    and #vim.fn.win_findbuf(bufnr) == 1
+  local tab_wins = vim.api.nvim_tabpage_list_wins(0)
+
+  if #tab_wins <= 1 then
+    return false
+  end
+
+  if not is_main(win) or vim.bo[bufnr].buftype ~= "" then
+    return #vim.fn.win_findbuf(bufnr) == 1
+  end
+
+  for _, tab_win in ipairs(tab_wins) do
+    if tab_win ~= win and is_main(tab_win) then
+      return true
+    end
+  end
+
+  return false
 end
 
 return M
