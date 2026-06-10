@@ -16,6 +16,15 @@ function M.patch()
 
             vim.api.nvim_win_set_buf(win, buf)
           end
+
+          if not vim.api.nvim_buf_is_valid(buffer.handle) then
+            if buffer.old_cwd then
+              vim.api.nvim_set_current_dir(buffer.old_cwd)
+              buffer.old_cwd = nil
+            end
+
+            return
+          end
         end
 
         return close(buffer, ...)
