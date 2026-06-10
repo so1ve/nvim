@@ -61,7 +61,9 @@ function M.pick()
 end
 
 function M.should_close(win, bufnr)
-  return not is_main(win) and #vim.api.nvim_tabpage_list_wins(0) > 1 and #vim.fn.win_findbuf(bufnr) == 1
+  return (not is_main(win) or vim.bo[bufnr].buftype ~= "")
+    and #vim.api.nvim_tabpage_list_wins(0) > 1
+    and #vim.fn.win_findbuf(bufnr) == 1
 end
 
 return M
