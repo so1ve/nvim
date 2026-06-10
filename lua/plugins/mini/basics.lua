@@ -14,8 +14,8 @@ function M.setup()
   jump2d.setup({
     spotter = jump2d.gen_spotter.union(
       jump2d.builtin_opts.word_start.spotter,
-      jump2d.gen_spotter.vimpattern("\\k*\\zs\\k"),
-      jump2d.gen_spotter.pattern("^.*$", "end")
+      jump2d.gen_spotter.vimpattern("\\k*\\zs\\k"), -- word end
+      jump2d.gen_spotter.pattern("^.*$", "end") -- line end
     ),
     labels = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
     view = { n_steps_ahead = 2 },
