@@ -36,6 +36,7 @@ return {
     config = function(_, opts)
       require("integrations.neogit.ai-commit").setup()
       require("patch.neogit.hunk-paths").patch()
+      require("patch.neogit.replace-close").patch()
       require("neogit").setup(opts)
     end,
   },

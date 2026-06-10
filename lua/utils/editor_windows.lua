@@ -2,16 +2,22 @@ local windows = require("utils.windows")
 
 local M = {}
 
-local main_window_key = "ray_main_editing_window"
+local main_windows = {}
 
 local function remember(win)
   if windows.is_work_win(win) then
-    vim.w[win][main_window_key] = true
+    main_windows[win] = true
+  elseif windows.is_normal_win(win) then
+    vim.schedule(function()
+      if windows.is_normal_win(win) and windows.is_empty_unnamed_file(vim.api.nvim_win_get_buf(win)) then
+        main_windows[win] = true
+      end
+    end)
   end
 end
 
 local function is_main(win)
-  return windows.is_normal_win(win) and (vim.w[win][main_window_key] == true or windows.is_work_win(win))
+  return windows.is_normal_win(win) and (main_windows[win] == true or windows.is_work_win(win))
 end
 
 local function is_placeholder(win)
