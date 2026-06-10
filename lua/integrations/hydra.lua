@@ -62,7 +62,7 @@ end
 return function(spec)
   add_exit(spec.heads)
 
-  spec.config = {
+  spec.config = vim.tbl_extend("force", spec.config or {}, {
     color = "pink",
     invoke_on_body = true,
     hint = {
@@ -70,7 +70,7 @@ return function(spec)
       position = "bottom",
       float_opts = { border = "rounded" },
     },
-  }
+  })
   spec.hint = hint(spec)
 
   for _, head in ipairs(spec.heads) do

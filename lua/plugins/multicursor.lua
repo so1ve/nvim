@@ -20,63 +20,28 @@ return {
       name = "Multicursor",
       mode = { "n", "x" },
       body = "<leader>m",
+      config = {
+        on_exit = function()
+          if mc.hasCursors() and not mc.cursorsEnabled() then
+            mc.enableCursors()
+          end
+        end,
+      },
       heads = {
-        {
-          "j",
-          function()
-            mc.lineAddCursor(1)
-          end,
-          { desc = "Add below", group = "Lines" },
-        },
-        {
-          "k",
-          function()
-            mc.lineAddCursor(-1)
-          end,
-          { desc = "Add above", group = "Lines" },
-        },
-        {
-          "n",
-          function()
-            mc.matchAddCursor(1)
-          end,
-          { desc = "Add next", group = "Matches" },
-        },
-        {
-          "N",
-          function()
-            mc.matchAddCursor(-1)
-          end,
-          { desc = "Add previous", group = "Matches" },
-        },
-        {
-          "s",
-          function()
-            mc.matchSkipCursor(1)
-          end,
-          { desc = "Skip next", group = "Matches" },
-        },
-        {
-          "S",
-          function()
-            mc.matchSkipCursor(-1)
-          end,
-          { desc = "Skip previous", group = "Matches" },
-        },
         { "t", mc.toggleCursor, { desc = "Toggle", group = "Actions" } },
-        { "A", mc.matchAllAddCursors, { desc = "All matches", group = "Actions" } },
-        { "/", mc.searchAllAddCursors, { mode = "n", desc = "Search matches", group = "Actions" } },
-        { "a", mc.alignCursors, { mode = "n", desc = "Align", group = "Utility" } },
-        { "r", mc.restoreCursors, { mode = "n", desc = "Restore", group = "Utility" } },
-        { "h", mc.prevCursor, { desc = "Previous cursor", group = "Lines" } },
-        { "l", mc.nextCursor, { desc = "Next cursor", group = "Lines" } },
-        { "x", mc.deleteCursor, { desc = "Delete", group = "Actions" } },
       },
     })
 
     vim.keymap.set("n", "<C-leftmouse>", mc.handleMouse, { desc = "Add cursor with mouse" })
     vim.keymap.set("n", "<C-leftdrag>", mc.handleMouseDrag, { desc = "Drag cursor with mouse" })
     vim.keymap.set("n", "<C-leftrelease>", mc.handleMouseRelease, { desc = "Release cursor with mouse" })
+    vim.keymap.set("n", "<Esc>", function()
+      if mc.hasCursors() then
+        mc.clearCursors()
+      else
+        vim.cmd("nohlsearch")
+      end
+    end, { desc = "Clear search highlight or multicursors" })
 
     local append_at_line_end = function()
       mc.action(function(ctx)
@@ -92,13 +57,11 @@ return {
       layer_map("x", "I", mc.insertVisual)
       layer_map("x", "A", mc.appendVisual)
       layer_map("n", "<Esc>", function()
-        if mc.cursorsEnabled() then
+        if not mc.cursorsEnabled() then
+          mc.enableCursors()
+        else
           mc.clearCursors()
-
-          return
         end
-
-        mc.enableCursors()
       end)
     end)
   end,
