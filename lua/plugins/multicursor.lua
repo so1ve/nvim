@@ -16,26 +16,6 @@ return {
 
     mc.setup()
 
-    local add_all_ends = function()
-      mc.matchAllAddCursors()
-      mc.feedkeys("e")
-    end
-
-    local flash_end = function()
-      require("flash").jump({
-        jump = { pos = "end" },
-        search = { multi_window = false },
-        action = function(match, state)
-          mc.action(function(ctx)
-            if not ctx:getCursorAtPos(match.end_pos) then
-              ctx:addCursor():setPos(match.end_pos):setMode("n")
-            end
-          end)
-          state:restore()
-        end,
-      })
-    end
-
     local append_at_line_end = function()
       mc.action(function(ctx)
         ctx:forEachCursor(function(cursor)
@@ -58,8 +38,6 @@ return {
       },
       heads = {
         { "t", mc.toggleCursor, { desc = "Toggle", group = "Actions" } },
-        { "a", add_all_ends, { desc = "All", exit = true, group = "Add" } },
-        { "f", flash_end, { desc = "Flash", exit = true, group = "Add" } },
       },
     })
 
