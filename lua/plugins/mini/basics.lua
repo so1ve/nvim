@@ -9,15 +9,11 @@ function M.setup()
 
   require("mini.ai").setup({ n_lines = 500 })
   require("mini.surround").setup()
-  -- require("mini.jump").setup()
+  require("mini.jump").setup()
   local jump2d = require("mini.jump2d")
   jump2d.setup({
-    spotter = jump2d.gen_spotter.union(
-      jump2d.builtin_opts.word_start.spotter,
-      jump2d.gen_spotter.vimpattern("\\k*\\zs\\k"), -- word end
-      jump2d.gen_spotter.pattern("^.*$", "end") -- line end
-    ),
-    labels = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    spotter = jump2d.builtin_opts.word_start.spotter,
+    labels = "abcdefghijklmnopqrstuvwxyz",
     view = { n_steps_ahead = 2 },
     allowed_windows = { not_current = false },
     mappings = { start_jumping = "<leader>j" },
