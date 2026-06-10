@@ -23,10 +23,12 @@ local function map_picker_buffer(mode, lhs, rhs, bufnr)
 end
 
 function M.patch()
-  hacks.on_module("fff.picker_ui.picker_ui", function(picker)
-    hacks.wrap(picker, "snacks_like_keymaps", "setup_keymaps", function(original)
+  hacks.on_module("fff.picker_ui.ui_creator", function(ui_creator)
+    hacks.wrap(ui_creator, "snacks_like_keymaps", "setup_keymaps", function(original)
       return function(...)
         original(...)
+
+        local picker = require("fff.picker_ui.picker_ui")
 
         map_picker_buffer("n", "q", picker.close, picker.state.input_buf)
         map_picker_buffer({ "i", "n" }, "<C-j>", picker.move_down, picker.state.input_buf)
