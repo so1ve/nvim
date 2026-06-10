@@ -2,6 +2,20 @@ local function open_trouble(picker, opts)
   require("trouble.sources.snacks").open(picker, opts)
 end
 
+local function term_nav(direction)
+  return function(win)
+    if win:is_floating() then
+      return "<C-" .. direction .. ">"
+    end
+
+    vim.schedule(function()
+      vim.cmd.wincmd(direction)
+    end)
+
+    return ""
+  end
+end
+
 local terminal = require("config.terminal")
 local edgy = require("integrations.edgy")
 local symbols = require("config.symbols")
@@ -62,6 +76,14 @@ return {
       statuscolumn = {},
       terminal = {
         shell = terminal.shell.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
+        win = {
+          keys = {
+            nav_h = { "<C-h>", term_nav("h"), desc = "Move to left window", expr = true, mode = "t" },
+            nav_j = { "<C-j>", term_nav("j"), desc = "Move to lower window", expr = true, mode = "t" },
+            nav_k = { "<C-k>", term_nav("k"), desc = "Move to upper window", expr = true, mode = "t" },
+            nav_l = { "<C-l>", term_nav("l"), desc = "Move to right window", expr = true, mode = "t" },
+          },
+        },
       },
       gh = {},
       rename = {},
