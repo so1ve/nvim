@@ -15,4 +15,10 @@ function M.patch()
   end)
 end
 
+function M.no_main()
+  for _, autocmd in ipairs(vim.api.nvim_get_autocmds({ group = "edgy_track", event = "WinClosed" })) do
+    vim.api.nvim_del_autocmd(autocmd.id)
+  end
+end
+
 return M

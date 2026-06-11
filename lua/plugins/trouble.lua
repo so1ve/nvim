@@ -55,4 +55,5 @@ return {
   },
   edgy.view_spec("right", lsp_view),
   edgy.view_spec("bottom", problems_view),
+  edgy.neo_tree_exclusion_spec("trouble"),
 }

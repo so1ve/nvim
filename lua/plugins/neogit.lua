@@ -1,3 +1,5 @@
+local edgy = require("integrations.edgy")
+
 return {
   {
     "NeogitOrg/neogit",
@@ -8,9 +10,9 @@ return {
     keys = {
       {
         "<leader>gg",
-        function()
+        edgy.with_main(function()
           require("neogit").open()
-        end,
+        end),
         desc = "Git status",
       },
     },
@@ -21,11 +23,7 @@ return {
         kind = "replace",
       },
       mappings = {
-        commit_editor = {
-          ["q"] = false,
-        },
         status = {
-          ["q"] = false,
           ["C"] = function()
             require("integrations.neogit.ai-commit").commit_with_generated_message()
           end,

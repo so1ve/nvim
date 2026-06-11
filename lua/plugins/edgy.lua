@@ -95,8 +95,11 @@ return {
       )
     end,
     config = function(_, opts)
-      require("patch.edgy").patch()
+      local patch = require("patch.edgy")
+
+      patch.patch()
       require("edgy").setup(opts)
+      patch.no_main()
     end,
   },
   edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),

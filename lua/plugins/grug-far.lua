@@ -41,4 +41,5 @@ return {
     },
   },
   edgy.view_spec("right", edgy.view("Search & Replace", "grug-far")),
+  edgy.neo_tree_exclusion_spec("grug-far"),
 }

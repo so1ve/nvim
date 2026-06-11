@@ -271,4 +271,5 @@ return {
       end,
     })
   ),
+  edgy.neo_tree_exclusion_spec("snacks_terminal"),
 }

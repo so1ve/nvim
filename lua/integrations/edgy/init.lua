@@ -63,6 +63,22 @@ M.find_view_win = focus.find_view_win
 M.focus_view = focus.focus_view
 M.focus_view_when_available = focus.focus_view_when_available
 
+function M.with_main(open)
+  return function(...)
+    local edgy = require("edgy")
+
+    if edgy.get_win() then
+      edgy.goto_main()
+
+      if edgy.get_win() then
+        vim.cmd("botright new")
+      end
+    end
+
+    return open_view(open, ...)
+  end
+end
+
 function M.with_focus(view, open, opts)
   return function(...)
     local focus_opts = vim.tbl_extend("force", { tabpage = vim.api.nvim_get_current_tabpage() }, opts or {})

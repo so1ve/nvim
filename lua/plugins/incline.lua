@@ -1,3 +1,5 @@
+local windows = require("utils.windows")
+
 local function filename(props)
   local name = vim.api.nvim_buf_get_name(props.buf)
   if name == "" then
@@ -36,7 +38,7 @@ local function diagnostics(bufnr)
 end
 
 local function breadcrumbs(bufnr)
-  if not require("utils.windows").is_work_file(bufnr) then
+  if not windows.is_work_file(bufnr) then
     return {}
   end
 
