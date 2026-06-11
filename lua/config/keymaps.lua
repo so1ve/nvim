@@ -1,5 +1,4 @@
 local map = vim.keymap.set
-local close = require("utils.close")
 
 -- delete them since when lsp is not ready for references, `gr` triggers the builtin key hint menu instead of a warning indicating that no references are found
 local conflict_keymaps = {
@@ -26,8 +25,13 @@ map("n", "q", "<Nop>", { noremap = true, silent = true })
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
-map("n", "<leader>q", close.close_current, { desc = "Close buffer or window" })
-map("n", "<leader>Q", close.quit_all, { desc = "Quit all" })
+map("n", "<leader>qq", function()
+  Snacks.bufdelete()
+end, { desc = "Quit buffer" })
+map("n", "<leader>qa", "<cmd>qa<CR>", { desc = "Quit all" })
+map("n", "<leader>qs", "<C-W>s", { desc = "Split window below", remap = true })
+map("n", "<leader>qv", "<C-W>v", { desc = "Split window right", remap = true })
+map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })

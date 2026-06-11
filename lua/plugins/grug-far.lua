@@ -13,7 +13,7 @@ return {
         },
       },
       keymaps = {
-        close = { n = "<leader>q" },
+        close = { n = "q" },
         qflist = { n = "<localleader>F" },
       },
     },

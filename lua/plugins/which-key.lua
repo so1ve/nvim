@@ -11,6 +11,7 @@ local leader_groups = {
   { "<leader>n", group = "Noice", icon = { icon = "󰎟", color = "cyan" } },
   { "<leader>a", group = "AI", icon = { icon = "󰚩", color = "green" } },
   { "<leader>p", group = "Project", icon = { icon = "", color = "blue" } },
+  { "<leader>q", group = "Quit / Buffer / Window", icon = { icon = "󰈆", color = "red" } },
   { "<leader>r", group = "Refactor", icon = { icon = "󰑕", color = "purple" } },
   { "<leader>s", group = "Search", icon = { icon = "", color = "blue" } },
   { "<leader>t", group = "Terminal", icon = { icon = "", color = "green" } },
