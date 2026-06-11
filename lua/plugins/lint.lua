@@ -1,6 +1,6 @@
 return {
   "mfussenegger/nvim-lint",
-  event = { "BufReadPost", "BufNewFile", "BufWritePost", "InsertLeave" },
+  event = "VeryLazy",
   opts = {
     linters_by_ft = require("config.languages").map("linters"),
   },

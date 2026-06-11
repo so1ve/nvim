@@ -49,16 +49,4 @@ function M.load(module, opts)
   return loaded
 end
 
-function M.merge(module, opts)
-  local merged = {}
-
-  for _, spec in ipairs(M.load(module, opts)) do
-    for key, value in pairs(spec) do
-      merged[key] = value
-    end
-  end
-
-  return merged
-end
-
 return M

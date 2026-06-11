@@ -39,14 +39,6 @@ function M.cleanup(fn)
   return fn
 end
 
-function M.disable()
-  for index = #M._cleanup, 1, -1 do
-    pcall(M._cleanup[index])
-  end
-
-  M._cleanup = {}
-end
-
 function M.replace(target, key, name, replacement)
   return M.once(target, key, function()
     local original = target[name]

@@ -29,8 +29,6 @@ map("n", "<leader>qq", function()
   Snacks.bufdelete()
 end, { desc = "Quit buffer" })
 map("n", "<leader>qa", "<cmd>qa<CR>", { desc = "Quit all" })
-map("n", "<leader>qs", "<C-W>s", { desc = "Split window below", remap = true })
-map("n", "<leader>qv", "<C-W>v", { desc = "Split window right", remap = true })
 map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })

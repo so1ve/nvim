@@ -4,7 +4,6 @@ return {
     "nvimtools/hydra.nvim",
   },
   cmd = "Conflict",
-  event = { "BufReadPost", "BufNewFile" },
   keys = {
     { "<leader>gc", desc = "Git Conflict Hydra" },
   },
