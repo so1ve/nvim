@@ -1,7 +1,7 @@
 return {
   "akinsho/bufferline.nvim",
   version = "*",
-  event = "VeryLazy",
+  event = { "BufReadPost", "BufNewFile" },
   dependencies = {
     "nvimtools/hydra.nvim",
     "nvim-mini/mini.nvim",

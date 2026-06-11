@@ -16,6 +16,22 @@ local function term_nav(direction)
   end
 end
 
+local function greeting()
+  local hour = tonumber(os.date("%H")) or 0
+
+  if hour < 5 then
+    return "Good Night, Ray"
+  elseif hour < 12 then
+    return "Good Morning, Ray"
+  elseif hour < 18 then
+    return "Good Afternoon, Ray"
+  elseif hour < 22 then
+    return "Good Evening, Ray"
+  end
+
+  return "Good Night, Ray"
+end
+
 local terminal = require("config.terminal")
 local edgy = require("integrations.edgy")
 local symbols = require("config.symbols")
@@ -27,6 +43,43 @@ return {
     lazy = false,
     opts = {
       bigfile = {},
+      dashboard = {
+        enabled = true,
+        width = 54,
+        preset = {
+          header = greeting(),
+          keys = {
+            { key = "f", desc = "Find file", action = ":lua require('fff').find_files()" },
+            { key = "g", desc = "Find text", action = ":lua require('fff').live_grep()" },
+            { key = "r", desc = "Recent files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            {
+              key = "G",
+              desc = "Neogit",
+              action = function()
+                require("neogit").open()
+              end,
+            },
+            {
+              key = "l",
+              desc = "Load session",
+              action = function()
+                require("plugins.mini.sessions").load()
+              end,
+            },
+            { key = "q", desc = "Quit", action = ":qa" },
+          },
+        },
+        formats = {
+          header = { "%s", align = "left" },
+        },
+        sections = {
+          { section = "header", padding = 1 },
+          { title = "Commands", section = "keys", indent = 2, padding = 1 },
+          { title = "Recent", section = "recent_files", indent = 2, padding = 1 },
+          { title = "Projects", section = "projects", indent = 2, padding = 1 },
+          { section = "startup" },
+        },
+      },
       quickfile = {},
       picker = {
         sources = {
