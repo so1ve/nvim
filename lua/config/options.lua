@@ -22,6 +22,8 @@ opt.winborder = "rounded"
 if vim.g.neovide then
   vim.o.guifont = "R_Maple_Mono_NF_CN:h10:#h-full:#e-antialias"
   vim.g.neovide_title_background_color = "#212221"
+  vim.g.neovide_floating_blur_amount_x = 6.0
+  vim.g.neovide_floating_blur_amount_y = 6.0
 end
 
 -- interaction
