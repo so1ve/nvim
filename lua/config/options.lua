@@ -93,7 +93,7 @@ opt.sessionoptions = { "buffers", "curdir", "folds", "help", "tabpages", "winsiz
 
 -- responsiveness
 opt.updatetime = 250
-opt.timeoutlen = 300
+opt.timeoutlen = 500
 opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- messages
