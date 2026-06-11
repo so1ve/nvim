@@ -2,9 +2,10 @@ local rendered_doc_filetypes = { "noice_hover", "blink-cmp-documentation" }
 
 local render_options = {
   render_modes = true,
+  anti_conceal = { enabled = false },
   bullet = { enabled = false },
   checkbox = { enabled = false },
-  code = { enabled = false },
+  code = { enabled = true },
   dash = { enabled = false },
   document = { enabled = false },
   heading = { enabled = true },
