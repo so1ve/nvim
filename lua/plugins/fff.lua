@@ -52,6 +52,7 @@ return {
     },
     config = function(_, opts)
       require("patch.fff.backdrop").patch()
+      require("patch.fff.ignore").patch()
       require("patch.fff.keymap").patch()
       require("patch.fff.preview_match").patch()
       require("fff").setup(opts)

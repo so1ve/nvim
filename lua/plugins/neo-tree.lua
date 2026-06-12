@@ -1,4 +1,5 @@
 local bufferline = require("integrations.bufferline")
+local ignore = require("config.ignore")
 local edgy = require("integrations.edgy")
 
 local neotree_view = edgy.view("Neo Tree", "neo-tree", {
@@ -76,25 +77,7 @@ return {
             ["f"] = "noop",
           },
         },
-        filtered_items = {
-          visible = true,
-          hide_dotfiles = false,
-          hide_ignored = false,
-          hide_hidden = false,
-          show_hidden_count = false,
-          never_show = {
-            ".git",
-            ".svn",
-            ".hg",
-            "CVS",
-            ".DS_Store",
-            "Thumbs.db",
-            "thumbs.db",
-          },
-          never_show_by_pattern = {
-            "%.tsbuildinfo$",
-          },
-        },
+        filtered_items = ignore.filtered_items(),
       },
       nesting_rules = {
         ["package.json"] = {
