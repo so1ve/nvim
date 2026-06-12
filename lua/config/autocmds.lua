@@ -13,8 +13,3 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "FocusGained", "TermClos
     end
   end,
 })
-
-vim.api.nvim_create_autocmd("VimResized", {
-  desc = "Keep splits balanced after resize",
-  command = "tabdo wincmd =",
-})

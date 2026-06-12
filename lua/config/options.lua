@@ -81,6 +81,7 @@ opt.smartcase = true
 opt.inccommand = "split"
 
 -- splits
+opt.equalalways = false
 opt.splitright = true
 opt.splitbelow = true
 opt.splitkeep = "screen"
