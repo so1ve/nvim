@@ -1,5 +1,9 @@
 local M = {}
 
+local function todo_pattern(keyword)
+  return "%f[%w]()" .. keyword .. "()%f[%W]"
+end
+
 function M.setup()
   local icons = require("mini.icons")
   local hipatterns = require("mini.hipatterns")
@@ -33,9 +37,30 @@ function M.setup()
     file = { suffix = "" },
     treesitter = { suffix = "" },
   })
+
   hipatterns.setup({
     highlighters = {
       hex_color = hipatterns.gen_highlighter.hex_color(),
+
+      bug = { pattern = todo_pattern("BUG"), group = "MiniHipatternsFixme" },
+      fix = { pattern = todo_pattern("FIX"), group = "MiniHipatternsFixme" },
+      fixit = { pattern = todo_pattern("FIXIT"), group = "MiniHipatternsFixme" },
+      fixme = { pattern = todo_pattern("FIXME"), group = "MiniHipatternsFixme" },
+      hack = { pattern = todo_pattern("HACK"), group = "MiniHipatternsHack" },
+      info = { pattern = todo_pattern("INFO"), group = "MiniHipatternsNote" },
+      issue = { pattern = todo_pattern("ISSUE"), group = "MiniHipatternsFixme" },
+      note = { pattern = todo_pattern("NOTE"), group = "MiniHipatternsNote" },
+      optimize = { pattern = todo_pattern("OPTIMIZE"), group = "MiniHipatternsPerf" },
+      optim = { pattern = todo_pattern("OPTIM"), group = "MiniHipatternsPerf" },
+      passed = { pattern = todo_pattern("PASSED"), group = "MiniHipatternsTest" },
+      perf = { pattern = todo_pattern("PERF"), group = "MiniHipatternsPerf" },
+      performance = { pattern = todo_pattern("PERFORMANCE"), group = "MiniHipatternsPerf" },
+      test = { pattern = todo_pattern("TEST"), group = "MiniHipatternsTest" },
+      testing = { pattern = todo_pattern("TESTING"), group = "MiniHipatternsTest" },
+      todo = { pattern = todo_pattern("TODO"), group = "MiniHipatternsTodo" },
+      warn = { pattern = todo_pattern("WARN"), group = "MiniHipatternsWarn" },
+      warning = { pattern = todo_pattern("WARNING"), group = "MiniHipatternsWarn" },
+      xxx = { pattern = todo_pattern("XXX"), group = "MiniHipatternsWarn" },
     },
   })
 end
