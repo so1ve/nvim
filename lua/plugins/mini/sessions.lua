@@ -100,6 +100,10 @@ function M.select()
       return
     end
 
+    if has_enough_buffers() then
+      M.save({ verbose = false })
+    end
+
     vim.fn.chdir(item.dir)
     read_session(item.name)
   end)
