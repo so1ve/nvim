@@ -60,7 +60,6 @@ function M.setup()
       todo = { pattern = todo_pattern("TODO"), group = "MiniHipatternsTodo" },
       warn = { pattern = todo_pattern("WARN"), group = "MiniHipatternsWarn" },
       warning = { pattern = todo_pattern("WARNING"), group = "MiniHipatternsWarn" },
-      xxx = { pattern = todo_pattern("XXX"), group = "MiniHipatternsWarn" },
     },
   })
 end
