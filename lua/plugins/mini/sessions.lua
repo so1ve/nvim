@@ -89,6 +89,14 @@ function M.save(opts)
   })
 end
 
+local function auto_save()
+  if not has_enough_buffers() then
+    return
+  end
+
+  M.save({ verbose = false })
+end
+
 function M.select()
   vim.ui.select(list_sessions(), {
     prompt = "Select a session: ",
@@ -100,10 +108,7 @@ function M.select()
       return
     end
 
-    if has_enough_buffers() then
-      M.save({ verbose = false })
-    end
-
+    auto_save()
     vim.fn.chdir(item.dir)
     read_session(item.name)
   end)
@@ -129,15 +134,9 @@ function M.start()
     end,
   })
 
-  vim.api.nvim_create_autocmd("VimLeavePre", {
-    desc = "Auto-write current Mini.sessions session",
-    callback = function()
-      if not has_enough_buffers() then
-        return
-      end
-
-      M.save({ verbose = false })
-    end,
+  vim.api.nvim_create_autocmd("ExitPre", {
+    desc = "Auto-write current Mini.sessions session before exit or restart",
+    callback = auto_save,
   })
 end
 
