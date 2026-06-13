@@ -1,5 +1,3 @@
-local edgy = require("integrations.edgy")
-
 return {
   {
     "NeogitOrg/neogit",
@@ -10,18 +8,14 @@ return {
     keys = {
       {
         "<leader>gg",
-        edgy.with_main(function()
+        function()
           require("neogit").open()
-        end),
+        end,
         desc = "Git status",
       },
     },
     opts = {
-      kind = "replace",
       disable_insert_on_commit = true,
-      commit_editor = {
-        kind = "replace",
-      },
       mappings = {
         status = {
           ["C"] = function()
@@ -34,7 +28,6 @@ return {
     config = function(_, opts)
       require("integrations.neogit.ai-commit").setup()
       require("patch.neogit.hunk-paths").patch()
-      require("patch.neogit.replace-close").patch()
       require("neogit").setup(opts)
     end,
   },

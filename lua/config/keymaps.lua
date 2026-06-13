@@ -32,6 +32,11 @@ map("n", "<leader>qb", function()
 end, { desc = "Quit buffer" })
 map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
 
+map("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
+map("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
+map("n", "[T", "<cmd>tabfirst<CR>", { desc = "First tab" })
+map("n", "]T", "<cmd>tablast<CR>", { desc = "Last tab" })
+
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
