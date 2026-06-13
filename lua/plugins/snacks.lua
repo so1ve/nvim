@@ -41,6 +41,16 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "SnacksDashboardOpened",
+        callback = function()
+          vim.o.laststatus = 3
+          vim.wo.statusline = vim.go.statusline
+          vim.cmd.redrawstatus()
+        end,
+      })
+    end,
     opts = {
       bigfile = {},
       dashboard = {
