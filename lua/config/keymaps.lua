@@ -30,6 +30,8 @@ map("n", "<leader>Q", "<cmd>qa<CR>", { desc = "Quit all" })
 map("n", "<leader>qb", function()
   Snacks.bufdelete()
 end, { desc = "Quit buffer" })
+map("n", "<leader>qt", "<cmd>tabclose<CR>", { desc = "Quit tab" })
+map("n", "<leader>qT", "<cmd>tabonly<CR>", { desc = "Quit other tabs" })
 map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
 
 map("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
