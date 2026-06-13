@@ -1,7 +1,13 @@
 local M = {}
 
 local function todo_pattern(keyword)
-  return "%f[%w]()" .. keyword .. "()%f[%W]"
+  -- Match labels like `KEYWORD:` or `KEYWORD(...)`, but not dotted access like `vim.log.levels.WARN`.
+  local suffix = "%s*[:%(]"
+
+  return {
+    "^()" .. keyword .. "()" .. suffix,
+    "[^%.%w_]()" .. keyword .. "()" .. suffix,
+  }
 end
 
 function M.setup()
