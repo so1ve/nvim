@@ -5,6 +5,46 @@ local M = {}
 local TIMEOUT_MS = 15000
 local MAX_DIFF_CHARS = 20000
 local NEXT_COMMIT_TIMEOUT_MS = 10000
+local AUTH_DB_TOKEN_SCRIPT = [[
+const crypto = require("node:crypto");
+const path = require("node:path");
+const { DatabaseSync } = require("node:sqlite");
+
+const [configPath, copilotRoot] = process.argv.slice(1);
+const keytarPath = path.join(copilotRoot, "copilot", "js", "compiled", process.platform, process.arch, "keytar.node");
+const { getPassword } = require(keytarPath);
+
+function decrypt(row, masterKey) {
+  const ciphertext = Buffer.from(row.token_ciphertext);
+  if (row.token_schema_version === 0) return ciphertext.toString("utf8");
+
+  const decipher = crypto.createDecipheriv("aes-256-gcm", Buffer.from(masterKey, "base64"), ciphertext.subarray(0, 12));
+  decipher.setAuthTag(ciphertext.subarray(-16));
+  return Buffer.concat([decipher.update(ciphertext.subarray(12, -16)), decipher.final()]).toString("utf8");
+}
+
+(async () => {
+  const masterKey = await getPassword("copilot-language-server", "oauth-token-key");
+  if (!masterKey) return;
+
+  const db = new DatabaseSync(path.join(configPath, "github-copilot", "auth.db"));
+  try {
+    const row = db.prepare(`
+      SELECT t.token_ciphertext, t.token_schema_version
+      FROM oauth_tokens t
+      LEFT JOIN active_sessions s ON s.token_id = t.token_id AND s.editor_id = 'vim'
+      ORDER BY (s.editor_id IS NOT NULL) DESC, t.last_used_at DESC, t.token_id DESC
+      LIMIT 1
+    `).get();
+    if (row) process.stdout.write(decrypt(row, masterKey));
+  } finally {
+    db.close();
+  }
+})().catch((error) => {
+  console.error(error.message || String(error));
+  process.exit(1);
+});
+]]
 
 local running = {}
 local token
@@ -26,18 +66,20 @@ local function api_error(label, response)
   return body.message or error_message or ("%s failed (HTTP %s)"):format(label, response.status)
 end
 
+local function copilot_root()
+  local source = debug.getinfo(require("copilot").setup, "S").source:gsub("^@", "")
+  return vim.fs.dirname(vim.fs.dirname(vim.fs.dirname(source)))
+end
+
 local function oauth_token()
   local config_path = require("copilot.auth").find_config_path()
-  for _, filename in ipairs({ "hosts.json", "apps.json" }) do
-    local path = config_path .. "/github-copilot/" .. filename
-    if vim.fn.filereadable(path) == 1 then
-      for _, app in pairs(json(table.concat(vim.fn.readfile(path), "\n"))) do
-        if type(app) == "table" and app.oauth_token then
-          return app.oauth_token
-        end
-      end
-    end
+  local result = vim.system({ "node", "-e", AUTH_DB_TOKEN_SCRIPT, config_path, copilot_root() }, { text = true }):wait()
+  if result.code ~= 0 then
+    return
   end
+
+  local oauth = vim.trim(result.stdout or "")
+  return oauth ~= "" and oauth or nil
 end
 
 local function copilot_token(callback)
