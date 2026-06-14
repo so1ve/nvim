@@ -100,5 +100,5 @@ return {
       patch.no_main()
     end,
   },
-  edgy.neo_tree_exclusion_spec({ "terminal", "qf", "edgy", "help" }),
+  edgy.neo_tree_exclusion_spec("help"),
 }
