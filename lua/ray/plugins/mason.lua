@@ -1,0 +1,44 @@
+return {
+  {
+    "mason-org/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonLog", "MasonUninstall", "MasonUpdate" },
+    opts = {},
+  },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    opts_extend = { "ensure_installed", "automatic_enable" },
+    dependencies = {
+      "mason-org/mason.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    opts = function()
+      local servers = require("ray.config.languages").collect("lsp")
+
+      return {
+        ensure_installed = servers,
+        automatic_enable = servers,
+      }
+    end,
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    -- Its startup installer is wired through the plugin's VimEnter hook, so it
+    -- needs to be loaded before VimEnter rather than on VeryLazy.
+    lazy = false,
+    opts_extend = { "ensure_installed" },
+    dependencies = {
+      "mason-org/mason.nvim",
+    },
+    opts = function()
+      return {
+        ensure_installed = require("ray.config.languages").collect("tools"),
+        integrations = {
+          ["mason-lspconfig"] = false,
+          ["mason-null-ls"] = false,
+          ["mason-nvim-dap"] = false,
+        },
+      }
+    end,
+  },
+}

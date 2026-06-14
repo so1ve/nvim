@@ -1,1 +1,1 @@
-require("colors.undefined").setup()
+require("ray.colors.undefined").setup()
