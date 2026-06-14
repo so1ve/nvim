@@ -26,6 +26,8 @@ map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
 
+map("n", "<leader>os", "<cmd>RayRunShell<CR>", { desc = "Run shell command" })
+
 map("n", "<leader>Q", "<cmd>qa<CR>", { desc = "Quit all" })
 map("n", "<leader>qb", function()
   Snacks.bufdelete()
