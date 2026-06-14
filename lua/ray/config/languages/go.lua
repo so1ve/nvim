@@ -3,6 +3,7 @@ return {
     go = {
       treesitter = "go",
       lsp = { "gopls" },
+      tools = { "goimports", "gofumpt" },
     },
     gomod = {
       treesitter = "gomod",
@@ -18,15 +19,6 @@ return {
     },
     gosum = {
       treesitter = "gosum",
-    },
-  },
-  servers = {
-    gopls = {
-      settings = {
-        gopls = {
-          gofumpt = true,
-        },
-      },
     },
   },
   plugins = {

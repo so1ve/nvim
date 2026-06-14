@@ -15,6 +15,9 @@ return {
     },
   },
   opts = {
+    default_format_opts = {
+      lsp_format = "fallback",
+    },
     formatters_by_ft = require("ray.config.languages").map("formatters"),
     format_after_save = function(bufnr)
       if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then

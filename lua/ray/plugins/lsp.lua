@@ -1,8 +1,29 @@
+local function with_project_settings(config)
+  config = config or {}
+
+  local before_init = config.before_init
+
+  return vim.tbl_extend("force", config, {
+    before_init = function(init_params, client_config)
+      if before_init then
+        before_init(init_params, client_config)
+      end
+
+      local loader = require("codesettings").loader()
+      if client_config.root_dir then
+        loader = loader:root_dir(client_config.root_dir)
+      end
+
+      loader:with_local_settings(client_config.name, client_config)
+    end,
+  })
+end
+
 local function server_defaults(opts)
   local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
   local servers = opts.servers or {}
 
-  return vim.tbl_deep_extend("force", { capabilities = capabilities }, servers["*"] or {})
+  return with_project_settings(vim.tbl_deep_extend("force", { capabilities = capabilities }, servers["*"] or {}))
 end
 
 local function configure_lsp_buffer(event)
@@ -91,8 +112,8 @@ return {
 
     vim.lsp.config("*", server_defaults(opts))
 
-    for server_name, server_config in pairs(languages.servers) do
-      vim.lsp.config(server_name, type(server_config) == "function" and server_config() or server_config)
+    for server_name, config in pairs(languages.servers) do
+      vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
     end
 
     vim.api.nvim_create_autocmd("LspAttach", {
