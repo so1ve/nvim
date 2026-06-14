@@ -19,14 +19,14 @@ return {
       mappings = {
         status = {
           ["C"] = function()
-            require("ray.integrations.neogit.ai-commit").commit_with_generated_message()
+            require("ray.features.git.ai-commit").commit_with_generated_message()
           end,
         },
       },
       treesitter_diff_highlight = true,
     },
     config = function(_, opts)
-      require("ray.integrations.neogit.ai-commit").setup()
+      require("ray.features.git.ai-commit").setup()
       require("ray.patch.neogit.hunk-paths").patch()
       require("neogit").setup(opts)
     end,

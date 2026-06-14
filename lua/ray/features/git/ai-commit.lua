@@ -27,9 +27,15 @@ local function api_error(label, response)
 end
 
 local function oauth_token()
-  for _, app in pairs(require("copilot.auth").get_creds() or {}) do
-    if type(app) == "table" and app.oauth_token then
-      return app.oauth_token
+  local config_path = require("copilot.auth").find_config_path()
+  for _, filename in ipairs({ "hosts.json", "apps.json" }) do
+    local path = config_path .. "/github-copilot/" .. filename
+    if vim.fn.filereadable(path) == 1 then
+      for _, app in pairs(json(table.concat(vim.fn.readfile(path), "\n"))) do
+        if type(app) == "table" and app.oauth_token then
+          return app.oauth_token
+        end
+      end
     end
   end
 end
@@ -50,7 +56,7 @@ local function copilot_token(callback)
     timeout = TIMEOUT_MS,
     headers = {
       Accept = "application/json",
-      Authorization = "Bearer " .. oauth,
+      Authorization = "Token " .. oauth,
       ["User-Agent"] = "Neovim",
     },
     callback = vim.schedule_wrap(function(response)
