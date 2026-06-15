@@ -5,6 +5,7 @@ vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" 
 
 -- ui
 opt.termguicolors = true
+opt.belloff = "all"
 opt.number = true
 opt.relativenumber = true
 opt.signcolumn = "yes"
@@ -89,6 +90,7 @@ opt.splitkeep = "screen"
 -- files
 opt.fileformats = { "unix", "dos", "mac" }
 opt.undofile = true
+opt.swapfile = false
 opt.autoread = true
 
 -- sessions

@@ -13,3 +13,11 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "FocusGained", "TermClos
     end
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "css", "scss", "html", "vue", "svelte" },
+  desc = "Treat hyphenated web identifiers as one keyword",
+  callback = function()
+    vim.opt_local.iskeyword:append("-")
+  end,
+})

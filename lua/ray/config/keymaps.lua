@@ -17,12 +17,16 @@ end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
+map("c", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
+
 -- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
 map("n", "q", "<Nop>", { noremap = true, silent = true })
 
 -- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
 -- the cursor when no leader sequence is completed.
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
+map({ "n", "x" }, "<leader>yp", '"0p', { desc = "Paste yanked text" })
+map({ "n", "x" }, "<leader>yP", '"0P', { desc = "Paste yanked text before" })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
 
@@ -38,6 +42,9 @@ map("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
 map("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
 map("n", "[T", "<cmd>tabfirst<CR>", { desc = "First tab" })
 map("n", "]T", "<cmd>tablast<CR>", { desc = "Last tab" })
+map("n", "[<Space>", "O<Esc>", { desc = "Blank line above" })
+map("n", "]<Space>", "o<Esc>", { desc = "Blank line below" })
+map("n", "gK", "i<CR><Esc>", { desc = "Split line at cursor" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
@@ -50,6 +57,8 @@ map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
 
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
 map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
+
+map("n", "go", [["0yi):!start <C-r>0<CR>]], { desc = "Open target with system app" })
 
 map("n", "<leader>cd", function()
   require("ray.config.diagnostics").open_float({ scope = "line" })
