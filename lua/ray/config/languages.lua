@@ -9,8 +9,6 @@ local M = {
   servers = {},
 }
 
-local MERGE_ORDER = { "languages", "filetypes", "servers", "plugins", "extend" }
-
 local helpers = {}
 
 function helpers.extend(config, key, values)
@@ -25,27 +23,6 @@ function helpers.extend(config, key, values)
   return vim.list_extend(target, values)
 end
 
-local function add_unique(target, seen, value)
-  if value == nil or value == false or seen[value] then
-    return
-  end
-
-  seen[value] = true
-  table.insert(target, value)
-end
-
-local function add_entries(target, seen, entries)
-  if type(entries) == "table" then
-    for _, entry in ipairs(entries) do
-      add_unique(target, seen, entry)
-    end
-
-    return
-  end
-
-  add_unique(target, seen, entries)
-end
-
 local function language_field(filetype, language, field, fallback)
   local value = language and language[field]
 
@@ -56,9 +33,7 @@ local function language_field(filetype, language, field, fallback)
   return fallback and fallback(filetype, language) or nil
 end
 
-local merge = {}
-
-function merge.languages(languages)
+local function merge_languages(languages)
   for filetype, language in pairs(languages or {}) do
     if not M.by_filetype[filetype] then
       table.insert(M.language_filetypes, filetype)
@@ -68,7 +43,7 @@ function merge.languages(languages)
   end
 end
 
-function merge.filetypes(filetypes)
+local function merge_filetypes(filetypes)
   for group, rules in pairs(filetypes or {}) do
     M.filetypes[group] = M.filetypes[group] or {}
 
@@ -78,44 +53,24 @@ function merge.filetypes(filetypes)
   end
 end
 
-function merge.servers(servers)
+local function merge_servers(servers)
   for server_name, server_config in pairs(servers or {}) do
     local current_config = M.servers[server_name]
 
-    if current_config then
-      M.servers[server_name] = vim.tbl_deep_extend("force", current_config, server_config)
-    else
-      M.servers[server_name] = server_config
-    end
+    M.servers[server_name] = current_config and vim.tbl_deep_extend("force", current_config, server_config)
+      or server_config
   end
 end
-
-function merge.plugins(plugins)
-  vim.list_extend(M.plugins, plugins or {})
-end
-
-function merge.extend(extend)
-  if extend then
-    table.insert(M.extensions, extend)
-  end
-end
-
-local MERGERS = {
-  extend = merge.extend,
-  filetypes = merge.filetypes,
-  languages = merge.languages,
-  plugins = merge.plugins,
-  servers = merge.servers,
-}
 
 local function load_specs()
   for _, spec in ipairs(modules.load("ray.config.languages")) do
-    for _, field in ipairs(MERGE_ORDER) do
-      local value = spec[field]
+    merge_languages(spec.languages)
+    merge_filetypes(spec.filetypes)
+    merge_servers(spec.servers)
+    vim.list_extend(M.plugins, spec.plugins or {})
 
-      if value ~= nil then
-        MERGERS[field](value)
-      end
+    if spec.extend then
+      table.insert(M.extensions, spec.extend)
     end
   end
 
@@ -128,11 +83,30 @@ function M.collect(field, opts)
   local values = {}
   local seen = {}
 
+  local function add(value)
+    if value ~= nil and value ~= false and not seen[value] then
+      seen[value] = true
+      table.insert(values, value)
+    end
+  end
+
+  local function add_entries(entries)
+    if type(entries) == "table" then
+      for _, entry in ipairs(entries) do
+        add(entry)
+      end
+
+      return
+    end
+
+    add(entries)
+  end
+
   M.each_language(function(filetype, language)
-    add_entries(values, seen, language_field(filetype, language, field, opts.fallback))
+    add_entries(language_field(filetype, language, field, opts.fallback))
   end)
 
-  add_entries(values, seen, opts.extra)
+  add_entries(opts.extra)
 
   return values
 end
@@ -152,11 +126,7 @@ function M.extend()
 end
 
 function M.get(filetype, field, fallback)
-  if not filetype or filetype == "" then
-    return nil
-  end
-
-  return language_field(filetype, M.by_filetype[filetype], field, fallback)
+  return filetype and filetype ~= "" and language_field(filetype, M.by_filetype[filetype], field, fallback) or nil
 end
 
 function M.map(field)
@@ -176,14 +146,12 @@ end
 function M.hover()
   local providers = M.get(vim.bo.filetype, "hover")
 
-  if not providers then
+  if providers then
+    -- require it here to make sure noice is loaded
+    require("ray.patch.lsp.hover").show(providers)
+  else
     vim.lsp.buf.hover()
-
-    return
   end
-
-  -- require it here to make sure noice is loaded
-  require("ray.patch.lsp.hover").show(providers)
 end
 
 load_specs()

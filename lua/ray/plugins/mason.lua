@@ -30,25 +30,15 @@ return {
     },
     opts = function()
       local languages = require("ray.config.languages")
-      local ensure_installed = {}
-      local seen = {}
-
-      local function add(packages)
-        for _, package in ipairs(packages) do
-          if not seen[package] then
-            seen[package] = true
-            table.insert(ensure_installed, package)
-          end
-        end
-      end
-
-      add(vim.tbl_map(function(server)
-        return lsp_packages[server] or server
-      end, languages.collect("lsp")))
-      add(languages.collect("tools"))
+      local packages = vim.list_extend(
+        vim.tbl_map(function(server)
+          return lsp_packages[server] or server
+        end, languages.collect("lsp")),
+        languages.collect("tools")
+      )
 
       return {
-        ensure_installed = ensure_installed,
+        ensure_installed = vim.fn.uniq(vim.fn.sort(packages)),
         integrations = {
           ["mason-null-ls"] = false,
           ["mason-nvim-dap"] = false,
