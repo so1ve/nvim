@@ -22,9 +22,6 @@ return {
       hover = { "vue_ls", "vtsls" },
     },
   },
-  servers = {
-    vue_ls = {},
-  },
   extend = function(catalog, helpers)
     helpers.extend(catalog.servers.vtsls, "filetypes", { "vue" })
     helpers.extend(catalog.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {

@@ -21,8 +21,6 @@ return {
     scss = css_language("scss"),
   },
   servers = {
-    html = {},
-    cssls = {},
     stylelint_lsp = {
       filetypes = { "css", "scss", "html" },
       settings = {
@@ -31,6 +29,5 @@ return {
         },
       },
     },
-    unocss = {},
   },
 }
