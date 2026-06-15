@@ -41,8 +41,30 @@ return {
         {
           "a",
           function()
+            local mode = vim.fn.mode()
+            local cursor = vim.fn.getpos(".")
+            local anchor = vim.fn.getpos("v")
+
             mc.matchAllAddCursors()
-            mc.feedkeys("e")
+
+            if mode == "n" then
+              mc.feedkeys("e")
+              return
+            end
+
+            local cursor_before_anchor = cursor[2] < anchor[2] or (cursor[2] == anchor[2] and cursor[3] < anchor[3])
+            local start = cursor_before_anchor and cursor or anchor
+            local row = cursor[2] - start[2]
+            local col = cursor[3] - (row == 0 and start[3] or 1)
+
+            mc.action(function(ctx)
+              ctx:forEachCursor(function(cursor)
+                cursor:setPos({
+                  cursor:line() + row,
+                  row == 0 and cursor:col() + col or col + 1,
+                })
+              end)
+            end)
           end,
           { desc = "All", exit = true, group = "Add" },
         },
