@@ -116,6 +116,10 @@ return {
       vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
     end
 
+    for _, server_name in ipairs(languages.collect("lsp")) do
+      vim.lsp.enable(server_name)
+    end
+
     vim.api.nvim_create_autocmd("LspAttach", {
       desc = "Configure LSP buffer keymaps",
       callback = configure_lsp_buffer,
