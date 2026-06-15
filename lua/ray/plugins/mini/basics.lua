@@ -18,6 +18,7 @@ function M.setup()
   icons.mock_nvim_web_devicons()
 
   require("mini.ai").setup({ n_lines = 500 })
+  require("mini.align").setup()
   require("mini.surround").setup()
   require("mini.jump").setup()
   local jump2d = require("mini.jump2d")
