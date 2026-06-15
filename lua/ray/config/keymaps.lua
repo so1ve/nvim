@@ -58,7 +58,7 @@ map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
 map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
 
-map("n", "go", [["0yi):!start <C-r>0<CR>]], { desc = "Open target with system app" })
+-- map("n", "go", [["0yi):!start <C-r>0<CR>]], { desc = "Open target with system app" })
 
 map("n", "<leader>cd", function()
   require("ray.config.diagnostics").open_float({ scope = "line" })
