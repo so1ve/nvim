@@ -16,6 +16,11 @@ return {
     },
     opts = {
       disable_insert_on_commit = true,
+      signs = {
+        hunk = { "", "" },
+        item = { "", "" },
+        section = { "", "" },
+      },
       mappings = {
         status = {
           ["C"] = function()
@@ -24,6 +29,10 @@ return {
         },
       },
       treesitter_diff_highlight = true,
+      commit_editor = {
+        staged_diff_split_kind = "vsplit",
+        spell_check = false,
+      },
     },
     config = function(_, opts)
       require("ray.features.git.ai-commit").setup()

@@ -9,6 +9,7 @@ return {
         "help",
         "bigfile",
         "markdown",
+        "gitcommit",
       },
     }
   end,
