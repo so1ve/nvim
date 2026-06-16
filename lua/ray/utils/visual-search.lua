@@ -1,4 +1,5 @@
 local M = {}
+local magic_chars = [[\/.*$^~[]]
 
 local function selection_text()
   local mode = vim.fn.mode()
@@ -29,7 +30,7 @@ function M.pattern_from_visual_selection()
     return nil
   end
 
-  return [[\V]] .. vim.fn.escape(text, [[\]])
+  return vim.fn.escape(text, magic_chars)
 end
 
 function M.search_keys(direction)
