@@ -39,6 +39,17 @@ return {
       { "<leader>E", edgy.with_focus(neotree_view, "Neotree reveal"), desc = "Reveal current file" },
     },
     opts = {
+      open_files_do_not_replace_types = {
+        "help",
+        "trouble",
+        "grug-far",
+        "snacks_terminal",
+        "sidekick_terminal",
+        "neotest-summary",
+        "neotest-output-panel",
+        "OverseerList",
+        "OverseerOutput",
+      },
       hide_root_node = true,
       retain_hidden_root_indent = true,
       default_component_configs = {

@@ -34,31 +34,6 @@ function M.view_spec(position, view)
   }
 end
 
-local function as_list(values)
-  return type(values) == "string" and { values } or values
-end
-
-local function add_neo_tree_exclusions(opts, filetypes)
-  opts.open_files_do_not_replace_types = opts.open_files_do_not_replace_types or {}
-  local types = opts.open_files_do_not_replace_types
-
-  for _, filetype in ipairs(as_list(filetypes)) do
-    if not vim.list_contains(types, filetype) then
-      table.insert(types, filetype)
-    end
-  end
-end
-
-function M.neo_tree_exclusion_spec(filetypes)
-  return {
-    "nvim-neo-tree/neo-tree.nvim",
-    optional = true,
-    opts = function(_, opts)
-      add_neo_tree_exclusions(opts, filetypes)
-    end,
-  }
-end
-
 M.find_view_win = focus.find_view_win
 M.focus_view = focus.focus_view
 M.focus_view_when_available = focus.focus_view_when_available

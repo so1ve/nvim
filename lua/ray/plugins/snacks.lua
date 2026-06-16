@@ -145,7 +145,14 @@ return {
             nav_j = { "<C-j>", term_nav("j"), desc = "Move to lower window", expr = true, mode = "t" },
             nav_k = { "<C-k>", term_nav("k"), desc = "Move to upper window", expr = true, mode = "t" },
             nav_l = { "<C-l>", term_nav("l"), desc = "Move to right window", expr = true, mode = "t" },
-            paste = { "<C-v>", function() vim.api.nvim_paste(vim.fn.getreg("+"), true, -1) end, desc = "Paste from clipboard", mode = "t" },
+            paste = {
+              "<C-v>",
+              function()
+                vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+              end,
+              desc = "Paste from clipboard",
+              mode = "t",
+            },
           },
         },
       },
@@ -335,5 +342,4 @@ return {
       end,
     })
   ),
-  edgy.neo_tree_exclusion_spec("snacks_terminal"),
 }

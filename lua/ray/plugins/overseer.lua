@@ -38,5 +38,4 @@ return {
   },
   edgy.view_spec("bottom", list_view),
   edgy.view_spec("bottom", output_view),
-  edgy.neo_tree_exclusion_spec({ "OverseerList", "OverseerOutput" }),
 }

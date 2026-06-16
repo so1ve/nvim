@@ -97,5 +97,4 @@ return {
     end,
   },
   edgy.view_spec("right", cli_view),
-  edgy.neo_tree_exclusion_spec("sidekick_terminal"),
 }

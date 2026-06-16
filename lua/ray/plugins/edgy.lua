@@ -99,5 +99,4 @@ return {
       require("edgy").setup(opts)
     end,
   },
-  edgy.neo_tree_exclusion_spec("help"),
 }
