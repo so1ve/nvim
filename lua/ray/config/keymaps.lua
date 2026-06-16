@@ -1,4 +1,7 @@
 local map = vim.keymap.set
+local window_resize = require("ray.utils.window-resize")
+
+local resize_step = 2
 
 -- delete them since when lsp is not ready for references, `gr` triggers the builtin key hint menu instead of a warning indicating that no references are found
 local conflict_keymaps = {
@@ -50,6 +53,20 @@ map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+map("n", "<C-Right>", function()
+  window_resize.resize("width", resize_step)
+end, { desc = "Increase window width" })
+map("n", "<C-Left>", function()
+  window_resize.resize("width", -resize_step)
+end, { desc = "Decrease window width" })
+map("n", "<C-Up>", function()
+  window_resize.resize("height", resize_step)
+end, { desc = "Increase window height" })
+map("n", "<C-Down>", function()
+  window_resize.resize("height", -resize_step)
+end, { desc = "Decrease window height" })
+map("n", "<C-=>", window_resize.equalize, { desc = "Equalize windows" })
+
 map("i", "<A-h>", "<Left>", { desc = "Move lef cursor" })
 map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
 map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
