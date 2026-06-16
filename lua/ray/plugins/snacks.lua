@@ -276,7 +276,6 @@ return {
               return items
             end,
             format = "lines",
-            matcher = { regex = true },
             title = "Buffer Lines",
             layout = {
               preset = "vertical",
