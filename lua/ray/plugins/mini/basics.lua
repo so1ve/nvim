@@ -15,6 +15,7 @@ function M.setup()
   icons.setup()
   icons.mock_nvim_web_devicons()
 
+  require("mini.git").setup()
   require("mini.ai").setup({ n_lines = 500 })
   require("mini.align").setup()
   require("mini.surround").setup()
