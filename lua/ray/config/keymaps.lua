@@ -22,10 +22,10 @@ end
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("x", "/", function()
   return visual_search.search_keys("forward")
-end, { desc = "Search selected text forward", expr = true, replace_keycodes = true, silent = true })
+end, { desc = "Search selected text forward", expr = true, replace_keycodes = true })
 map("x", "?", function()
   return visual_search.search_keys("backward")
-end, { desc = "Search selected text backward", expr = true, replace_keycodes = true, silent = true })
+end, { desc = "Search selected text backward", expr = true, replace_keycodes = true })
 
 map("c", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
 map("n", "x", '"_x', { desc = "Delete without yanking" })

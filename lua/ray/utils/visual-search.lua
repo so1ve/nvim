@@ -37,7 +37,7 @@ function M.search_keys(direction)
   local pattern = M.pattern_from_visual_selection()
 
   if not pattern then
-    return direction == "backward" and "?" or "/"
+    return direction == "backward" and "<Esc>?" or "<Esc>/"
   end
 
   vim.fn.setreg("/", pattern)
