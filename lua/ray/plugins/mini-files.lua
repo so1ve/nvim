@@ -1,4 +1,20 @@
 local ignore = require("ray.config.ignore")
+local show_hidden = false
+
+local opts = {
+  content = {
+    filter = function(entry)
+      return show_hidden or not ignore.is_ignored(entry.path or entry.name)
+    end,
+    highlight = function(entry)
+      if ignore.is_ignored(entry.path or entry.name) then
+        return "MiniFilesHidden"
+      end
+
+      return require("mini.files").default_highlight(entry)
+    end,
+  },
+}
 
 return {
   "mini.files",
@@ -8,12 +24,18 @@ return {
   config = function()
     local files = require("mini.files")
 
-    files.setup({
-      content = {
-        filter = function(entry)
-          return not ignore.is_ignored(entry.path or entry.name)
-        end,
-      },
+    vim.api.nvim_set_hl(0, "MiniFilesHidden", { link = "Comment", default = true })
+
+    files.setup(opts)
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "MiniFilesBufferCreate",
+      callback = function(args)
+        vim.keymap.set("n", "gh", function()
+          show_hidden = not show_hidden
+          require("mini.files").refresh(opts)
+        end, { buffer = args.data.buf_id, desc = "Toggle hidden entries" })
+      end,
     })
 
     vim.keymap.set("n", "<leader>e", files.open, { desc = "Explore files" })
