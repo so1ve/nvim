@@ -1,4 +1,3 @@
-local M = {}
 local trunc_width = 120
 local max_parts = 5
 local copilot_status = ""
@@ -18,6 +17,7 @@ end
 
 local function statusline_macro()
   local register = vim.fn.reg_recording()
+
   if register == "" then
     return ""
   end
@@ -213,35 +213,39 @@ local function setup_copilot_status()
   end
 end
 
-function M.setup()
-  require("mini.statusline").setup({
-    content = {
-      active = statusline_active,
-      inactive = statusline_inactive,
-    },
-  })
+return {
+  "mini.statusline",
+  virtual = true,
+  dependencies = { "nvim-mini/mini.nvim" },
+  event = "UIEnter",
+  config = function()
+    require("mini.statusline").setup({
+      content = {
+        active = statusline_active,
+        inactive = statusline_inactive,
+      },
+    })
 
-  vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
-    callback = redraw_statusline,
-  })
+    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+      callback = redraw_statusline,
+    })
 
-  vim.api.nvim_create_autocmd("User", {
-    pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
-    callback = redraw_statusline,
-  })
+    vim.api.nvim_create_autocmd("User", {
+      pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
+      callback = redraw_statusline,
+    })
 
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "LazyLoad",
-    callback = function(args)
-      if args.data == "copilot.lua" then
-        setup_copilot_status()
-      end
-    end,
-  })
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(args)
+        if args.data == "copilot.lua" then
+          setup_copilot_status()
+        end
+      end,
+    })
 
-  if package.loaded["copilot.status"] ~= nil then
-    setup_copilot_status()
-  end
-end
-
-return M
+    if package.loaded["copilot.status"] ~= nil then
+      setup_copilot_status()
+    end
+  end,
+}

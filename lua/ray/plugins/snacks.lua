@@ -73,7 +73,7 @@ return {
               key = "l",
               desc = "Load session",
               action = function()
-                require("ray.plugins.mini.sessions").load()
+                require("ray.features.sessions").load()
               end,
             },
             { key = "q", desc = "Quit", action = ":qa" },
