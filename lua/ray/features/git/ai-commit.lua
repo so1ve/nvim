@@ -1,9 +1,7 @@
 local M = {}
 
-local COMMIT_SCRIPT = vim.fs.joinpath(
-  debug.getinfo(1, "S").source:gsub("^@", ""):match("^(.*)[/\\]"),
-  "copilot-commit-message.mjs"
-)
+local COMMIT_SCRIPT =
+  vim.fs.joinpath(debug.getinfo(1, "S").source:gsub("^@", ""):match("^(.*)[/\\]"), "copilot-commit-message.mjs")
 
 local generating = false
 local generate_on_open = false
@@ -48,23 +46,29 @@ function M.generate(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   vim.notify("Generating commit message with Copilot…")
 
-  vim.system(command, { text = true }, vim.schedule_wrap(function(result)
-    generating = false
-    if result.code ~= 0 then
-      vim.notify(vim.trim(result.stderr or "Copilot commit message failed"), vim.log.levels.ERROR)
-    elseif vim.api.nvim_buf_is_valid(bufnr) then
-      write_message(bufnr, vim.trim(result.stdout or ""))
-      vim.notify("Commit message generated")
-    end
-  end))
+  vim.system(
+    command,
+    { text = true },
+    vim.schedule_wrap(function(result)
+      generating = false
+      if result.code ~= 0 then
+        vim.notify(vim.trim(result.stderr or "Copilot commit message failed"), vim.log.levels.ERROR)
+      elseif vim.api.nvim_buf_is_valid(bufnr) then
+        write_message(bufnr, vim.trim(result.stdout or ""))
+        vim.notify("Commit message generated")
+      end
+    end)
+  )
 end
 
 function M.commit_with_generated_message()
   generate_on_open = true
   require("neogit.lib.async").void(function()
-    require("neogit.popups.commit.actions").commit({ get_arguments = function()
-      return {}
-    end })
+    require("neogit.popups.commit.actions").commit({
+      get_arguments = function()
+        return {}
+      end,
+    })
     require("neogit.watcher").instance():dispatch_refresh()
   end)()
 end
