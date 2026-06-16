@@ -28,6 +28,7 @@ map("x", "?", function()
 end, { desc = "Search selected text backward", expr = true, replace_keycodes = true, silent = true })
 
 map("c", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
+map("n", "x", '"_x', { desc = "Delete without yanking" })
 
 -- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
 map("n", "q", "<Nop>", { noremap = true, silent = true })
