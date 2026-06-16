@@ -22,8 +22,10 @@ function M.setup()
   require("mini.surround").setup()
   require("mini.jump").setup()
   local jump2d = require("mini.jump2d")
+  local spotter =
+    jump2d.gen_spotter.union(jump2d.builtin_opts.word_start.spotter, jump2d.gen_spotter.pattern(".+", "end"))
   jump2d.setup({
-    spotter = jump2d.builtin_opts.word_start.spotter,
+    spotter = spotter,
     labels = "abcdefghijklmnopqrstuvwxyz",
     view = { n_steps_ahead = 2 },
     allowed_windows = { not_current = false },
