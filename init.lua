@@ -13,3 +13,4 @@ require("ray.config.commands")
 vim.cmd.colorscheme("undefined")
 
 require("ray.config.lazy")
+require("ray.config.themes").apply(nil, { notify = false })
