@@ -2,7 +2,7 @@ local M = {}
 
 function M.get(p)
   return {
-    BufferLineFill = { bg = p.bg },
+    BufferLineFill = { bg = p.bg_dark },
     BufferLineBackground = { fg = p.muted, bg = p.bg },
     BufferLineBuffer = { fg = p.muted, bg = p.bg },
     BufferLineBufferVisible = { fg = p.fg_dim, bg = p.bg },
@@ -30,10 +30,10 @@ function M.get(p)
     BufferLineOffset = { fg = p.green, bg = p.bg, bold = true },
     BufferLineOffsetSeparator = { fg = p.border, bg = p.bg },
     BufferLineTab = { fg = p.muted, bg = p.bg },
-    BufferLineTabSelected = { fg = p.fg, bg = p.bg_alt, bold = true },
+    BufferLineTabSelected = { fg = p.fg, bg = p.selection, bold = true },
     BufferLineTabClose = { fg = p.red, bg = p.bg },
     BufferLineTabSeparator = { fg = p.border, bg = p.bg },
-    BufferLineTabSeparatorSelected = { fg = p.border, bg = p.bg_alt },
+    BufferLineTabSeparatorSelected = { fg = p.green, bg = p.selection },
     BufferLineDiagnostic = { fg = p.subtle, bg = p.bg },
     BufferLineDiagnosticVisible = { fg = p.muted, bg = p.bg },
     BufferLineDiagnosticSelected = { fg = p.fg_dim, bg = p.bg_alt },
@@ -63,7 +63,7 @@ function M.get(p)
     BufferLineErrorDiagnosticSelected = { fg = p.red, bg = p.bg_alt },
     BufferLineGroupSeparator = { fg = p.border, bg = p.bg },
     BufferLineGroupLabel = { fg = p.green, bg = p.bg_alt, bold = true },
-    BufferLineTruncMarker = { fg = p.subtle, bg = p.bg },
+    BufferLineTruncMarker = { fg = p.subtle, bg = p.bg_dark },
     BufferLineMiniIconsAzure = { fg = p.blue, bg = p.bg },
     BufferLineMiniIconsAzureInactive = { fg = p.blue, bg = p.bg },
     BufferLineMiniIconsAzureSelected = { fg = p.blue, bg = p.bg_alt },

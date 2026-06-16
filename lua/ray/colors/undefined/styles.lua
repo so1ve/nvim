@@ -56,8 +56,8 @@ function M.get(p)
       title = { fg = p.green, bg = bg, bold = true },
       border_search = { fg = p.yellow, bg = bg },
       selected = { bg = p.selection },
-      progress_done = { fg = p.green, bg = bg },
-      progress_todo = { fg = p.subtle, bg = bg },
+      progress_done = { fg = p.bg_dark, bg = p.green, bold = true },
+      progress_todo = { fg = p.subtle, bg = p.selection },
     }
   end
 

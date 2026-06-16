@@ -47,8 +47,8 @@ function M.get(p)
     StatusLine = { fg = p.fg_dim, bg = p.bg_dark },
     StatusLineNC = { fg = p.subtle, bg = p.bg_dark },
     TabLine = { fg = p.muted, bg = p.bg },
-    TabLineFill = { bg = p.bg },
-    TabLineSel = { fg = p.fg, bg = p.bg_alt, bold = true },
+    TabLineFill = { bg = p.bg_dark },
+    TabLineSel = { fg = p.fg, bg = p.selection, bold = true },
     WinBar = s.tabline.current,
     WinBarNC = s.tabline.hidden,
 
@@ -208,6 +208,16 @@ function M.get(p)
     ["@lsp.type.decorator"] = { fg = p.attribute },
     ["@lsp.type.const"] = { fg = p.constant },
     ["@lsp.type.enumMember"] = { fg = p.constant },
+
+    ["@keyword.gitcommit"] = { fg = p.green, bold = true },
+    ["@variable.parameter.gitcommit"] = { fg = p.blue, bold = true },
+    ["@markup.heading.gitcommit"] = { fg = p.fg_dim, bold = true },
+    ["@function.gitcommit"] = { fg = p.magenta, bold = true },
+    ["@punctuation.delimiter.gitcommit"] = { fg = p.subtle },
+    ["@punctuation.special.gitcommit"] = { fg = p.red, bold = true },
+    ["@string.special.path.gitcommit"] = { fg = p.cyan },
+    ["@label.gitcommit"] = { fg = p.orange, bold = true },
+    ["@comment.error.gitcommit"] = { fg = p.red, bold = true },
   }
 end
 
