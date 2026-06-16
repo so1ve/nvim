@@ -73,7 +73,7 @@ end, { desc = "Increase window height" })
 map("n", "<C-Down>", function()
   window_resize.resize("height", -resize_step)
 end, { desc = "Decrease window height" })
-map("n", "<C-=>", window_resize.equalize, { desc = "Equalize windows" })
+map("n", "<leader>=", window_resize.equalize, { desc = "Equalize windows" })
 
 map("i", "<A-h>", "<Left>", { desc = "Move lef cursor" })
 map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
