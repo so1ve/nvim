@@ -50,6 +50,7 @@ function M.get(p)
     MiniIconsPurple = { fg = p.magenta },
     MiniIconsRed = { fg = p.red },
     MiniIconsYellow = { fg = p.yellow },
+    MiniFilesHidden = { fg = p.comment },
   }
 
   local icon_colors = {

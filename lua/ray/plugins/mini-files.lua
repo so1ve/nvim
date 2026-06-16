@@ -9,8 +9,6 @@ return {
   config = function()
     local files = require("mini.files")
 
-    vim.api.nvim_set_hl(0, "MiniFilesHidden", { link = "Comment", default = true })
-
     local opts = {
       content = {
         filter = function(entry)
