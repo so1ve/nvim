@@ -1,21 +1,6 @@
 local ignore = require("ray.config.ignore")
 local show_hidden = false
 
-local opts = {
-  content = {
-    filter = function(entry)
-      return show_hidden or not ignore.is_ignored(entry.path or entry.name)
-    end,
-    highlight = function(entry)
-      if ignore.is_ignored(entry.path or entry.name) then
-        return "MiniFilesHidden"
-      end
-
-      return require("mini.files").default_highlight(entry)
-    end,
-  },
-}
-
 return {
   "mini.files",
   virtual = true,
@@ -25,6 +10,24 @@ return {
     local files = require("mini.files")
 
     vim.api.nvim_set_hl(0, "MiniFilesHidden", { link = "Comment", default = true })
+
+    local opts = {
+      content = {
+        filter = function(entry)
+          return show_hidden or not ignore.is_ignored(entry.path or entry.name)
+        end,
+        highlight = function(entry)
+          if ignore.is_ignored(entry.path or entry.name) then
+            return "MiniFilesHidden"
+          end
+
+          return files.default_highlight(entry)
+        end,
+      },
+      mappings = {
+        synchronize = "s",
+      },
+    }
 
     files.setup(opts)
 
