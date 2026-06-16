@@ -15,11 +15,18 @@ return {
       },
     },
     opts = {
+      treesitter_diff_highlight = true,
       disable_insert_on_commit = true,
+      process_spinner = true,
+      graph_style = "kitty",
       signs = {
         hunk = { "", "" },
         item = { "", "" },
         section = { "", "" },
+      },
+      integrations = {
+        snacks = false,
+        mini_pick = false,
       },
       mappings = {
         status = {
@@ -28,7 +35,6 @@ return {
           end,
         },
       },
-      treesitter_diff_highlight = true,
       commit_editor = {
         staged_diff_split_kind = "vsplit",
         spell_check = false,
