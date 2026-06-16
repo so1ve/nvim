@@ -11,6 +11,9 @@ return {
         "markdown",
         "gitcommit",
       },
+      win_filter = function(winid)
+        return not vim.w[winid].codediff_restore
+      end,
     }
   end,
 }
