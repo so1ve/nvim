@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local visual_search = require("ray.utils.visual-search")
 local window_resize = require("ray.utils.window-resize")
 
 local resize_step = 2
@@ -19,6 +20,12 @@ for mode, keys in pairs(conflict_keymaps) do
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+map("x", "/", function()
+  return visual_search.search_keys("forward")
+end, { desc = "Search selected text forward", expr = true, replace_keycodes = true, silent = true })
+map("x", "?", function()
+  return visual_search.search_keys("backward")
+end, { desc = "Search selected text backward", expr = true, replace_keycodes = true, silent = true })
 
 map("c", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
 
