@@ -73,7 +73,6 @@ return {
     end
 
     vim.api.nvim_create_autocmd("FileType", {
-      group = vim.api.nvim_create_augroup("RayCodeDiff", { clear = true }),
       pattern = "codediff-explorer",
       callback = function(event)
         vim.keymap.set("n", "s", function()

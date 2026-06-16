@@ -5,7 +5,6 @@ local M = {}
 -- Registered only while a with_focus call is waiting for a view. These are
 -- lifecycle events, not polling hooks, so idle Neovim has no focus overhead.
 local events = { "WinNew", "WinEnter", "BufWinEnter", "BufEnter", "FileType", "TabEnter" }
-local group = vim.api.nvim_create_augroup("RayEdgyFocus", { clear = true })
 local autocmd ---@type integer?
 local scheduled = false
 local next_id = 0
@@ -76,7 +75,6 @@ local function ensure_autocmd()
   end
 
   autocmd = vim.api.nvim_create_autocmd(events, {
-    group = group,
     callback = schedule_check,
   })
 end

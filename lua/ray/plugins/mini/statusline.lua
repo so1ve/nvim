@@ -201,19 +201,16 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
-    desc = "Redraw statusline when macro recording changes",
     callback = redraw_statusline,
   })
 
   vim.api.nvim_create_autocmd("User", {
     pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
-    desc = "Redraw statusline when Git state changes",
     callback = redraw_statusline,
   })
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "LazyLoad",
-    desc = "Track Copilot progress in statusline",
     callback = function(args)
       if args.data == "copilot.lua" then
         setup_copilot_status()

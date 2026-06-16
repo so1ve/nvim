@@ -121,7 +121,6 @@ return {
     end
 
     vim.api.nvim_create_autocmd("LspAttach", {
-      desc = "Configure LSP buffer keymaps",
       callback = configure_lsp_buffer,
     })
   end,

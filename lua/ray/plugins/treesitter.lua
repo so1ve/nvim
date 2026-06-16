@@ -48,7 +48,6 @@ return {
     register_treesitter_aliases(languages)
 
     vim.api.nvim_create_autocmd("FileType", {
-      desc = "Start Tree-sitter for configured parsers",
       callback = function(event)
         local filetype = vim.bo[event.buf].filetype
         local parser = languages.get(filetype, "treesitter", vim.treesitter.language.get_lang)

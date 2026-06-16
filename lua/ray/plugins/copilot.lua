@@ -63,7 +63,6 @@ return {
 
     vim.api.nvim_create_autocmd("User", {
       pattern = "BlinkCmpMenuOpen",
-      desc = "Hide Copilot inline suggestions while blink menu is open",
       callback = function()
         require("copilot.suggestion").dismiss()
         vim.b.copilot_suggestion_hidden = true
@@ -72,7 +71,6 @@ return {
 
     vim.api.nvim_create_autocmd("User", {
       pattern = "BlinkCmpMenuClose",
-      desc = "Restore Copilot inline suggestions after blink menu closes",
       callback = function()
         vim.b.copilot_suggestion_hidden = false
       end,

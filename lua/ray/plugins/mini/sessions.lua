@@ -124,7 +124,6 @@ end
 
 function M.start()
   vim.api.nvim_create_autocmd("DirChanged", {
-    desc = "Update current Mini.sessions session after directory change",
     callback = function()
       if vim.v.this_session == "" then
         return
@@ -135,7 +134,6 @@ function M.start()
   })
 
   vim.api.nvim_create_autocmd("ExitPre", {
-    desc = "Auto-write current Mini.sessions session before exit or restart",
     callback = auto_save,
   })
 end

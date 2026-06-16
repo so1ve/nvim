@@ -32,7 +32,6 @@ function M.setup()
 
   vim.api.nvim_create_autocmd("ModeChanged", {
     pattern = "*:n",
-    desc = "Stop mini.snippets sessions on entering Normal mode",
     callback = function()
       while snippets.session.get() do
         snippets.session.stop()

@@ -76,7 +76,6 @@ return {
     require("incline").setup(opts)
 
     vim.api.nvim_create_autocmd("DiagnosticChanged", {
-      desc = "Refresh incline when diagnostics change",
       callback = function()
         vim.schedule(function()
           require("incline").refresh()

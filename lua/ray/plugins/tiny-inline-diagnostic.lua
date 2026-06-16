@@ -53,7 +53,6 @@ return {
           refresh_visible_diagnostics(winid)
         end)
       end,
-      desc = "Refresh tiny inline diagnostics after scrolling",
     })
   end,
 }

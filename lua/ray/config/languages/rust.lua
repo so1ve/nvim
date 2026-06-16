@@ -148,7 +148,6 @@ return {
         local user_config = type(vim.g.rustaceanvim) == "table" and vim.g.rustaceanvim or {}
 
         vim.api.nvim_create_autocmd("FileChangedShellPost", {
-          desc = "Refresh Rust diagnostics after external file reload",
           pattern = "*.rs",
           callback = function(args)
             local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "rust-analyzer" })
