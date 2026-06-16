@@ -27,7 +27,7 @@ map("x", "?", function()
   return visual_search.search_keys("backward")
 end, { desc = "Search selected text backward", expr = true, replace_keycodes = true })
 
-map("c", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
+map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
 map("n", "x", '"_x', { desc = "Delete without yanking" })
 
 -- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
