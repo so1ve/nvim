@@ -40,5 +40,8 @@ return {
     })
 
     vim.keymap.set("n", "<leader>e", files.open, { desc = "Explore files" })
+    vim.keymap.set("n", "<leader>E", function()
+      files.open(vim.fn.getcwd(), false)
+    end, { desc = "Explore files (cwd)" })
   end,
 }
