@@ -104,6 +104,6 @@ map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
 
 -- Diagnostics
 map("n", "<leader>cd", function()
-  require("ray.config.diagnostics").open_float({ scope = "line" })
+  require("ray.config.diagnostics").open_float()
 end, { desc = "Line diagnostics" })
 map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location list" })
