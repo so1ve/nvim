@@ -43,7 +43,14 @@ return {
       files.open(vim.fn.getcwd(), false)
     end, { desc = "Explore files" })
     vim.keymap.set("n", "<leader>E", function()
-      files.open(vim.api.nvim_buf_get_name(0), false)
+      local path = vim.api.nvim_buf_get_name(0)
+      -- silently ignore if file doesn't exist
+      if path == "" or not vim.uv.fs_stat(path) then
+        files.open(vim.fn.getcwd(), false)
+        return
+      end
+
+      files.open(path, false)
       files.reveal_cwd()
     end, { desc = "Reveal current file" })
   end,
