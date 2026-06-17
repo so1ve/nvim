@@ -3,6 +3,7 @@ return {
     ps1 = {
       treesitter = "powershell",
       lsp = { "powershell_es" },
+      formatters = { lsp_format = "never" },
     },
   },
   servers = {
