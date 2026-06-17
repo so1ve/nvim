@@ -44,6 +44,7 @@ return {
     end, { desc = "Explore files" })
     vim.keymap.set("n", "<leader>E", function()
       files.open(vim.api.nvim_buf_get_name(0), false)
+      files.reveal_cwd()
     end, { desc = "Reveal current file" })
   end,
 }
