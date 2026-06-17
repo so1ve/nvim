@@ -39,9 +39,11 @@ return {
       end,
     })
 
-    vim.keymap.set("n", "<leader>e", files.open, { desc = "Explore files" })
-    vim.keymap.set("n", "<leader>E", function()
+    vim.keymap.set("n", "<leader>e", function()
       files.open(vim.fn.getcwd(), false)
-    end, { desc = "Explore files (cwd)" })
+    end, { desc = "Explore files" })
+    vim.keymap.set("n", "<leader>E", function()
+      files.open(vim.api.nvim_buf_get_name(0), false)
+    end, { desc = "Reveal current file" })
   end,
 }
