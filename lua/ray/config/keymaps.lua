@@ -42,12 +42,19 @@ map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
 map({ "n", "x" }, "<leader>yp", '"0p', { desc = "Paste yanked text" })
 map({ "n", "x" }, "<leader>yP", '"0P', { desc = "Paste yanked text before" })
 
--- Leader basics
+-- Line motions
+map({ "n", "x", "o" }, "H", "^", { desc = "Move to first non-blank character" })
+map({ "n", "x", "o" }, "L", "$", { desc = "Move to end of line" })
+
 -- Prevent bare <Leader> from falling back to Normal-mode <space>, which moves
 -- the cursor when no leader sequence is completed.
 map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
+
+-- Files
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
+
+-- UI
 map("n", "<leader>lw", "<cmd>setlocal wrap!<CR>", { desc = "Toggle line wrap" })
 map("n", "<leader>uC", function()
   require("ray.config.themes").select()
@@ -63,11 +70,13 @@ map("n", "<leader>qt", "<cmd>tabclose<CR>", { desc = "Quit tab" })
 map("n", "<leader>qT", "<cmd>tabonly<CR>", { desc = "Quit other tabs" })
 map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
 
--- Tabs and lines
+-- Tabs
 map("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
 map("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
 map("n", "[T", "<cmd>tabfirst<CR>", { desc = "First tab" })
 map("n", "]T", "<cmd>tablast<CR>", { desc = "Last tab" })
+
+-- Line editing
 map("n", "[<Space>", "O<Esc>", { desc = "Blank line above" })
 map("n", "]<Space>", "o<Esc>", { desc = "Blank line below" })
 map("n", "gK", "i<CR><Esc>", { desc = "Split line at cursor" })
