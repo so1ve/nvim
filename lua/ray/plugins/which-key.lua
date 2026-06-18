@@ -25,12 +25,75 @@ local surround_groups = {
   { "s", group = "Surround", mode = { "n", "x" }, icon = { icon = "󰅪", color = "purple" } },
 }
 
+local textobjects = {
+  { "=", "assignment" },
+  { "/", "comment" },
+  { "F", "call" },
+  { "a", "parameter" },
+  { "b", "block" },
+  { "c", "class" },
+  { "f", "function" },
+  { "i", "conditional" },
+  { "r", "return" },
+  { "s", "statement" },
+  { "(", "() block" },
+  { ")", "() block" },
+  { "[", "[] block" },
+  { "]", "[] block" },
+  { "{", "{} block" },
+  { "}", "{} block" },
+  { "<", "<> block" },
+  { ">", "<> block" },
+  { '"', '" string' },
+  { "'", "' string" },
+  { "`", "` string" },
+  { "q", "quote" },
+  { "t", "tag" },
+  { "w", "word" },
+  { "W", "WORD" },
+  { "p", "paragraph" },
+}
+
+local function textobject_groups()
+  local groups = {
+    mode = { "o", "x" },
+    { "a", group = "around" },
+    { "i", group = "inside" },
+    { "an", group = "around next" },
+    { "in", group = "inside next" },
+    { "al", group = "around last" },
+    { "il", group = "inside last" },
+  }
+  local prefixes = {
+    { "a", "" },
+    { "i", "inner " },
+    { "an", "next " },
+    { "in", "inner next " },
+    { "al", "last " },
+    { "il", "inner last " },
+  }
+
+  for _, prefix in ipairs(prefixes) do
+    for _, object in ipairs(textobjects) do
+      groups[#groups + 1] = { prefix[1] .. object[1], desc = prefix[2] .. object[2] }
+    end
+  end
+
+  return groups
+end
+
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
     delay = 300,
     preset = "helix",
+    plugins = {
+      presets = {
+        text_objects = false,
+        nav = false,
+      },
+    },
     triggers = {
       { "<auto>", mode = { "n", "x", "s", "o" } },
       { "s", mode = { "n", "x" } },
@@ -50,5 +113,6 @@ return {
     wk.setup(opts)
     wk.add(leader_groups)
     wk.add(surround_groups)
+    wk.add(textobject_groups())
   end,
 }
