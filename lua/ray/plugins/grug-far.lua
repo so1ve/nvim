@@ -15,6 +15,7 @@ return {
       keymaps = {
         close = { n = "q" },
         qflist = { n = "<localleader>F" },
+        refresh = { n = "<C-r>" },
       },
     },
     config = true,
