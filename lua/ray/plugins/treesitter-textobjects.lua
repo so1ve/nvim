@@ -70,5 +70,5 @@ return {
       desc = "Swap previous parameter",
     },
   },
-  config = true,
+  opts = {},
 }
