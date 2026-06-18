@@ -18,7 +18,6 @@ return {
         refresh = { n = "<C-r>" },
       },
     },
-    config = true,
     keys = {
       {
         "<leader>sr",
