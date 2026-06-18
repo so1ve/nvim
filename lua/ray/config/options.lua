@@ -1,4 +1,11 @@
 local opt = vim.opt
+local g = vim.g
+
+g.loaded_python_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_node_provider = 0
+g.loaded_ruby_provider = 0
+g.loaded_perl_provider = 0
 
 -- to make keywordprg a no-op because multiple shift+k will eventually call the default behavior of keywordprg which is to open `:help` and breaks window layout
 vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" })
@@ -80,6 +87,7 @@ opt.listchars = {
 opt.ignorecase = true
 opt.smartcase = true
 opt.inccommand = "split"
+opt.gdefault = true
 
 -- splits
 opt.equalalways = false
@@ -99,6 +107,7 @@ opt.sessionoptions = { "buffers", "curdir", "folds", "help", "tabpages", "winsiz
 -- responsiveness
 opt.updatetime = 250
 opt.timeoutlen = 500
+opt.ttimeoutlen = 10
 opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- messages

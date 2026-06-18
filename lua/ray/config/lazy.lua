@@ -41,6 +41,7 @@ require("lazy").setup({
         "matchparen",
         "netrwPlugin",
         "rplugin",
+        "spellfile",
         "tarPlugin",
         "tohtml",
         "tutor",
