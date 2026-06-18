@@ -1,11 +1,31 @@
 return {
   "mini.basics",
   virtual = true,
-  dependencies = { "nvim-mini/mini.nvim" },
+  dependencies = {
+    "nvim-mini/mini.nvim",
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
   event = "UIEnter",
   config = function()
+    local ai = require("mini.ai")
+    local ts = ai.gen_spec.treesitter
+    ai.setup({
+      n_lines = 500,
+      custom_textobjects = {
+        ["="] = ts({ a = "@assignment.outer", i = "@assignment.inner" }),
+        ["/"] = ts({ a = "@comment.outer", i = "@comment.inner" }),
+        F = ts({ a = "@call.outer", i = "@call.inner" }),
+        a = ts({ a = "@parameter.outer", i = "@parameter.inner" }),
+        b = ts({ a = "@block.outer", i = "@block.inner" }),
+        c = ts({ a = "@class.outer", i = "@class.inner" }),
+        f = ts({ a = "@function.outer", i = "@function.inner" }),
+        i = ts({ a = "@conditional.outer", i = "@conditional.inner" }),
+        r = ts({ a = "@return.outer", i = "@return.inner" }),
+        s = ts({ a = "@statement.outer", i = "@statement.outer" }),
+      },
+    })
+
     require("mini.git").setup()
-    require("mini.ai").setup({ n_lines = 500 })
     require("mini.align").setup()
     require("mini.surround").setup()
     require("mini.jump").setup()
