@@ -31,3 +31,12 @@ end, {
   end,
   desc = "Switch colorscheme",
 })
+
+vim.api.nvim_create_user_command("TSReset", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.treesitter.stop(bufnr)
+  vim.defer_fn(function()
+    vim.treesitter.start(bufnr)
+    vim.notify("Treesitter reset for current buffer", vim.log.levels.INFO)
+  end, 100)
+end, { desc = "Reset treesitter for current buffer" })
