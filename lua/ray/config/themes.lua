@@ -220,31 +220,21 @@ for index, theme in ipairs(themes) do
   theme_by_name[theme.colorscheme] = theme_by_name[theme.colorscheme] or theme
 end
 
-local function saved_theme()
-  if vim.fn.filereadable(state_file) == 1 then
-    local name = vim.trim(vim.fn.readfile(state_file)[1] or "")
-
-    return theme_by_name[name] or theme_by_name[default_theme]
+local function saved_theme_name()
+  if vim.fn.filereadable(state_file) == 0 then
+    return default_theme
   end
 
-  return theme_by_name[default_theme]
+  return vim.trim(vim.fn.readfile(state_file)[1] or "")
 end
 
-local function save(theme)
+function M.save(theme)
   vim.fn.mkdir(vim.fn.fnamemodify(state_file, ":h"), "p")
   vim.fn.writefile({ theme.name }, state_file)
 end
 
-function M.apply(name, opts)
-  opts = opts or {}
-
-  local theme = name == nil and saved_theme() or theme_by_name[name]
-
-  if not theme then
-    vim.notify("Unknown colorscheme: " .. name, vim.log.levels.ERROR, { title = "Ray Theme" })
-
-    return false
-  end
+function M.apply(name)
+  local theme = theme_by_name[name or saved_theme_name()] or theme_by_name[default_theme]
 
   if theme.plugin then
     require("lazy").load({ plugins = { theme.plugin }, show = false })
@@ -254,25 +244,10 @@ function M.apply(name, opts)
     theme.before()
   end
 
-  local ok, err = pcall(vim.cmd.colorscheme, theme.colorscheme)
-
-  if not ok then
-    vim.notify(tostring(err), vim.log.levels.ERROR, { title = "Ray Theme" })
-
-    return false
-  end
-
-  if opts.persist then
-    save(theme)
-  end
-
+  vim.cmd.colorscheme(theme.colorscheme)
   vim.g.ray_theme = theme.name
 
-  if opts.notify ~= false then
-    vim.notify("Using " .. theme.text, vim.log.levels.INFO, { title = "Ray Theme" })
-  end
-
-  return true
+  return theme
 end
 
 function M.select()
@@ -292,12 +267,13 @@ function M.select()
       picker.list:view(original.index, nil, true)
     end,
     on_change = function(_, theme)
-      if theme and theme ~= preview and M.apply(theme.name, { notify = false }) then
-        preview = theme
+      if theme and theme ~= preview then
+        preview = M.apply(theme.name)
       end
     end,
     confirm = function(picker, theme)
-      if theme and M.apply(theme.name, { persist = true }) then
+      if theme then
+        M.save(M.apply(theme.name))
         confirmed = true
       end
 
@@ -305,7 +281,7 @@ function M.select()
     end,
     on_close = function()
       if not confirmed then
-        M.apply(original.name, { notify = false })
+        M.apply(original.name)
       end
     end,
   })

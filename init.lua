@@ -10,7 +10,5 @@ require("ray.config.autocmds")
 require("ray.config.keymaps")
 require("ray.config.commands")
 
-vim.cmd.colorscheme("undefined")
-
 require("ray.config.lazy")
-require("ray.config.themes").apply(nil, { notify = false })
+require("ray.config.themes").apply()

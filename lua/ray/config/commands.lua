@@ -23,7 +23,7 @@ vim.api.nvim_create_user_command("RayTheme", function(args)
     return
   end
 
-  themes.apply(args.args, { persist = true })
+  themes.save(themes.apply(args.args))
 end, {
   nargs = "?",
   complete = function(arglead)
