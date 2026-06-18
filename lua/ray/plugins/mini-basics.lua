@@ -20,6 +20,15 @@ return {
     require("mini.surround").setup()
     require("mini.jump").setup()
 
+    local map_combo = require("mini.keymap").map_combo
+    local combo_opts = { delay = vim.o.timeoutlen }
+    for _, lhs in ipairs({ "jk", "jj" }) do
+      map_combo("i", lhs, "<BS><BS><Esc>", combo_opts)
+      map_combo("c", lhs, "<BS><BS><C-c>", combo_opts)
+    end
+    map_combo("t", "jk", "<BS><BS><C-\\><C-n>", combo_opts)
+    map_combo({ "x", "s" }, "jk", "<BS><BS><Esc>", combo_opts)
+
     local jump2d = require("mini.jump2d")
     local spotter =
       jump2d.gen_spotter.union(jump2d.builtin_opts.word_start.spotter, jump2d.gen_spotter.pattern(".+", "end"))
