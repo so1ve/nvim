@@ -10,7 +10,12 @@ return {
     local combo_opts = { delay = vim.o.timeoutlen }
 
     for _, lhs in ipairs({ "jk", "jj" }) do
-      map_combo("i", lhs, "<BS><BS><Esc>", combo_opts)
+      map_combo("i", lhs, function()
+        vim.schedule(function()
+          local keys = vim.api.nvim_replace_termcodes("<BS><BS><Esc>", true, false, true)
+          vim.api.nvim_feedkeys(keys, "n", false)
+        end)
+      end, combo_opts)
       map_combo("c", lhs, "<BS><BS><C-c>", combo_opts)
     end
 
