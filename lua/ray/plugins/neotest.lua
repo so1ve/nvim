@@ -195,6 +195,6 @@ return {
     },
   },
   edgy.view_spec("left", edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })),
-  bufferline.offset_spec(bufferline.offset("neotest-summary", "Neotest")),
+  bufferline.offset("neotest-summary", "Neotest"),
   edgy.view_spec("bottom", edgy.view("Neotest Output", "neotest-output-panel", { size = { height = 15 } })),
 }
