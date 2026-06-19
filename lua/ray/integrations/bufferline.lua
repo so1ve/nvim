@@ -1,13 +1,13 @@
 local M = {}
 
 function M.offset(filetype, text)
-  local offset = vim.tbl_extend("force", {
+  local offset = {
     filetype = filetype,
     text = text,
     text_align = "left",
     highlight = "BufferLineOffset",
     separator = true,
-  })
+  }
 
   return {
     "akinsho/bufferline.nvim",
