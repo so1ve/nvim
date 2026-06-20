@@ -50,6 +50,12 @@ local function statusline_show_fileinfo()
   return not MiniStatusline.is_truncated(trunc_width) and vim.bo.buftype == ""
 end
 
+local function redraw_statusline()
+  vim.schedule(function()
+    vim.cmd.redrawstatus()
+  end)
+end
+
 local function statusline_metadata()
   if not statusline_show_fileinfo() then
     return ""
@@ -113,7 +119,9 @@ local function statusline_diff()
   return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
 end
 
-local function statusline_copilot()
+local copilot = {}
+
+function copilot.status()
   if not statusline_show_fileinfo() then
     return ""
   end
@@ -136,27 +144,18 @@ local function statusline_copilot()
   return statusline_section(copilot_status.data.status == "InProgress" and "" or "")
 end
 
-local function statusline_path_parts(path)
-  local directory, filename = path:match("^(.*[/\\])([^/\\]+)$")
+function copilot.setup()
+  require("copilot.status").register_status_notification_handler(redraw_statusline)
 
-  if not filename then
-    return "", path
-  end
+  vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-  return directory, filename
-end
-
-local function statusline_highlighted_path(path)
-  local directory, filename = statusline_path_parts(path)
-
-  if directory == "" then
-    return "%#MiniStatuslineFilename#" .. statusline_section(filename)
-  end
-
-  return "%#MiniStatuslineDirectory#"
-    .. statusline_section(directory)
-    .. "%#MiniStatuslineFilename#"
-    .. statusline_section(filename)
+      if client and client.name == "copilot" then
+        redraw_statusline()
+      end
+    end,
+  })
 end
 
 local function statusline_file()
@@ -173,7 +172,16 @@ local function statusline_file()
     return icon_part
   end
 
-  local path_part = statusline_highlighted_path(statusline_pretty_path())
+  local pretty_path = statusline_pretty_path()
+  local directory, filename = pretty_path:match("^(.*[/\\])([^/\\]+)$")
+  local path_part = "%#MiniStatuslineFilename#" .. statusline_section(filename or pretty_path)
+
+  if filename then
+    path_part = "%#MiniStatuslineDirectory#"
+      .. statusline_section(directory)
+      .. "%#MiniStatuslineFilename#"
+      .. statusline_section(filename)
+  end
 
   return icon_part .. "%#MiniStatuslinePath# " .. path_part
 end
@@ -192,7 +200,7 @@ local function statusline_active()
     { hl = "MiniStatuslinePath", strings = { file } },
     "%=",
     { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
-    { hl = "MiniStatuslineInputState", strings = { statusline_copilot() } },
+    { hl = "MiniStatuslineInputState", strings = { copilot.status() } },
     { hl = "MiniStatuslineMetadata", strings = { statusline_section(metadata) } },
     { hl = mode_hl, strings = { "%l/%L:%v" } },
   })
@@ -200,26 +208,6 @@ end
 
 local function statusline_inactive()
   return "%#MiniStatuslineInactive#%="
-end
-
-local function redraw_statusline()
-  vim.schedule(function()
-    vim.cmd.redrawstatus()
-  end)
-end
-
-local function setup_copilot_status()
-  require("copilot.status").register_status_notification_handler(redraw_statusline)
-
-  vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
-    callback = function(args)
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-      if client and client.name == "copilot" then
-        redraw_statusline()
-      end
-    end,
-  })
 end
 
 return {
@@ -244,6 +232,6 @@ return {
       callback = redraw_statusline,
     })
 
-    setup_copilot_status()
+    copilot.setup()
   end,
 }
