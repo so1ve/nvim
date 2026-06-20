@@ -1,7 +1,5 @@
 local trunc_width = 120
 local max_parts = 5
-local copilot_status = ""
-local copilot_status_registered = false
 
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
@@ -112,7 +110,22 @@ local function statusline_diff()
 end
 
 local function statusline_copilot()
-  return statusline_section(copilot_status == "InProgress" and "" or "")
+  local copilot_client = require("copilot.client")
+  local copilot_status = require("copilot.status")
+  local copilot_util = require("copilot.util")
+
+  if copilot_client.is_disabled() then
+    return statusline_section("")
+  end
+
+  local attach_status = copilot_util.get_buffer_attach_status(vim.api.nvim_get_current_buf())
+  local not_attached = attach_status:find(copilot_util.ATTACH_STATUS_NOT_ATTACHED_PREFIX, 1, true) == 1
+
+  if attach_status == copilot_util.ATTACH_STATUS_MANUALLY_DETACHED or not_attached then
+    return statusline_section("")
+  end
+
+  return statusline_section(copilot_status.data.status == "InProgress" and "" or "")
 end
 
 local function statusline_path_parts(path)
@@ -163,7 +176,6 @@ local function statusline_active()
   local diff = statusline_diff()
   local file = statusline_file()
   local metadata = statusline_metadata()
-  local search = MiniStatusline.section_searchcount({ trunc_width = 75, options = { recompute = false } })
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
@@ -174,7 +186,7 @@ local function statusline_active()
     { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
     { hl = "MiniStatuslineInputState", strings = { statusline_copilot() } },
     { hl = "MiniStatuslineMetadata", strings = { statusline_section(metadata) } },
-    { hl = mode_hl, strings = { statusline_section(search), "%l/%L:%v" } },
+    { hl = mode_hl, strings = { "%l/%L:%v" } },
   })
 end
 
@@ -189,28 +201,17 @@ local function redraw_statusline()
 end
 
 local function setup_copilot_status()
-  if copilot_status_registered then
-    return
-  end
+  require("copilot.status").register_status_notification_handler(redraw_statusline)
 
-  local ok, status = pcall(require, "copilot.status")
-  if not ok then
-    return
-  end
+  vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-  if type(status) ~= "table" or type(status.register_status_notification_handler) ~= "function" then
-    return
-  end
-
-  local function update_copilot_status(data)
-    copilot_status = type(data) == "table" and data.status or ""
-    redraw_statusline()
-  end
-
-  local registered = pcall(status.register_status_notification_handler, update_copilot_status)
-  if registered then
-    copilot_status_registered = true
-  end
+      if client and client.name == "copilot" then
+        redraw_statusline()
+      end
+    end,
+  })
 end
 
 return {
@@ -235,17 +236,6 @@ return {
       callback = redraw_statusline,
     })
 
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "LazyLoad",
-      callback = function(args)
-        if args.data == "copilot.lua" then
-          setup_copilot_status()
-        end
-      end,
-    })
-
-    if package.loaded["copilot.status"] ~= nil then
-      setup_copilot_status()
-    end
+    setup_copilot_status()
   end,
 }
