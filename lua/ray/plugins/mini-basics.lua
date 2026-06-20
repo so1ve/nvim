@@ -50,6 +50,7 @@ return {
       replace = { prefix = "gR" },
       sort = { prefix = "" },
     })
+    require("mini.misc").setup_restore_cursor()
     require("mini.trailspace").setup()
     require("mini.bracketed").setup({
       buffer = { suffix = "" },
