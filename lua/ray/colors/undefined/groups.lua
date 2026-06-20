@@ -94,6 +94,9 @@ function M.get(p)
     DiagnosticUnderlineWarn = { sp = p.orange, undercurl = true },
     DiagnosticUnderlineInfo = { sp = p.blue, undercurl = true },
     DiagnosticUnderlineHint = { sp = p.green, undercurl = true },
+    LspReferenceText = { bg = p.selection },
+    LspReferenceRead = { bg = p.selection },
+    LspReferenceWrite = { bg = p.selection },
 
     DiffAdd = { bg = p.diff_add_bg },
     DiffChange = {},

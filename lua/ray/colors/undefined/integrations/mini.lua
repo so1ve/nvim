@@ -28,6 +28,8 @@ function M.get(p)
     MiniHipatternsTest = { fg = p.bg, bg = p.magenta, bold = true },
     MiniHipatternsTodo = { fg = p.bg, bg = p.blue, bold = true },
     MiniHipatternsWarn = { fg = p.bg, bg = p.orange, bold = true },
+    MiniCursorword = { bg = p.selection, underline = true },
+    MiniCursorwordCurrent = { bg = p.selection, underline = true },
     MiniDiffSignAdd = s.diff.add,
     MiniDiffSignChange = s.diff.change,
     MiniDiffSignDelete = s.diff.delete,

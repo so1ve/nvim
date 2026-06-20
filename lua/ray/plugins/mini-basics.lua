@@ -29,6 +29,7 @@ return {
     require("mini.align").setup()
     require("mini.surround").setup()
     require("mini.jump").setup()
+    require("mini.cursorword").setup({ delay = 60 })
 
     local jump2d = require("mini.jump2d")
     local spotter =

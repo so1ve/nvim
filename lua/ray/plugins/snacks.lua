@@ -159,7 +159,7 @@ return {
       gh = {},
       rename = {},
       scope = {},
-      words = {},
+      words = { enabled = false },
     },
     keys = {
       {
