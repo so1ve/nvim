@@ -158,7 +158,27 @@ return {
       },
       gh = {},
       rename = {},
-      scope = {},
+      scope = {
+        keys = {
+          textobject = {
+            ii = false,
+            ai = false,
+            iI = {
+              edge = false,
+              cursor = false,
+              desc = "inner indent scope",
+            },
+            aI = {
+              cursor = false,
+              desc = "full indent scope",
+            },
+          },
+          jump = {
+            ["[i"] = false,
+            ["]i"] = false,
+          },
+        },
+      },
       words = { enabled = false },
     },
     keys = {
