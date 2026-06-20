@@ -46,8 +46,12 @@ local function statusline_pretty_path()
   return relative
 end
 
+local function statusline_show_fileinfo()
+  return not MiniStatusline.is_truncated(trunc_width) and vim.bo.buftype == ""
+end
+
 local function statusline_metadata()
-  if MiniStatusline.is_truncated(trunc_width) or vim.bo.buftype ~= "" then
+  if not statusline_show_fileinfo() then
     return ""
   end
 
@@ -110,6 +114,10 @@ local function statusline_diff()
 end
 
 local function statusline_copilot()
+  if not statusline_show_fileinfo() then
+    return ""
+  end
+
   local copilot_client = require("copilot.client")
   local copilot_status = require("copilot.status")
   local copilot_util = require("copilot.util")
