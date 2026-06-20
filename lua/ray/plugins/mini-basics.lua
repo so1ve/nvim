@@ -21,6 +21,7 @@ return {
         f = ts({ a = "@function.outer", i = "@function.inner" }),
         i = ts({ a = "@conditional.outer", i = "@conditional.inner" }),
         r = ts({ a = "@return.outer", i = "@return.inner" }),
+        -- intentional: use outer for both because inner is not consistent across languages
         s = ts({ a = "@statement.outer", i = "@statement.outer" }),
       },
     })
