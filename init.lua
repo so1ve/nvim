@@ -9,6 +9,5 @@ require("ray.config.filetypes")
 require("ray.config.autocmds")
 require("ray.config.keymaps")
 require("ray.config.commands")
-
 require("ray.config.lazy")
 require("ray.config.themes").apply()
