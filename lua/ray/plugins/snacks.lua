@@ -32,6 +32,40 @@ local function greeting()
   return "Good Night, Ray"
 end
 
+local function startup()
+  return function(dashboard)
+    local stats = require("lazy.stats").stats()
+    local ms = ("%.2f"):format(stats.startuptime)
+    local rule = string.rep("─", math.min(dashboard.opts.width - 12, 36))
+
+    return {
+      padding = 1,
+      {
+        align = "center",
+        text = {
+          { rule, hl = "SnacksDashboardStartupRule" },
+        },
+      },
+      {
+        align = "center",
+        text = {
+          { "  ", hl = "SnacksDashboardStartupIcon" },
+          { "Loaded ", hl = "SnacksDashboardStartupLabel" },
+          { stats.loaded .. "/" .. stats.count, hl = "SnacksDashboardStartupValue" },
+          { " plugins in ", hl = "SnacksDashboardStartupLabel" },
+          { ms .. " ms", hl = "SnacksDashboardStartupTime" },
+        },
+      },
+      {
+        align = "center",
+        text = {
+          { rule, hl = "SnacksDashboardStartupRule" },
+        },
+      },
+    }
+  end
+end
+
 local terminal = require("ray.config.terminal")
 local edgy = require("ray.integrations.edgy")
 local symbols = require("ray.config.symbols")
@@ -87,7 +121,7 @@ return {
           { title = "Commands", section = "keys", indent = 2, padding = 1 },
           { title = "Recent", section = "recent_files", indent = 2, padding = 1 },
           { title = "Projects", section = "projects", indent = 2, padding = 1 },
-          { section = "startup" },
+          startup(),
         },
       },
       quickfile = {},

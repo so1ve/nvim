@@ -29,6 +29,11 @@ function M.get(p)
     SnacksDashboardFile = { fg = p.fg },
     SnacksDashboardDir = { fg = p.green },
     SnacksDashboardFooter = s.muted,
+    SnacksDashboardStartupRule = { fg = p.border },
+    SnacksDashboardStartupIcon = { fg = p.green, bold = true },
+    SnacksDashboardStartupLabel = s.muted,
+    SnacksDashboardStartupValue = { fg = p.orange, bold = true },
+    SnacksDashboardStartupTime = { fg = p.green, bold = true },
     SnacksDashboardTerminal = s.normal,
 
     SnacksPicker = s.popup_editor.normal,
