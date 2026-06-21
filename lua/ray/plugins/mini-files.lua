@@ -25,6 +25,9 @@ return {
       mappings = {
         synchronize = "s",
       },
+      options = {
+        lsp_timeout = 0,
+      },
     }
 
     files.setup(opts)
@@ -36,6 +39,13 @@ return {
           show_hidden = not show_hidden
           require("mini.files").refresh(opts)
         end, { buffer = args.data.buf_id, desc = "Toggle hidden entries" })
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+      callback = function(event)
+        Snacks.rename.on_rename_file(vim.fs.normalize(event.data.from), vim.fs.normalize(event.data.to))
       end,
     })
 
