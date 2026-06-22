@@ -38,6 +38,7 @@ end
 opt.mouse = "a"
 opt.mousemodel = "extend"
 opt.clipboard = "unnamedplus"
+opt.virtualedit = "block"
 opt.confirm = true
 opt.keywordprg = ":RayKeywordPrg"
 
@@ -46,6 +47,8 @@ require("ray.config.terminal").setup()
 -- scrolling
 opt.scrolloff = 3
 opt.sidescrolloff = 3
+opt.jumpoptions = "view"
+opt.smoothscroll = true
 
 -- wrapping
 opt.linebreak = true
