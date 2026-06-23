@@ -50,9 +50,11 @@ return {
     })
 
     vim.keymap.set("n", "<leader>e", function()
+      files.close()
       files.open(vim.fn.getcwd(), false)
     end, { desc = "Explore files" })
     vim.keymap.set("n", "<leader>E", function()
+      files.close()
       local path = vim.api.nvim_buf_get_name(0)
       -- silently ignore if file doesn't exist
       if path == "" or not vim.uv.fs_stat(path) then
