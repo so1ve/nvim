@@ -6,6 +6,6 @@ return {
     separator = "  ",
     depth_limit = 0,
     depth_limit_indicator = "…",
-    icons = require("ray.config.icons").symbols_with_padding(),
+    icons = require("ray.config.icons").symbols_padded,
   },
 }

@@ -1,7 +1,3 @@
-local function open_trouble(picker, opts)
-  require("trouble.sources.snacks").open(picker, opts)
-end
-
 local function term_nav(direction)
   return function(win)
     if win:is_floating() then
@@ -136,13 +132,13 @@ return {
         },
         actions = {
           trouble_open = function(picker)
-            open_trouble(picker)
+            require("trouble.sources.snacks").open(picker)
           end,
           trouble_open_selected = function(picker)
-            open_trouble(picker, { type = "selected" })
+            require("trouble.sources.snacks").open(picker, { type = "selected" })
           end,
           trouble_open_all = function(picker)
-            open_trouble(picker, { type = "all" })
+            require("trouble.sources.snacks").open(picker, { type = "all" })
           end,
         },
         win = {

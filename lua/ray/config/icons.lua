@@ -37,14 +37,10 @@ M.symbols = {
   Variable = "",
 }
 
-function M.symbols_with_padding()
-  local icons = {}
+M.symbols_padded = {}
 
-  for kind, icon in pairs(M.symbols) do
-    icons[kind] = icon .. " "
-  end
-
-  return icons
+for kind, icon in pairs(M.symbols) do
+  M.symbols_padded[kind] = icon .. " "
 end
 
 return M

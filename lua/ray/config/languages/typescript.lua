@@ -1,5 +1,4 @@
 local formatters = require("ray.config.formatters")
-local unpack = require("ray.utils").unpack
 
 local tsserver_language_settings = {
   updateImportsOnFileMove = { enabled = "always" },
@@ -9,7 +8,8 @@ local tsserver_language_settings = {
 }
 
 local function move_to_file(command, client)
-  local action, uri, range = unpack(command.arguments)
+  local arguments = command.arguments or {}
+  local action, uri, range = arguments[1], arguments[2], arguments[3]
 
   if not action or not uri or not range then
     return
