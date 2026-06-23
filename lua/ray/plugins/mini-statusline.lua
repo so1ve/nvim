@@ -119,6 +119,37 @@ local function statusline_diff()
   return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
 end
 
+local function statusline_diagnostic_counts()
+  if MiniStatusline.is_truncated(90) then
+    return ""
+  end
+
+  local counts = vim.diagnostic.count(0)
+  local diagnostic_config = require("ray.config.diagnostics")
+  local severities = {
+    { vim.diagnostic.severity.ERROR, "MiniStatuslineDiagnosticError" },
+    { vim.diagnostic.severity.WARN, "MiniStatuslineDiagnosticWarn" },
+    { vim.diagnostic.severity.INFO, "MiniStatuslineDiagnosticInfo" },
+    { vim.diagnostic.severity.HINT, "MiniStatuslineDiagnosticHint" },
+  }
+  local parts = {}
+
+  for _, item in ipairs(severities) do
+    local severity, group = item[1], item[2]
+    local count = counts[severity] or 0
+
+    if count > 0 then
+      table.insert(parts, statusline_highlight(group, diagnostic_config.sign(severity) .. " " .. count))
+    end
+  end
+
+  if #parts == 0 then
+    return ""
+  end
+
+  return table.concat(parts, " ") .. "%#MiniStatuslineDiagnostics#"
+end
+
 local copilot = {}
 
 function copilot.status()
@@ -191,6 +222,7 @@ local function statusline_active()
   local git = statusline_git()
   local diff = statusline_diff()
   local file = statusline_file()
+  local diagnostics = statusline_diagnostic_counts()
   local metadata = statusline_metadata()
 
   return MiniStatusline.combine_groups({
@@ -198,6 +230,7 @@ local function statusline_active()
     { hl = "MiniStatuslineDevinfo", strings = { git, diff } },
     "%<",
     { hl = "MiniStatuslinePath", strings = { file } },
+    { hl = "MiniStatuslineDiagnostics", strings = { diagnostics } },
     "%=",
     { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
     { hl = "MiniStatuslineInputState", strings = { copilot.status() } },
@@ -223,7 +256,7 @@ return {
       },
     })
 
-    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave", "DiagnosticChanged" }, {
       callback = redraw_statusline,
     })
 
