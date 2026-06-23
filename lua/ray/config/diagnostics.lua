@@ -26,8 +26,7 @@ function M.open_float()
   local bufnr, winid = vim.diagnostic.open_float({ scope = "line" })
 
   if bufnr then
-    vim.keymap.set("n", "j", "gj", { buffer = bufnr, desc = "Move down display line", silent = true })
-    vim.keymap.set("n", "k", "gk", { buffer = bufnr, desc = "Move up display line", silent = true })
+    require("ray.utils.keymaps").map_display_line_motion(bufnr)
   end
 
   return bufnr, winid
