@@ -4,6 +4,9 @@ vim.opt_local.conceallevel = 2
 vim.opt_local.formatoptions:remove("r")
 vim.opt_local.formatoptions:append("o")
 
+vim.keymap.set("n", "j", "gj", { buffer = true, nowait = true, silent = true, desc = "Hover down visual line" })
+vim.keymap.set("n", "k", "gk", { buffer = true, nowait = true, silent = true, desc = "Hover up visual line" })
+
 local function quote_parts(line)
   local indent = line:match("^%s*") or ""
   local cursor = #indent + 1
