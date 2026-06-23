@@ -21,6 +21,15 @@ function M.get(p)
     MiniStatuslineDiffAdd = { fg = p.diff_add_fg, bg = p.bg_dark },
     MiniStatuslineDiffChange = { fg = p.diff_change_fg, bg = p.bg_dark },
     MiniStatuslineDiffDelete = { fg = p.diff_delete_fg, bg = p.bg_dark },
+    MiniTablineCurrent = styles.extend(s.tabline.current, { bg = p.selection }),
+    MiniTablineVisible = s.tabline.visible,
+    MiniTablineHidden = s.tabline.hidden,
+    MiniTablineModifiedCurrent = styles.extend(s.tabline.current, { fg = p.orange, bg = p.selection }),
+    MiniTablineModifiedVisible = styles.extend(s.tabline.visible, { fg = p.orange }),
+    MiniTablineModifiedHidden = styles.extend(s.tabline.hidden, { fg = p.orange }),
+    MiniTablineFill = s.tabline.fill,
+    MiniTablineTabpagesection = s.tabline.focus_indicator,
+    MiniTablineTrunc = s.tabline.trunc,
     MiniHipatternsFixme = { fg = p.bg, bg = p.red, bold = true },
     MiniHipatternsHack = { fg = p.bg, bg = p.orange, bold = true },
     MiniHipatternsNote = { fg = p.bg, bg = p.green, bold = true },
@@ -68,7 +77,7 @@ function M.get(p)
   }
 
   for name, color in pairs(icon_colors) do
-    groups["MiniTablineIcon" .. name .. "Current"] = { fg = color, bg = p.bg_alt }
+    groups["MiniTablineIcon" .. name .. "Current"] = { fg = color, bg = p.selection }
     groups["MiniTablineIcon" .. name .. "Inactive"] = { fg = color, bg = p.bg_dark }
   end
 

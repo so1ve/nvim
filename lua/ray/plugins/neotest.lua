@@ -1,4 +1,3 @@
-local bufferline = require("ray.integrations.bufferline")
 local edgy = require("ray.integrations.edgy")
 
 local function current_file()
@@ -195,6 +194,5 @@ return {
     },
   },
   edgy.view_spec("left", edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })),
-  bufferline.offset("neotest-summary", "Neotest"),
   edgy.view_spec("bottom", edgy.view("Neotest Output", "neotest-output-panel", { size = { height = 15 } })),
 }
