@@ -6,6 +6,9 @@ local function current_file()
   return vim.uv.fs_realpath(path) or path
 end
 
+local summary_view = edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })
+local output_panel_view = edgy.view("Neotest Output", "neotest-output-panel", { size = { height = 15 } })
+
 return {
   {
     "nvim-neotest/neotest",
@@ -103,6 +106,24 @@ return {
       opts.adapters = adapters
       require("neotest").setup(opts)
 
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("RayNeotestCloseKeymap", { clear = true }),
+        pattern = { "neotest-summary", "neotest-output-panel", "neotest-output" },
+        callback = function(args)
+          vim.keymap.set("n", "q", function()
+            local filetype = vim.bo[args.buf].filetype
+
+            if filetype == "neotest-summary" then
+              require("neotest").summary.close()
+            elseif filetype == "neotest-output-panel" then
+              require("neotest").output_panel.close()
+            elseif filetype == "neotest-output" then
+              vim.api.nvim_win_close(0, true)
+            end
+          end, { buffer = args.buf, desc = "Close neotest window", nowait = true, silent = true })
+        end,
+      })
+
       Hydra({
         name = "Test",
         mode = "n",
@@ -138,10 +159,10 @@ return {
           },
           {
             "s",
-            function()
+            edgy.with_focus(summary_view, function()
               require("neotest").summary.toggle()
-            end,
-            { desc = "Summary", group = "Inspect" },
+            end),
+            { exit = true, desc = "Summary", group = "Inspect" },
           },
           {
             "o",
@@ -152,10 +173,10 @@ return {
           },
           {
             "O",
-            function()
+            edgy.with_focus(output_panel_view, function()
               require("neotest").output_panel.toggle()
-            end,
-            { desc = "Output panel", group = "Inspect" },
+            end),
+            { exit = true, desc = "Output panel", group = "Inspect" },
           },
           {
             "a",
@@ -193,6 +214,6 @@ return {
       { "<leader>T", desc = "Test Hydra" },
     },
   },
-  edgy.view_spec("left", edgy.view("Neotest", "neotest-summary", { wo = { winbar = false } })),
-  edgy.view_spec("bottom", edgy.view("Neotest Output", "neotest-output-panel", { size = { height = 15 } })),
+  edgy.view_spec("left", summary_view),
+  edgy.view_spec("bottom", output_panel_view),
 }
