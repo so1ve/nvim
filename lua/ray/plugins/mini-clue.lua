@@ -95,21 +95,20 @@ return {
         local action = operator[2]
 
         res[#res + 1] = { mode = "n", keys = key, desc = "+" .. action }
-        res[#res + 1] = { mode = "n", keys = key .. key, desc = action .. " line" }
+        res[#res + 1] = { mode = "n", keys = key .. key, desc = "line" }
 
         for _, target in ipairs(operator_targets) do
-          res[#res + 1] = { mode = "n", keys = key .. target[1], desc = action .. " " .. target[2] }
+          res[#res + 1] = { mode = "n", keys = key .. target[1], desc = target[2] }
         end
 
         for _, prefix in ipairs(object_prefixes) do
-          res[#res + 1] =
-            { mode = "n", keys = key .. prefix[1], desc = "+" .. action .. " " .. prefix[2] .. "textobject" }
+          res[#res + 1] = { mode = "n", keys = key .. prefix[1], desc = "+" .. prefix[2] .. "textobject" }
 
           for _, object in ipairs(objects) do
             res[#res + 1] = {
               mode = "n",
               keys = key .. prefix[1] .. object[1],
-              desc = action .. " " .. prefix[2] .. object[2],
+              desc = prefix[2] .. object[2],
             }
           end
         end
