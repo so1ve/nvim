@@ -76,5 +76,7 @@ return {
       file = { suffix = "" },
       treesitter = { suffix = "" },
     })
+
+    require("ray.features.sessions").setup()
   end,
 }
