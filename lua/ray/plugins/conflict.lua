@@ -3,10 +3,7 @@ return {
   dependencies = {
     "nvimtools/hydra.nvim",
   },
-  cmd = "Conflict",
-  keys = {
-    { "<leader>gc", desc = "Git Conflict Hydra" },
-  },
+  event = "BufReadPre",
   opts = {
     default_mappings = {
       current = false,
@@ -59,14 +56,14 @@ return {
           { desc = "Incoming", group = "Accept" },
         },
         {
-          "b",
+          "B",
           function()
             conflict.choose("both")
           end,
           { desc = "Both", group = "Accept" },
         },
         {
-          "B",
+          "b",
           function()
             conflict.choose("base")
           end,
