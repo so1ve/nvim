@@ -75,6 +75,8 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "SnacksDashboardOpened",
         callback = function()
+          vim.b.miniindentscope_disable = true
+          vim.b.minicursorword_disable = true
           vim.o.laststatus = 3
           vim.wo.statusline = vim.go.statusline
           vim.cmd.redrawstatus()
