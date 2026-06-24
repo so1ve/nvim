@@ -3,6 +3,9 @@ return {
   version = "v3.x.x",
   cmd = "Neominimap",
   event = "VeryLazy",
+  keys = {
+    { "<leader>um", "<cmd>Neominimap Toggle<CR>", desc = "Toggle minimap" },
+  },
   init = function()
     vim.g.neominimap = {
       exclude_filetypes = {
