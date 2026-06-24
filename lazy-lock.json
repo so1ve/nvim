@@ -31,6 +31,7 @@
   "mini.nvim": { "branch": "main", "commit": "1345d191bb3da9c7b0e977f4387c5761f9bff68d" },
   "multicursor.nvim": { "branch": "1.0", "commit": "704b99f10a72cc05d370cfeb294ff83412a8ab55" },
   "neogit": { "branch": "master", "commit": "828dd073e6ad180fdb5c1603c7ad7f68a384c40b" },
+  "neominimap.nvim": { "branch": "main", "commit": "0676085d898019f06044923934e38663f5efa290" },
   "neoscroll.nvim": { "branch": "master", "commit": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8" },
   "neotest": { "branch": "master", "commit": "ad991822b7076b1d940b33a9d6d0d30416d5df81" },
   "neotest-golang": { "branch": "main", "commit": "f0ba097d4af098c036aac24cd647480d0d301ad2" },
