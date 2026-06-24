@@ -58,10 +58,10 @@ return {
             local col = cursor[3] - (row == 0 and start[3] or 1)
 
             mc.action(function(ctx)
-              ctx:forEachCursor(function(cursor)
-                cursor:setPos({
-                  cursor:line() + row,
-                  row == 0 and cursor:col() + col or col + 1,
+              ctx:forEachCursor(function(curr)
+                curr:setPos({
+                  curr:line() + row,
+                  row == 0 and curr:col() + col or col + 1,
                 })
               end)
             end)
