@@ -4,7 +4,7 @@
 
 local M = {}
 
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 local LINK_HL = "@markup.link"
 

@@ -1,4 +1,4 @@
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 local M = {}
 

@@ -10,7 +10,7 @@
 
 local hover = require("ray.patch.noice.hover")
 local markdown_width = require("ray.patch.noice.markdown-width")
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 local M = {}
 

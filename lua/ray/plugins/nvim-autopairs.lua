@@ -7,7 +7,7 @@ return {
   },
   config = function(_, opts)
     local npairs = require("nvim-autopairs")
-    local rust_lifetime_quote = require("ray.utils.rust-lifetime-quote")
+    local rust_lifetime_quote = require("ray.integrations.nvim-autopairs.rust-lifetime-quote")
 
     npairs.setup(opts)
 

@@ -1,6 +1,6 @@
 local map = vim.keymap.set
 local visual_search = require("ray.utils.visual-search")
-local window_resize = require("ray.utils.window-resize")
+local window_resize = require("ray.integrations.edgy.resize")
 
 local resize_step = 2
 

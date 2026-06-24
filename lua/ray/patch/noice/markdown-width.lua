@@ -3,7 +3,7 @@
 -- source width. Link parsing/rendering lives in `patch.noice.markdown-links`.
 
 local M = {}
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 local function line_width(line)
   local content = line:content()

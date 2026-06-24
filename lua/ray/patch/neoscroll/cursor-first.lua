@@ -8,7 +8,7 @@
 -- Neoscroll's original window+cursor logic.
 
 local M = {}
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 local active = false
 

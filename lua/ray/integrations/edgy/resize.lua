@@ -1,3 +1,5 @@
+-- Edgy-aware window resizing used by global window keymaps.
+
 local M = {}
 
 function M.resize(dim, amount)

@@ -5,7 +5,7 @@
 -- trailing tabline-click terminator from edgy.nvim's generated winbar.
 
 local M = {}
-local hacks = require("ray.utils.hacks")
+local hacks = require("ray.patch.hacks")
 
 function M.patch()
   local window = require("edgy.window")

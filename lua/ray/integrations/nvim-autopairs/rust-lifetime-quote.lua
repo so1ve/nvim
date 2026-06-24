@@ -1,3 +1,5 @@
+-- Rust-specific single-quote pairing rule for nvim-autopairs.
+
 local M = {}
 
 local lifetime_context_nodes = {

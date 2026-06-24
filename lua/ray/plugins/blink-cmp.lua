@@ -1,4 +1,4 @@
-local tab = require("ray.utils.tab")
+local tab = require("ray.features.completion.tab")
 
 local function draw_documentation(opts)
   require("blink-noice-docs").draw(opts)

@@ -5,8 +5,8 @@
 -- resize it with the picker and always close it with the picker.
 
 local M = {}
-local Backdrop = require("ray.utils.backdrop")
-local hacks = require("ray.utils.hacks")
+local Backdrop = require("ray.patch.backdrop")
+local hacks = require("ray.patch.hacks")
 
 local BACKDROP_ZINDEX = 50
 

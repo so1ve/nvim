@@ -1,3 +1,5 @@
+-- Tab-key completion behavior that composes completion, Copilot, and Sidekick.
+
 local M = {}
 
 local function cursor_in_edit(edit, bufnr, cursor)

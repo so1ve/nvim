@@ -1,7 +1,7 @@
 local M = {}
 
 function M.patch()
-  local hacks = require("ray.utils.hacks")
+  local hacks = require("ray.patch.hacks")
   local ignore = require("ray.config.ignore")
 
   hacks.on_module("fff.fuzzy", function(fuzzy)
