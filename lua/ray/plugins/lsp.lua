@@ -41,11 +41,6 @@ local function configure_lsp_buffer(event)
   local supports_document_symbols = client:supports_method(symbol_method, bufnr)
   local supports_workspace_symbols = client:supports_method(workspace_symbol_method)
 
-  local navic = require("nvim-navic")
-  if supports_document_symbols and not navic.is_available(bufnr) then
-    navic.attach(client, bufnr)
-  end
-
   local function map(lhs, rhs, desc, opts)
     local keymap_opts = vim.tbl_extend("force", { buffer = bufnr, desc = desc }, opts or {})
 
@@ -91,7 +86,6 @@ return {
     "folke/noice.nvim", -- we patch noice's hover to make it work better with LSP
     "saghen/blink.cmp",
     "b0o/schemastore.nvim",
-    "SmiteshP/nvim-navic",
   },
   opts = {
     servers = {
