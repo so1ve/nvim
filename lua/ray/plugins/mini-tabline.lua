@@ -14,7 +14,7 @@ return {
       format = function(buf_id, label)
         local suffix = vim.bo[buf_id].modified and "[+] " or ""
 
-        return tabline.default_format(buf_id, label) .. suffix
+        return " " .. tabline.default_format(buf_id, label) .. suffix .. " "
       end,
       tabpage_section = "right",
     })
