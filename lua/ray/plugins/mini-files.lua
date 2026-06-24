@@ -28,6 +28,10 @@ return {
       options = {
         lsp_timeout = 0,
       },
+      windows = {
+        preview = true,
+        width_preview = 40,
+      },
     }
 
     files.setup(opts)
