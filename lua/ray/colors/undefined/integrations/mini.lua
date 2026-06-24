@@ -44,6 +44,7 @@ function M.get(p)
     MiniHipatternsWarn = { fg = p.bg, bg = p.orange, bold = true },
     MiniCursorword = { bg = p.selection, underline = true },
     MiniCursorwordCurrent = { bg = p.selection, underline = true },
+    MiniClueDescGroup = { fg = p.yellow, bold = true },
     MiniDiffSignAdd = s.diff.add,
     MiniDiffSignChange = s.diff.change,
     MiniDiffSignDelete = s.diff.delete,
