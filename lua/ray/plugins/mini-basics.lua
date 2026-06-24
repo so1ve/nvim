@@ -1,3 +1,11 @@
+local indentscope_excluded_filetypes = {
+  "bigfile",
+  "gitcommit",
+  "help",
+  "markdown",
+  "snacks_dashboard",
+}
+
 return {
   "mini.basics",
   virtual = true,
@@ -6,6 +14,20 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
   event = "UIEnter",
+  init = function()
+    vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufWinEnter", "FileType", "TermOpen" }, {
+      callback = function(event)
+        local buf = event.buf
+        if not vim.api.nvim_buf_is_valid(buf) then
+          return
+        end
+
+        if vim.bo[buf].buftype ~= "" or vim.tbl_contains(indentscope_excluded_filetypes, vim.bo[buf].filetype) then
+          vim.b[buf].miniindentscope_disable = true
+        end
+      end,
+    })
+  end,
   config = function()
     local ai = require("mini.ai")
     local gen_ai_spec = require("mini.extra").gen_ai_spec
