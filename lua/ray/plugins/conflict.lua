@@ -70,7 +70,7 @@ return {
           { desc = "Base", group = "Accept" },
         },
         { "l", conflict.list, { exit = true, desc = "Files", group = "Lists" } },
-        { "Q", conflict.qflist, { exit = true, desc = "Quickfix", group = "Lists" } },
+        { "Q", conflict.qflist, { exit_before = true, desc = "Quickfix", group = "Lists" } },
       },
     })
   end,
