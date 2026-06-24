@@ -8,13 +8,16 @@ return {
   event = "UIEnter",
   config = function()
     local ai = require("mini.ai")
+    local gen_ai_spec = require("mini.extra").gen_ai_spec
     local ts = ai.gen_spec.treesitter
     ai.setup({
       n_lines = 500,
       custom_textobjects = {
         ["="] = ts({ a = "@assignment.outer", i = "@assignment.inner" }),
         ["/"] = ts({ a = "@comment.outer", i = "@comment.inner" }),
+        B = gen_ai_spec.buffer(),
         F = ts({ a = "@call.outer", i = "@call.inner" }),
+        I = gen_ai_spec.indent(),
         a = ts({ a = "@parameter.outer", i = "@parameter.inner" }),
         b = ts({ a = "@block.outer", i = "@block.inner" }),
         c = ts({ a = "@class.outer", i = "@class.inner" }),
@@ -31,6 +34,20 @@ return {
     require("mini.surround").setup()
     require("mini.jump").setup()
     require("mini.cursorword").setup({ delay = 0 })
+    require("mini.indentscope").setup({
+      symbol = "│",
+      draw = {
+        animation = function()
+          return 8
+        end,
+      },
+      mappings = {
+        object_scope = "",
+        object_scope_with_border = "",
+        goto_top = "",
+        goto_bottom = "",
+      },
+    })
 
     local jump2d = require("mini.jump2d")
     local spotter =

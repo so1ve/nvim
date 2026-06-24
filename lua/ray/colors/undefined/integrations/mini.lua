@@ -53,6 +53,8 @@ function M.get(p)
     MiniDiffOverContext = { fg = p.subtle, bg = p.bg_alt },
     MiniDiffOverContextBuf = {},
     MiniDiffOverDelete = s.diff.delete_inline,
+    MiniIndentscopeSymbol = { fg = p.yellow, bold = true },
+    MiniIndentscopeSymbolOff = { fg = p.border },
     MiniJump = { fg = p.bg, bg = p.yellow, bold = true },
     MiniJump2dSpot = { fg = p.bg, bg = p.yellow, bold = true, nocombine = true },
     MiniJump2dSpotUnique = { fg = p.bg, bg = p.yellow, bold = true, nocombine = true },

@@ -158,7 +158,6 @@ return {
           ft = "snacks_notif",
         },
       },
-      indent = {},
       scroll = {
         filter = function(buf)
           return vim.g.snacks_scroll ~= false
@@ -188,27 +187,6 @@ return {
       },
       gh = {},
       rename = {},
-      scope = {
-        keys = {
-          textobject = {
-            ii = false,
-            ai = false,
-            iI = {
-              edge = false,
-              cursor = false,
-              desc = "inner indent scope",
-            },
-            aI = {
-              cursor = false,
-              desc = "full indent scope",
-            },
-          },
-          jump = {
-            ["[i"] = false,
-            ["]i"] = false,
-          },
-        },
-      },
       words = { enabled = false },
     },
     keys = {
@@ -370,13 +348,6 @@ return {
           Snacks.rename.rename_file()
         end,
         desc = "Rename file",
-      },
-      {
-        "gS",
-        function()
-          Snacks.scope.jump()
-        end,
-        desc = "Go to scope",
       },
     },
   },
