@@ -328,7 +328,6 @@ return {
             format = "lines",
             title = "Buffer Lines",
             layout = {
-              preset = "vertical",
               layout = {
                 backdrop = 60,
               },
