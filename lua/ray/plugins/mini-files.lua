@@ -53,6 +53,13 @@ return {
       end,
     })
 
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "MiniFilesActionDelete",
+      callback = function(event)
+        Snacks.bufdelete({ file = vim.fs.normalize(event.data.from) })
+      end,
+    })
+
     vim.keymap.set("n", "<leader>e", function()
       files.close()
       files.open(vim.fn.getcwd(), false)
