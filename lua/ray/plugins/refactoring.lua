@@ -8,41 +8,46 @@ return {
     {
       "<leader>rf",
       function()
-        require("refactoring").extract_func()
+        return require("refactoring").extract_func()
       end,
       mode = "x",
+      expr = true,
       desc = "Extract function",
     },
     {
       "<leader>rF",
       function()
-        require("refactoring").extract_func_to_file()
+        return require("refactoring").extract_func_to_file()
       end,
       mode = "x",
+      expr = true,
       desc = "Extract function to file",
     },
     {
       "<leader>rv",
       function()
-        require("refactoring").extract_var()
+        return require("refactoring").extract_var()
       end,
       mode = "x",
+      expr = true,
       desc = "Extract variable",
     },
     {
       "<leader>ri",
       function()
-        require("refactoring").inline_var()
+        return require("refactoring").inline_var()
       end,
       mode = { "n", "x" },
+      expr = true,
       desc = "Inline variable",
     },
     {
       "<leader>rI",
       function()
-        require("refactoring").inline_func()
+        return require("refactoring").inline_func()
       end,
       mode = { "n", "x" },
+      expr = true,
       desc = "Inline function",
     },
     {
