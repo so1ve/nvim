@@ -58,16 +58,6 @@ return {
         {
           filter = {
             event = "notify",
-            cond = function(message)
-              return message.opts and message.opts.title == "Hardtime"
-            end,
-          },
-          view = "notify",
-          opts = { stop = true },
-        },
-        {
-          filter = {
-            event = "notify",
             error = true,
             find = "wakatime%-cli%.exe %-%-today",
           },
