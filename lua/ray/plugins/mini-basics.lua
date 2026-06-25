@@ -34,6 +34,7 @@ return {
     local ts = ai.gen_spec.treesitter
     ai.setup({
       n_lines = 500,
+      search_method = "cover",
       custom_textobjects = {
         ["="] = ts({ a = "@assignment.outer", i = "@assignment.inner" }),
         ["/"] = ts({ a = "@comment.outer", i = "@comment.inner" }),
