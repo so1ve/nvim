@@ -4,6 +4,7 @@ vim.g.maplocalleader = " "
 vim.loader.enable()
 
 require("ray.config.options")
+require("ray.config.ui2")
 require("ray.config.diagnostics").setup()
 require("ray.config.filetypes")
 require("ray.config.autocmds")

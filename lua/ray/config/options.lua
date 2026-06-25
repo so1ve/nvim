@@ -18,7 +18,6 @@ opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.laststatus = 3
-opt.cmdheight = 0
 opt.showtabline = 2
 opt.showcmd = true
 opt.showcmdloc = "statusline"

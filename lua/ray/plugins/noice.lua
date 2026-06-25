@@ -30,13 +30,7 @@ return {
     },
     opts = {
       cmdline = {
-        opts = {
-          win_options = {
-            winhighlight = {
-              FloatTitle = "NoiceCmdlinePopupTitle",
-            },
-          },
-        },
+        enabled = false,
       },
       views = {
         mini = {
@@ -49,9 +43,10 @@ return {
         },
       },
       messages = {
-        view = "mini",
-        view_error = "notify",
-        view_warn = "notify",
+        enabled = false,
+      },
+      popupmenu = {
+        enabled = false,
       },
       notify = {
         view = "notify",
@@ -118,7 +113,6 @@ return {
         },
       },
       presets = {
-        command_palette = true,
         long_message_to_split = true,
         lsp_doc_border = true,
       },
