@@ -34,6 +34,9 @@ return {
       },
       views = {
         mini = {
+          position = {
+            row = -2,
+          },
           win_options = {
             winblend = 20,
           },
