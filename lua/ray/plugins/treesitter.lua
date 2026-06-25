@@ -9,6 +9,11 @@ local extra_parsers = {
   "vim",
 }
 
+local rendered_doc_filetypes = {
+  "noice_hover",
+  "blink-cmp-documentation",
+}
+
 local function configured_parsers()
   return require("ray.config.languages").collect("treesitter", {
     extra = extra_parsers,
@@ -50,6 +55,11 @@ return {
     vim.api.nvim_create_autocmd("FileType", {
       callback = function(event)
         local filetype = vim.bo[event.buf].filetype
+
+        if vim.tbl_contains(rendered_doc_filetypes, filetype) then
+          return
+        end
+
         local parser = languages.get(filetype, "treesitter", vim.treesitter.language.get_lang)
 
         if parser and vim.treesitter.language.add(parser) == true then
