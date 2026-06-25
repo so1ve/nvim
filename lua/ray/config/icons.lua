@@ -37,10 +37,4 @@ M.symbols = {
   Variable = "",
 }
 
-M.symbols_padded = {}
-
-for kind, icon in pairs(M.symbols) do
-  M.symbols_padded[kind] = icon .. " "
-end
-
 return M

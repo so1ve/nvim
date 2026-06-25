@@ -3,10 +3,6 @@ local M = {}
 M.names = { ".git", ".svn", ".hg", "CVS", ".DS_Store", "Thumbs.db", "thumbs.db" }
 M.patterns = { "*.tsbuildinfo" }
 
-local function copy(list)
-  return vim.list_extend({}, list)
-end
-
 local function glob_to_lua(glob)
   return "^" .. glob:gsub("([^%w%*%?])", "%%%1"):gsub("%*", ".*"):gsub("%?", ".") .. "$"
 end
@@ -28,18 +24,6 @@ function M.is_ignored(path)
   end
 
   return false
-end
-
-function M.filtered_items()
-  return {
-    visible = true,
-    hide_dotfiles = false,
-    hide_ignored = false,
-    hide_hidden = false,
-    show_hidden_count = false,
-    never_show = copy(M.names),
-    never_show_by_pattern = copy(M.patterns),
-  }
 end
 
 function M.filter_fff_result(result)
