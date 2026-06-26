@@ -1,6 +1,7 @@
 -- Noice markdown visual width patch.
 -- Purpose: size hover layout from cached rendered markdown width instead of raw
--- source width. Link parsing/rendering lives in `patch.noice.markdown-links`.
+-- source width. Markdown normalization and link rendering live in
+-- `patch.noice.markdown-renderer`.
 
 local M = {}
 local hacks = require("ray.patch.hacks")

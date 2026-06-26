@@ -8,7 +8,7 @@
 local M = {}
 
 function M.patch()
-  require("ray.patch.noice.markdown-links").patch()
+  require("ray.patch.noice.markdown-renderer").patch()
   require("ray.patch.noice.markdown-width").patch()
   require("ray.patch.noice.hover-layout").patch()
 end

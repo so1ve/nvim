@@ -1,10 +1,10 @@
 -- Noice markdown renderer for LSP docs.
 --
--- Split markdown at block level: prose stays native markdown so inline syntax
--- like **strong**, ~~strike~~, and `code` still works; fenced code blocks are
--- rendered with their actual language, so Rust brackets never go through
--- markdown_inline highlighting. Links are shortened before entering the buffer
--- so hidden URLs do not affect wrapping, while gx/K still open the targets.
+-- Split markdown at block level: source line boundaries stay intact so block
+-- markdown keeps its structure; fenced code blocks are rendered with their actual
+-- language, so Rust brackets never go through markdown_inline highlighting.
+-- Links are shortened before entering the buffer so hidden URLs do not affect
+-- wrapping, while gx/K still open the targets.
 
 local M = {}
 
@@ -66,65 +66,30 @@ local function fence_marker(line)
   end
 end
 
-local function is_blank(line)
-  return line:match("^%s*$") ~= nil
-end
-
-local function is_structural_line(line)
-  return line:match("^%s*#")
-    or line:match("^%s*>")
-    or line:match("^%s*[%-%+%*]%s+")
-    or line:match("^%s*%d+[%.%)]%s+")
-    or line:match("^%s*|.*|")
-    or line:match("^%s*%[.-%]:%s*")
-    or line:match("^%s*[-*_][%s%-*_]*$")
-end
-
-local function is_indented_code(line)
-  return (line:sub(1, 4) == "    " or line:sub(1, 1) == "\t") and not is_blank(line)
-end
-
-local function reflow(text)
+local function normalize_markdown_source(text)
   local lines = {}
-  local paragraph = {}
   local fence_char
   local fence_len
 
-  local function flush()
-    if #paragraph > 0 then
-      lines[#lines + 1] = table.concat(paragraph, " ")
-      paragraph = {}
-    end
-  end
-
   for line in (text:gsub("\r", "") .. "\n"):gmatch("([^\n]*)\n") do
+    local char, len = fence_marker(line)
+
     if fence_char then
       lines[#lines + 1] = line
-
-      local char, len = fence_marker(line)
 
       if char == fence_char and len >= fence_len then
         fence_char = nil
         fence_len = nil
       end
     else
-      local char, len = fence_marker(line)
+      lines[#lines + 1] = char and line or line:gsub("\\|", "|")
 
       if char then
-        flush()
-        lines[#lines + 1] = line
         fence_char = char
         fence_len = len
-      elseif is_blank(line) or is_structural_line(line) or is_indented_code(line) then
-        flush()
-        lines[#lines + 1] = line
-      else
-        paragraph[#paragraph + 1] = trim(line)
       end
     end
   end
-
-  flush()
 
   return table.concat(lines, "\n"):gsub("\n$", "")
 end
@@ -317,7 +282,7 @@ local function append_prose(markdown, message, line, references)
 end
 
 local function format_markdown(markdown, message, text, opts)
-  local normalized = reflow(text)
+  local normalized = normalize_markdown_source(text)
   local references = references_from(normalized)
   local markdown_lines = 0
 

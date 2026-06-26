@@ -3,7 +3,7 @@ local rendered_doc_filetypes = { "noice_hover", "blink-cmp-documentation" }
 local render_options = {
   render_modes = true,
   anti_conceal = { enabled = false },
-  bullet = { enabled = false },
+  bullet = { enabled = true },
   checkbox = { enabled = false },
   code = { enabled = true },
   dash = { enabled = false },
@@ -15,7 +15,7 @@ local render_options = {
   latex = { enabled = false },
   link = { enabled = false },
   paragraph = { enabled = false },
-  pipe_table = { enabled = false },
+  pipe_table = { enabled = true },
   quote = { enabled = true },
   sign = { enabled = true },
 }
