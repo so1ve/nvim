@@ -6,7 +6,7 @@ local excluded_filetypes = {
 }
 
 return {
-  "mini.basics",
+  "mini.essential",
   virtual = true,
   dependencies = {
     "nvim-mini/mini.nvim",
