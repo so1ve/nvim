@@ -79,10 +79,10 @@ return {
       },
       lsp = {
         message = {
-          view = "mini",
+          enabled = false,
         },
         progress = {
-          view = "mini",
+          enabled = false,
         },
         signature = {
           enabled = false,

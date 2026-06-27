@@ -38,6 +38,7 @@
   "neotest-vitest": { "branch": "main", "commit": "28259d282068628f078295a1a23317ae918934d9" },
   "nightfox": { "branch": "main", "commit": "26b61b1f856ec37cae3cb64f5690adb955f246a1" },
   "noice.nvim": { "branch": "main", "commit": "7bfd942445fb63089b59f97ca487d605e715f155" },
+  "noicelet.nvim": { "branch": "main", "commit": "6f5433b84a14c8ce407ede53706891030fb2d1f2" },
   "nord": { "branch": "main", "commit": "87394d4fc35c901bbe38326a78d31ab1ead826b6" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-autopairs": { "branch": "master", "commit": "7b9923abad60b903ece7c52940e1321d39eccc79" },
