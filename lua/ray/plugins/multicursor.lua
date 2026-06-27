@@ -25,6 +25,14 @@ return {
       mc.feedkeys("a")
     end
 
+    local add_cursor_down = function()
+      mc.lineAddCursor(1)
+    end
+
+    local add_cursor_up = function()
+      mc.lineAddCursor(-1)
+    end
+
     Hydra({
       name = "Multicursor",
       mode = { "n", "x" },
@@ -38,6 +46,8 @@ return {
       },
       heads = {
         { "t", mc.toggleCursor, { desc = "Toggle", group = "Actions" } },
+        { "<C-j>", add_cursor_down, { desc = "Line Down", group = "Add" } },
+        { "<C-k>", add_cursor_up, { desc = "Line Up", group = "Add" } },
         {
           "a",
           function()
@@ -84,6 +94,8 @@ return {
 
     mc.addKeymapLayer(function(layer_map)
       layer_map("n", "A", append_at_line_end)
+      layer_map("n", "<C-j>", add_cursor_down)
+      layer_map("n", "<C-k>", add_cursor_up)
       layer_map("x", "I", mc.insertVisual)
       layer_map("x", "A", mc.appendVisual)
       layer_map("n", "<Esc>", function()
