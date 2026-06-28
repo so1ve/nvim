@@ -1,11 +1,3 @@
--- Small helpers for local monkey patches.
--- Purpose: keep patch modules focused on behavior instead of repeating
--- idempotency guards and original-method bookkeeping.
--- Behavior: each patch key runs once per target table; wrapped methods keep the
--- original implementation in a closure and leave unrelated fields untouched.
--- Implementation: intentionally mirrors the useful subset of Noice's
--- `util.hacks`: delayed module patching plus small table/function patch helpers.
-
 local M = {}
 
 local PREFIX = "_ray_hack_"

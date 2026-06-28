@@ -146,7 +146,7 @@ return {
         { mode = "n", keys = "<Leader>g", desc = "+Git" },
         { mode = "n", keys = "<Leader>gc", desc = "+Conflicts" },
         { mode = "n", keys = "<Leader>m", desc = "+Multicursor" },
-        { mode = "n", keys = "<Leader>n", desc = "+Noice" },
+        { mode = "n", keys = "<Leader>n", desc = "+Notifications" },
         { mode = "n", keys = "<Leader>o", desc = "+Overseer" },
         { mode = "n", keys = "<Leader>p", desc = "+Project" },
         { mode = "n", keys = "<Leader>q", desc = "+Quit / Buffer / Window" },

@@ -324,6 +324,20 @@ return {
         desc = "Search history",
       },
       {
+        "<leader>nh",
+        function()
+          Snacks.picker.notifications()
+        end,
+        desc = "Notification history",
+      },
+      {
+        "<leader>nd",
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = "Dismiss notifications",
+      },
+      {
         "<leader>fG",
         function()
           Snacks.picker.git_status()
