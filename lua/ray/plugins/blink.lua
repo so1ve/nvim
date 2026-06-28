@@ -76,7 +76,7 @@ return {
     keymap = {
       preset = "none",
       ["<Tab>"] = {
-        "select_and_accept",
+        tab.select_and_accept,
         tab.accept_ai,
         tab.sidekick_nes_jump_or_apply,
         "fallback",
