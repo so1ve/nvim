@@ -32,7 +32,6 @@ return {
   },
   {
     "so1ve/tiny-md.nvim",
-    lazy = true,
     dependencies = {
       "MeanderingProgrammer/render-markdown.nvim",
     },
