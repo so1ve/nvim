@@ -78,6 +78,13 @@ map("n", "]T", "<cmd>tablast<CR>", { desc = "Last tab" })
 -- Line editing
 map("n", "[<Space>", "O<Esc>", { desc = "Blank line above" })
 map("n", "]<Space>", "o<Esc>", { desc = "Blank line below" })
+map("n", "<leader>,", function()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
+
+  vim.api.nvim_buf_set_lines(0, row, row, false, { line })
+  vim.api.nvim_win_set_cursor(0, { row + 1, math.min(col, #line) })
+end, { desc = "Duplicate line" })
 map("n", "gK", "i<CR><Esc>", { desc = "Split line at cursor" })
 
 -- Windows
