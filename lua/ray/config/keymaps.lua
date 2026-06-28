@@ -70,6 +70,27 @@ map("n", "<leader>Q", "<cmd>qa<CR>", { desc = "Quit all" })
 map("n", "<leader>qb", function()
   Snacks.bufdelete()
 end, { desc = "Quit buffer" })
+-- workaround for not deleting all buffers
+local function delete_twice(filter)
+  Snacks.bufdelete(filter)
+  Snacks.bufdelete(filter)
+end
+map("n", "<leader>q[", function()
+  local current = vim.api.nvim_get_current_buf()
+  delete_twice(function(buf)
+    return buf < current
+  end)
+end, { desc = "Quit buffers to the left" })
+map("n", "<leader>q]", function()
+  local current = vim.api.nvim_get_current_buf()
+
+  delete_twice(function(buf)
+    return buf > current
+  end)
+end, { desc = "Quit buffers to the right" })
+map("n", "<leader>qo", function()
+  Snacks.bufdelete.other()
+end, { desc = "Quit other buffers" })
 map("n", "<leader>qt", "<cmd>tabclose<CR>", { desc = "Quit tab" })
 map("n", "<leader>qT", "<cmd>tabonly<CR>", { desc = "Quit other tabs" })
 map("n", "<leader>qw", "<C-W>c", { desc = "Delete window", remap = true })
