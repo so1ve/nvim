@@ -84,8 +84,10 @@ return {
       ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-d>"] = { "scroll_documentation_down", "scroll_signature_down", "fallback" },
       ["<C-u>"] = { "scroll_documentation_up", "scroll_signature_up", "fallback" },
-      ["<C-j>"] = { "select_next", "fallback_to_mappings" },
-      ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+      ["<C-n>"] = { "select_next", "show" },
+      ["<C-p>"] = { "select_prev", "show" },
+      ["<C-j>"] = { "select_next", "show" },
+      ["<C-k>"] = { "select_prev", "show" },
       ["<Up>"] = { "select_prev", "fallback" },
       ["<Down>"] = { "select_next", "fallback" },
       ["<C-e>"] = { "hide", "fallback" },
@@ -93,8 +95,8 @@ return {
     cmdline = {
       keymap = {
         ["<Tab>"] = { "show", "accept" },
-        ["<C-j>"] = { "select_next", "fallback_to_mappings" },
-        ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+        ["<C-j>"] = { "select_next", "show" },
+        ["<C-k>"] = { "select_prev", "show" },
       },
       completion = {
         menu = {
