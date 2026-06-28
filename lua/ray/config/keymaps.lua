@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local map_multistep = require("mini.keymap").map_multistep
 local visual_search = require("ray.utils.visual-search")
 local window_resize = require("ray.integrations.edgy.resize")
 
@@ -34,8 +35,12 @@ end, { desc = "Search selected text backward", expr = true, replace_keycodes = t
 map("n", "x", '"_x', { desc = "Delete without yanking" })
 -- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
 map("n", "q", "<Nop>", { noremap = true, silent = true })
+map({ "i", "c" }, "jj", "<Esc>", { desc = "Exit insert or command-line mode" })
+map({ "i", "c" }, "jk", "<Esc>", { desc = "Exit insert or command-line mode" })
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
 map("i", "<C-y>", "<C-o><C-r>", { desc = "Redo" })
+map_multistep("i", "<C-l>", { "minisnippets_next", "jump_after_close" })
+map_multistep("i", "<C-h>", { "minisnippets_prev", "jump_before_open" })
 
 -- Clipboard
 map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
