@@ -7,7 +7,6 @@ return {
       "so1ve/tiny-treesitter.nvim",
     },
     opts = {
-      file_types = { "markdown" },
       heading = {
         backgrounds = {
           "RenderMarkdownH1Bg",
@@ -28,6 +27,25 @@ return {
       },
       bullet = {
         enabled = false,
+      },
+    },
+  },
+  {
+    "so1ve/tiny-md.nvim",
+    lazy = true,
+    dependencies = {
+      "MeanderingProgrammer/render-markdown.nvim",
+    },
+    opts = {
+      render_markdown = {
+        bullet = {
+          enabled = true,
+        },
+        html = {
+          comment = {
+            conceal = false,
+          },
+        },
       },
     },
   },

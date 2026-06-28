@@ -48,7 +48,7 @@ local function configure_lsp_buffer(event)
   end
 
   map("K", function()
-    require("ray.config.languages").hover()
+    require("tiny-md.hover").hover()
   end, "Hover documentation")
   map("gd", Snacks.picker.lsp_definitions, "Go to definition")
   map("gD", Snacks.picker.lsp_declarations, "Go to declaration")
@@ -83,7 +83,6 @@ return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    "folke/noice.nvim", -- we patch noice's hover to make it work better with LSP
     "saghen/blink.cmp",
     "b0o/schemastore.nvim",
   },

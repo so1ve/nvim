@@ -1,14 +1,5 @@
 local tab = require("ray.features.completion.tab")
 
-local function draw_documentation(opts)
-  require("blink-noice-docs").draw(opts)
-  require("render-markdown").render({
-    buf = opts.window:get_buf(),
-    win = opts.window:get_win(),
-    event = "BlinkDocumentation",
-  })
-end
-
 local function label_text(ctx)
   local highlights_info = require("colorful-menu").blink_highlights(ctx)
 
@@ -64,21 +55,16 @@ return {
   dependencies = {
     "nvim-mini/mini.nvim",
     "xzbdmw/colorful-menu.nvim",
-    "so1ve/blink-noice-docs.nvim",
+    "so1ve/tiny-md.nvim",
   },
   config = function(_, opts)
-    vim.treesitter.language.register("markdown", "blink-cmp-documentation")
-
     require("colorful-menu").setup({
       ls = {
         fallback = false,
       },
     })
 
-    opts.completion.documentation.draw = draw_documentation
-
     require("blink.cmp").setup(opts)
-    require("blink-noice-docs").setup({ override_draw = false })
   end,
   opts = {
     appearance = {
@@ -143,6 +129,9 @@ return {
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 0,
+        draw = function(opts)
+          require("tiny-md.blink").draw(opts)
+        end,
         window = {
           desired_min_width = 24,
           desired_min_height = 5,

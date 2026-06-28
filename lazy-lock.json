@@ -1,6 +1,5 @@
 {
   "async.nvim": { "branch": "main", "commit": "e2a813be9cd143ab1181de6d8a0720e0230cd86e" },
-  "blink-noice-docs.nvim": { "branch": "main", "commit": "ca01574a94c189513b64f5c2a68c1e12157dc472" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
   "catppuccin": { "branch": "main", "commit": "e068ab5f8261f23f6f71ffd8791ae40315b77b9c" },
   "code-action-menu.nvim": { "branch": "main", "commit": "e18b1ad1c98350e13879d20eaaf3238d34890f04" },
@@ -60,6 +59,7 @@
   "snacks.nvim": { "branch": "main", "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2" },
   "tiny-comment.nvim": { "branch": "main", "commit": "9466b3b95dbc517956f32a943223bf3cfa572c37" },
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "e930d0a46031645040d5492595b46cdf6ab3514f" },
+  "tiny-md.nvim": { "branch": "main", "commit": "989e5659a345a005b5ede08ea47a3e2a7e049b4e" },
   "tiny-treesitter.nvim": { "branch": "main", "commit": "e6b2c6825a64ca37525d680fdb6699e0e38bb1e4" },
   "tokyonight": { "branch": "main", "commit": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6" },
   "treesj": { "branch": "main", "commit": "79aedb401bbdc7e4202f7881eab5f6feb2105b0a" },

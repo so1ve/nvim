@@ -143,17 +143,6 @@ function M.map(field)
   return values
 end
 
-function M.hover()
-  local providers = M.get(vim.bo.filetype, "hover")
-
-  if providers then
-    -- require it here to make sure noice is loaded
-    require("ray.patch.lsp.hover").show(providers)
-  else
-    vim.lsp.buf.hover()
-  end
-end
-
 load_specs()
 M.extend()
 
