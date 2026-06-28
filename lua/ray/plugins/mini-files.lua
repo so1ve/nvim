@@ -23,6 +23,10 @@ return {
         end,
       },
       mappings = {
+        go_in = "L",
+        go_in_plus = "<C-l>",
+        go_out = "H",
+        go_out_plus = "<C-h>",
         synchronize = "s",
       },
       options = {
@@ -39,6 +43,11 @@ return {
     vim.api.nvim_create_autocmd("User", {
       pattern = "MiniFilesBufferCreate",
       callback = function(args)
+        vim.keymap.set("n", "<CR>", function()
+          files.go_in({ close_on_file = true })
+        end, { buffer = args.data.buf_id, desc = "Go in plus" })
+        vim.keymap.set("n", "J", "j", { buffer = args.data.buf_id, desc = "Move down" })
+        vim.keymap.set("n", "K", "k", { buffer = args.data.buf_id, desc = "Move up" })
         vim.keymap.set("n", "gh", function()
           show_hidden = not show_hidden
           require("mini.files").refresh(opts)
