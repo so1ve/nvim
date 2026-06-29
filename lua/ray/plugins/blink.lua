@@ -1,51 +1,44 @@
-local tab = require("ray.features.completion.tab")
-
-local function label_text(ctx)
-  local highlights_info = require("colorful-menu").blink_highlights(ctx)
-
-  if highlights_info then
-    return highlights_info.label
+local function cursor_in_edit(edit, bufnr, cursor)
+  if edit.buf ~= bufnr then
+    return false
   end
 
-  return ctx.label
+  local row = cursor[1] - 1
+  local from = edit.from[1]
+  local to = edit.to[1]
+  if from > to then
+    from, to = to, from
+  end
+
+  return row >= from and row <= to
 end
 
-local function detail_text(ctx)
-  if require("colorful-menu").blink_highlights(ctx) then
-    return ""
+local function accept_ai()
+  local suggestion = require("copilot.suggestion")
+
+  if not suggestion.is_visible() then
+    return false
   end
 
-  local detail = ctx.item and ctx.item.detail
+  suggestion.accept()
 
-  if type(detail) ~= "string" then
-    return ""
-  end
-
-  return detail:match("^[^\r\n]+") or ""
+  return true
 end
 
-local function label_highlight(ctx)
-  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+local function sidekick_nes_jump_or_apply()
+  local nes = require("sidekick.nes")
 
-  if highlights_info then
-    local highlights = highlights_info.highlights or {}
-
-    for _, idx in ipairs(ctx.label_matched_indices) do
-      table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-    end
-
-    return highlights
+  if not nes.have() then
+    return false
   end
 
-  local highlights = {
-    { 0, #ctx.label, group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel" },
-  }
-
-  for _, idx in ipairs(ctx.label_matched_indices) do
-    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+  local bufnr = vim.api.nvim_get_current_buf()
+  local edit = nes.get(bufnr)[1]
+  if cursor_in_edit(edit, bufnr, vim.api.nvim_win_get_cursor(0)) then
+    return nes.apply()
   end
 
-  return highlights
+  return nes.jump() or nes.apply()
 end
 
 return {
@@ -63,7 +56,6 @@ return {
         fallback = false,
       },
     })
-
     require("blink.cmp").setup(opts)
   end,
   opts = {
@@ -77,8 +69,8 @@ return {
       preset = "none",
       ["<Tab>"] = {
         "select_and_accept",
-        tab.accept_ai,
-        tab.sidekick_nes_jump_or_apply,
+        accept_ai,
+        sidekick_nes_jump_or_apply,
         "fallback",
       },
       ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -111,12 +103,54 @@ return {
           columns = { { "kind_icon" }, { "label" }, { "detail" }, { "kind" } },
           components = {
             label = {
-              text = label_text,
-              highlight = label_highlight,
+              text = function(ctx)
+                local highlights_info = require("colorful-menu").blink_highlights(ctx)
+
+                if highlights_info then
+                  return highlights_info.label
+                end
+
+                return ctx.label
+              end,
+              highlight = function(ctx)
+                local highlights_info = require("colorful-menu").blink_highlights(ctx)
+
+                if highlights_info then
+                  local highlights = highlights_info.highlights or {}
+
+                  for _, idx in ipairs(ctx.label_matched_indices) do
+                    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+                  end
+
+                  return highlights
+                end
+
+                local highlights = {
+                  { 0, #ctx.label, group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel" },
+                }
+
+                for _, idx in ipairs(ctx.label_matched_indices) do
+                  table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+                end
+
+                return highlights
+              end,
             },
             detail = {
               width = { max = 30 },
-              text = detail_text,
+              text = function(ctx)
+                if require("colorful-menu").blink_highlights(ctx) then
+                  return ""
+                end
+
+                local detail = ctx.item and ctx.item.detail
+
+                if type(detail) ~= "string" then
+                  return ""
+                end
+
+                return detail:match("^[^\r\n]+") or ""
+              end,
               highlight = "BlinkCmpLabelDetail",
             },
             kind = {
