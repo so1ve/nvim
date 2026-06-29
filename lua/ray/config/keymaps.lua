@@ -61,9 +61,6 @@ map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
 
 -- UI
 map("n", "<leader>lw", "<cmd>setlocal wrap!<CR>", { desc = "Toggle line wrap" })
-map("n", "<leader>uC", function()
-  require("ray.config.themes").select()
-end, { desc = "Colorscheme" })
 
 -- Quit / close
 map("n", "<leader>Q", "<cmd>qa<CR>", { desc = "Quit all" })

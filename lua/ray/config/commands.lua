@@ -14,24 +14,6 @@ vim.api.nvim_create_user_command("RayFormatToggle", function(args)
   vim.notify("Buffer format-on-save: " .. (vim.b.disable_autoformat and "disabled" or "enabled"))
 end, { bang = true, desc = "Toggle format-on-save for buffer, or globally with !" })
 
-vim.api.nvim_create_user_command("RayTheme", function(args)
-  local themes = require("ray.config.themes")
-
-  if args.args == "" then
-    themes.select()
-
-    return
-  end
-
-  themes.save(themes.apply(args.args))
-end, {
-  nargs = "?",
-  complete = function(arglead)
-    return require("ray.config.themes").complete(arglead)
-  end,
-  desc = "Switch colorscheme",
-})
-
 vim.api.nvim_create_user_command("TSReset", function()
   local bufnr = vim.api.nvim_get_current_buf()
   vim.treesitter.stop(bufnr)
