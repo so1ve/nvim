@@ -1,9 +1,6 @@
 local map = vim.keymap.set
 local map_multistep = require("mini.keymap").map_multistep
-local visual_search = require("ray.utils.visual-search")
 local window_resize = require("ray.integrations.edgy.resize")
-
-local resize_step = 2
 
 -- Remove builtin mappings that conflict with plugin/LSP behavior. When LSP is not
 -- ready for references, `gr` otherwise opens the builtin key hint menu instead of
@@ -24,12 +21,6 @@ end
 
 -- Search
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
-map("x", "/", function()
-  return visual_search.search_keys("forward")
-end, { desc = "Search selected text forward", expr = true, replace_keycodes = true })
-map("x", "?", function()
-  return visual_search.search_keys("backward")
-end, { desc = "Search selected text backward", expr = true, replace_keycodes = true })
 
 -- Editing
 map("n", "x", '"_x', { desc = "Delete without yanking" })
@@ -124,16 +115,16 @@ map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 map("n", "<C-Right>", function()
-  window_resize.resize("width", resize_step)
+  window_resize.resize("width", 2)
 end, { desc = "Increase window width" })
 map("n", "<C-Left>", function()
-  window_resize.resize("width", -resize_step)
+  window_resize.resize("width", -2)
 end, { desc = "Decrease window width" })
 map("n", "<C-Up>", function()
-  window_resize.resize("height", resize_step)
+  window_resize.resize("height", 2)
 end, { desc = "Increase window height" })
 map("n", "<C-Down>", function()
-  window_resize.resize("height", -resize_step)
+  window_resize.resize("height", -2)
 end, { desc = "Decrease window height" })
 map("n", "<leader>=", window_resize.equalize, { desc = "Equalize windows" })
 
