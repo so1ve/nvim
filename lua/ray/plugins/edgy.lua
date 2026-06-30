@@ -1,3 +1,4 @@
+-- planned to migrate to mini.windows once released
 local edgy = require("ray.integrations.edgy")
 
 local function add_view(opts, position, view)
