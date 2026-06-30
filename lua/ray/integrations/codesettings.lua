@@ -18,39 +18,32 @@ local function get(root, path)
   return node
 end
 
-local function set_missing(root, path, value)
-  local node = root
-
-  for index = 1, #path - 1 do
-    local key = path[index]
-
-    if type(node[key]) ~= "table" then
-      node[key] = {}
-    end
-
-    node = node[key]
-  end
-
-  local leaf = path[#path]
-  if node[leaf] == nil then
-    node[leaf] = value
-  end
-end
-
-local function apply_mappings(root)
-  for _, mapping in ipairs(MAPPINGS) do
-    local value = get(root, mapping.from)
-
-    if value ~= nil then
-      set_missing(root, mapping.to, value)
-    end
-  end
-end
-
 return {
   object = function(root, context)
     if #context.path == 0 then
-      apply_mappings(root)
+      for _, mapping in ipairs(MAPPINGS) do
+        local value = get(root, mapping.from)
+
+        if value ~= nil then
+          local path = mapping.to
+          local node = root
+
+          for index = 1, #path - 1 do
+            local key = path[index]
+
+            if type(node[key]) ~= "table" then
+              node[key] = {}
+            end
+
+            node = node[key]
+          end
+
+          local leaf = path[#path]
+          if node[leaf] == nil then
+            node[leaf] = value
+          end
+        end
+      end
     end
 
     return Control.CONTINUE
