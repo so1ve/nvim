@@ -11,3 +11,7 @@
 - `node`
 - `python`
 - `pwsh`
+
+## TODOs
+
+- [ ] replace `edgy.nvim` with `mini.windows` once released
