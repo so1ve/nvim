@@ -153,6 +153,7 @@ function M.setup()
       { mode = "n", keys = "<Leader>T", desc = "+Test" },
       { mode = "n", keys = "<Leader>u", desc = "+UI" },
       { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
+      { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
       { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
 
       gen_clues.builtin_completion(),
