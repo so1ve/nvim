@@ -18,7 +18,7 @@
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "codesettings.nvim": {
-      "rev": "b6be2caea677af140090472fd05f2a2d5e0b56fe",
+      "rev": "5b75691613f51a57d34dbf4ac1bbc5cfe2e4a7c8",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "colorful-menu.nvim": {
@@ -46,7 +46,7 @@
       "src": "https://github.com/folke/edgy.nvim"
     },
     "fff.nvim": {
-      "rev": "a0008b1cde4ce8f29cbdf63b52fde1ab7d0f7f6f",
+      "rev": "e0a9e08a3a6467ebb8d4b2889f1c21c3b36ba3e6",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "filler-begone.nvim": {
@@ -82,7 +82,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "1599a473aa6f5290a5d740b1144846e6f0c3963d",
+      "rev": "7c2caf0ae915d819f2f39467d6bb9313c2b3e90a",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "multicursor.nvim": {
@@ -98,7 +98,7 @@
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
     "neotest": {
-      "rev": "ad991822b7076b1d940b33a9d6d0d30416d5df81",
+      "rev": "ff5437f7d9af801917bed119082934b0eb6ee0e9",
       "src": "https://github.com/nvim-neotest/neotest"
     },
     "neotest-golang": {
@@ -169,7 +169,7 @@
       "version": "9.0.0 - 10.0.0"
     },
     "schemastore.nvim": {
-      "rev": "490afbd7fd3b316330550405ac74758a971104a4",
+      "rev": "6ff1f21b2e2b77ec59f7433ce2d9fbc052d908ac",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "sidekick.nvim": {
@@ -189,7 +189,7 @@
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "tiny-md.nvim": {
-      "rev": "a300ac40425f71f933a264c3a3c7bcd199cba957",
+      "rev": "53f9b3ee41a74dadf958408286cff94b53a5c0bd",
       "src": "https://github.com/so1ve/tiny-md.nvim"
     },
     "tiny-treesitter.nvim": {
