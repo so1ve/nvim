@@ -85,7 +85,7 @@ return {
   plugins = {
     {
       "mrcjkb/rustaceanvim",
-      version = "^9",
+      version = vim.version.range("^9"),
       lazy = false,
       opts = {
         tools = {

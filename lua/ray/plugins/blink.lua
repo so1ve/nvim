@@ -43,7 +43,7 @@ end
 
 return {
   "saghen/blink.cmp",
-  version = "1.*",
+  version = vim.version.range("1.*"),
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "nvim-mini/mini.nvim",

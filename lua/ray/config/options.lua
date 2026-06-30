@@ -1,11 +1,24 @@
-local opt = vim.opt
 local g = vim.g
+local opt = vim.opt
 
 g.loaded_python_provider = 0
 g.loaded_python3_provider = 0
 g.loaded_node_provider = 0
 g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
+
+g.loaded_2html_plugin = 1
+g.loaded_gzip = 1
+g.loaded_man = 1
+g.loaded_matchit = 1
+g.loaded_matchparen = 1
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
+g.loaded_remote_plugins = 1
+g.loaded_spellfile_plugin = 1
+g.loaded_tarPlugin = 1
+g.loaded_tutor_mode_plugin = 1
+g.loaded_zipPlugin = 1
 
 -- to make keywordprg a no-op because multiple shift+k will eventually call the default behavior of keywordprg which is to open `:help` and breaks window layout
 vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" })
@@ -25,14 +38,6 @@ opt.showmode = false
 opt.title = true
 opt.titlestring = "nvim: %t"
 opt.winborder = "rounded"
-
--- neovide
-if vim.g.neovide then
-  vim.o.guifont = "R_Maple_Mono_NF_CN:h10:#h-full:#e-antialias"
-  vim.g.neovide_title_background_color = "#212221"
-  vim.g.neovide_floating_blur_amount_x = 6.0
-  vim.g.neovide_floating_blur_amount_y = 6.0
-end
 
 -- interaction
 opt.mouse = "a"

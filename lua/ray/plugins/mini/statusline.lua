@@ -243,28 +243,26 @@ local function statusline_inactive()
   return "%#MiniStatuslineInactive#%="
 end
 
-return {
-  "mini.statusline",
-  virtual = true,
-  dependencies = { "nvim-mini/mini.nvim" },
-  event = "UIEnter",
-  config = function()
-    require("mini.statusline").setup({
-      content = {
-        active = statusline_active,
-        inactive = statusline_inactive,
-      },
-    })
+local M = {}
 
-    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave", "DiagnosticChanged" }, {
-      callback = redraw_statusline,
-    })
+function M.setup()
+  require("mini.statusline").setup({
+    content = {
+      active = statusline_active,
+      inactive = statusline_inactive,
+    },
+  })
 
-    vim.api.nvim_create_autocmd("User", {
-      pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
-      callback = redraw_statusline,
-    })
+  vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave", "DiagnosticChanged" }, {
+    callback = redraw_statusline,
+  })
 
-    copilot.setup()
-  end,
-}
+  vim.api.nvim_create_autocmd("User", {
+    pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
+    callback = redraw_statusline,
+  })
+
+  copilot.setup()
+end
+
+return M

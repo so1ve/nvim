@@ -59,6 +59,10 @@ map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
 map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
 
+-- Buffers
+map("n", "[b", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+
 -- UI
 map("n", "<leader>lw", "<cmd>setlocal wrap!<CR>", { desc = "Toggle line wrap" })
 
