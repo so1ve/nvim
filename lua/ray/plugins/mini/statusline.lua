@@ -1,5 +1,5 @@
 local trunc_width = 120
-local max_parts = 5
+local max_path_width = 100
 
 local function statusline_escape(text)
   return tostring(text):gsub("%%", "%%%%")
@@ -37,10 +37,28 @@ local function statusline_pretty_path()
 
   relative = (relative or path):gsub("\\", "/")
 
+  if vim.fn.strdisplaywidth(relative) <= max_path_width then
+    return relative
+  end
+
   local parts = vim.split(relative, "/", { plain = true })
 
-  if #parts > max_parts then
-    relative = table.concat({ parts[1], "…", parts[#parts - 1], parts[#parts] }, "/")
+  if #parts <= 2 then
+    return relative
+  end
+
+  for tail_start = 3, #parts do
+    local shortened = { parts[1], "…" }
+
+    for index = tail_start, #parts do
+      table.insert(shortened, parts[index])
+    end
+
+    relative = table.concat(shortened, "/")
+
+    if vim.fn.strdisplaywidth(relative) <= max_path_width then
+      break
+    end
   end
 
   return relative
