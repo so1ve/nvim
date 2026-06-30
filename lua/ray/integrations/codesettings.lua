@@ -1,49 +1,47 @@
 local Control = require("codesettings.extensions").Control
 
-local MAPPINGS = {
-  { from = { "gopls", "formatting", "gofumpt" }, to = { "gopls", "gofumpt" } },
+local GOPLS_SETTING_GROUPS = {
+  build = {},
+  formatting = {},
+  ui = {
+    completion = {},
+    diagnostic = {},
+    documentation = {},
+    inlayhint = {},
+    navigation = {},
+  },
 }
 
-local function get(root, path)
-  local node = root
-
-  for _, key in ipairs(path) do
-    if type(node) ~= "table" then
-      return nil
-    end
-
-    node = node[key]
+local function promote_group(target, source, child_groups)
+  if type(source) ~= "table" then
+    return
   end
 
-  return node
+  for key, value in pairs(source) do
+    if type(value) == "table" and child_groups[key] then
+      promote_group(target, value, child_groups[key])
+    elseif target[key] == nil then
+      target[key] = value
+    end
+  end
+end
+
+local function promote_gopls_groups(root)
+  local gopls = root.gopls
+
+  if type(gopls) ~= "table" then
+    return
+  end
+
+  for group, child_groups in pairs(GOPLS_SETTING_GROUPS) do
+    promote_group(gopls, gopls[group], child_groups)
+  end
 end
 
 return {
   object = function(root, context)
     if #context.path == 0 then
-      for _, mapping in ipairs(MAPPINGS) do
-        local value = get(root, mapping.from)
-
-        if value ~= nil then
-          local path = mapping.to
-          local node = root
-
-          for index = 1, #path - 1 do
-            local key = path[index]
-
-            if type(node[key]) ~= "table" then
-              node[key] = {}
-            end
-
-            node = node[key]
-          end
-
-          local leaf = path[#path]
-          if node[leaf] == nil then
-            node[leaf] = value
-          end
-        end
-      end
+      promote_gopls_groups(root)
     end
 
     return Control.CONTINUE
