@@ -106,7 +106,8 @@ local function append_fold_virtual_text(chunks, line_text, line_number, column_o
 
   table.insert(chunks, { chunk_text, current_highlight })
 end
-function _G.custom_foldtext()
+function _G.ray_foldtext()
+  local folded_line_count = vim.v.foldend - vim.v.foldstart
   local start_line = vim.fn.getline(vim.v.foldstart):gsub("\t", string.rep(" ", vim.o.tabstop))
   local end_line = vim.fn.getline(vim.v.foldend)
   local trimmed_end_line = vim.trim(end_line)
@@ -115,10 +116,11 @@ function _G.custom_foldtext()
   append_fold_virtual_text(chunks, start_line, vim.v.foldstart - 1)
   table.insert(chunks, { " ... ", "Delimiter" })
   append_fold_virtual_text(chunks, trimmed_end_line, vim.v.foldend - 1, #(end_line:match("^(%s+)") or ""))
+  table.insert(chunks, { ("   󰁂 %d lines"):format(folded_line_count), "Comment" })
 
   return chunks
 end
-opt.foldtext = "v:lua.custom_foldtext()"
+opt.foldtext = "v:lua.ray_foldtext()"
 
 -- indentation
 opt.tabstop = 2
