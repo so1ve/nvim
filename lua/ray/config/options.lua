@@ -66,7 +66,6 @@ opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-opt.foldtext = ""
 opt.fillchars = {
   foldopen = "",
   foldclose = "",
@@ -75,6 +74,51 @@ opt.fillchars = {
   diff = "╱",
   eob = " ",
 }
+
+local function append_fold_virtual_text(chunks, line_text, line_number, column_offset)
+  if not column_offset then
+    column_offset = 0
+  end
+
+  local chunk_text = ""
+  local current_highlight
+
+  for index = 1, #line_text do
+    local char = line_text:sub(index, index)
+    local captures = vim.treesitter.get_captures_at_pos(0, line_number, column_offset + index - 1)
+    local capture = captures[#captures]
+
+    if capture then
+      local next_highlight = "@" .. capture.capture
+
+      if next_highlight ~= current_highlight then
+        table.insert(chunks, { chunk_text, current_highlight })
+        chunk_text = ""
+        current_highlight = nil
+      end
+
+      chunk_text = chunk_text .. char
+      current_highlight = next_highlight
+    else
+      chunk_text = chunk_text .. char
+    end
+  end
+
+  table.insert(chunks, { chunk_text, current_highlight })
+end
+function _G.custom_foldtext()
+  local start_line = vim.fn.getline(vim.v.foldstart):gsub("\t", string.rep(" ", vim.o.tabstop))
+  local end_line = vim.fn.getline(vim.v.foldend)
+  local trimmed_end_line = vim.trim(end_line)
+  local chunks = {}
+
+  append_fold_virtual_text(chunks, start_line, vim.v.foldstart - 1)
+  table.insert(chunks, { " ... ", "Delimiter" })
+  append_fold_virtual_text(chunks, trimmed_end_line, vim.v.foldend - 1, #(end_line:match("^(%s+)") or ""))
+
+  return chunks
+end
+opt.foldtext = "v:lua.custom_foldtext()"
 
 -- indentation
 opt.tabstop = 2
