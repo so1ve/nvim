@@ -61,6 +61,7 @@ opt.breakindent = true
 
 -- folds
 opt.foldenable = true
+opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldmethod = "expr"
