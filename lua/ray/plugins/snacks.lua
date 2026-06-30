@@ -317,13 +317,6 @@ return {
         desc = "Toggle terminal",
       },
       {
-        "<leader>tT",
-        function()
-          Snacks.terminal(nil, { count = 2, cwd = vim.fn.getcwd(0), win = { position = "float" } })
-        end,
-        desc = "Toggle floating terminal",
-      },
-      {
         "<leader>cR",
         function()
           Snacks.rename.rename_file()
