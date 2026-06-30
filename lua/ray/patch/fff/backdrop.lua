@@ -4,9 +4,10 @@
 -- Behavior: create one non-focusable editor-sized float below the picker windows;
 -- resize it with the picker and always close it with the picker.
 
-local M = {}
 local Backdrop = require("ray.patch.backdrop")
 local hacks = require("ray.patch.hacks")
+
+local M = {}
 
 local BACKDROP_ZINDEX = 50
 

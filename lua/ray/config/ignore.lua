@@ -1,7 +1,35 @@
 local M = {}
 
-M.names = { ".git", ".svn", ".hg", "CVS", ".DS_Store", "Thumbs.db", "thumbs.db" }
-M.patterns = { "*.tsbuildinfo" }
+M.names = {
+  ".git",
+  ".svn",
+  ".hg",
+  "CVS",
+  ".DS_Store",
+  "Thumbs.db",
+  "thumbs.db",
+  ".cache",
+  ".direnv",
+  ".next",
+  ".nuxt",
+  ".parcel-cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".svelte-kit",
+  ".turbo",
+  ".venv",
+  ".vercel",
+  "__pycache__",
+  "bower_components",
+  "coverage",
+  "out",
+  "node_modules",
+  "target",
+  "dist",
+  "build",
+  "venv",
+}
+M.patterns = { "*.tsbuildinfo", "*.pyc", "*.pyo" }
 
 local function glob_to_lua(glob)
   return "^" .. glob:gsub("([^%w%*%?])", "%%%1"):gsub("%*", ".*"):gsub("%?", ".") .. "$"
@@ -24,31 +52,6 @@ function M.is_ignored(path)
   end
 
   return false
-end
-
-function M.filter_fff_result(result)
-  if type(result) ~= "table" or type(result.items) ~= "table" then
-    return result
-  end
-
-  local items = {}
-  local scores = result.scores and {} or nil
-
-  for index, item in ipairs(result.items) do
-    if not M.is_ignored(item.relative_path or item.file or item.name) then
-      items[#items + 1] = item
-      if scores then
-        scores[#scores + 1] = result.scores[index]
-      end
-    end
-  end
-
-  result.items = items
-  if scores then
-    result.scores = scores
-  end
-
-  return result
 end
 
 return M
