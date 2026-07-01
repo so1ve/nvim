@@ -10,7 +10,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "code-action-menu.nvim": {
-      "rev": "e18b1ad1c98350e13879d20eaaf3238d34890f04",
+      "rev": "38e7ec76269767e1faa61a467a13737a0ee4ac11",
       "src": "https://github.com/so1ve/code-action-menu.nvim"
     },
     "codediff.nvim": {
@@ -18,11 +18,11 @@
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "codesettings.nvim": {
-      "rev": "5b75691613f51a57d34dbf4ac1bbc5cfe2e4a7c8",
+      "rev": "d134d0853cf01203d58b8a1fd28d8e2d4f4ec7a0",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "colorful-menu.nvim": {
-      "rev": "13f9b7eaa9cd2901b4f8915cfb2483c3be4c8c20",
+      "rev": "196ddf16d5f8fec09ba7f20e6b153aa5188e907b",
       "src": "https://github.com/xzbdmw/colorful-menu.nvim"
     },
     "conflict.nvim": {
@@ -34,7 +34,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "copilot.lua": {
-      "rev": "7df55b20b5b653941f0bcff87e559cabb6fafeb0",
+      "rev": "760912b5992e1d6437378a9c7f2b0cb950966cf5",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "crates.nvim": {
@@ -82,7 +82,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "7c2caf0ae915d819f2f39467d6bb9313c2b3e90a",
+      "rev": "dc8a9918c3b1bc18a5fcd04d39b6d658074c0886",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "multicursor.nvim": {
@@ -127,7 +127,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "3371bf298c1f56efc26771ee961f461176958fb5",
+      "rev": "dd1c9b802c943278179a5d819369cda085b79d45",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
@@ -209,7 +209,7 @@
       "src": "https://github.com/wakatime/vim-wakatime"
     },
     "wezterm-types": {
-      "rev": "ae319731742cb45e5aee0a28c356b0d6e8971f07",
+      "rev": "d8b1671db6de96e3c4e44ce5cfd1c9c31d3828bf",
       "src": "https://github.com/DrKJeff16/wezterm-types"
     },
     "zpack.nvim": {
