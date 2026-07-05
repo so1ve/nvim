@@ -12,7 +12,7 @@ end
 local function decode_path(path)
   local decoded = path:gsub("%%", "/")
 
-  if jit and jit.os:find("Windows") then
+  if jit.os:find("Windows") then
     decoded = decoded:gsub("^(%w)/", "%1:/")
   end
 
@@ -132,10 +132,7 @@ function M.setup()
     },
   })
 
-  local group = vim.api.nvim_create_augroup("ray_sessions", { clear = true })
-
   vim.api.nvim_create_autocmd("DirChanged", {
-    group = group,
     callback = function()
       if vim.v.this_session ~= "" then
         vim.v.this_session = session_path(current_session_name())
@@ -144,7 +141,6 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd("ExitPre", {
-    group = group,
     callback = function()
       save_session(false, true)
     end,
