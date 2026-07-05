@@ -27,9 +27,11 @@ local function normalize_patch_header(patch, path)
     return "--- a/" .. path
   end, 1)
 
-  return patch:gsub("\n%+%+%+ b/[^\r\n]+", function()
+  local normalized = patch:gsub("\n%+%+%+ b/[^\r\n]+", function()
     return "\n+++ b/" .. path
   end, 1)
+
+  return normalized
 end
 
 function M.patch()
