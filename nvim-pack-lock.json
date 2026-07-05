@@ -13,10 +13,6 @@
       "rev": "38e7ec76269767e1faa61a467a13737a0ee4ac11",
       "src": "https://github.com/so1ve/code-action-menu.nvim"
     },
-    "codediff.nvim": {
-      "rev": "7608f3b436ce1f84a4888f75e53079caa981a2e9",
-      "src": "https://github.com/esmuellert/codediff.nvim"
-    },
     "codesettings.nvim": {
       "rev": "b1f4f53a68c47203d0ba0c7d71db5ea88042110b",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
@@ -40,6 +36,10 @@
     "crates.nvim": {
       "rev": "694357861ec9ebf12475ddcdd04ea45a0923c32d",
       "src": "https://github.com/Saecki/crates.nvim"
+    },
+    "diffview-plus.nvim": {
+      "rev": "b9f10d68116bd3f8d54197a067e11cebfb41b268",
+      "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
     "edgy.nvim": {
       "rev": "8bfd2808994a988c975694122f68624b8a219f5f",

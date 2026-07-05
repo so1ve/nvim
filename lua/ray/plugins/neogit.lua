@@ -4,7 +4,7 @@ return {
     cmd = "Neogit",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "esmuellert/codediff.nvim",
+      "dlyongemallo/diffview-plus.nvim",
     },
     keys = {
       {
@@ -26,12 +26,12 @@ return {
         section = { "", "" },
       },
       integrations = {
-        codediff = true,
-        diffview = false,
+        codediff = false,
+        diffview = true,
         snacks = false,
         mini_pick = false,
       },
-      diff_viewer = "codediff",
+      diff_viewer = "diffview",
       mappings = {
         status = {
           ["C"] = function()
