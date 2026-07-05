@@ -12,6 +12,7 @@ function M.get(p)
     MiniStatuslineModeCommand = s.statusline.mode(p.yellow),
     MiniStatuslineModeOther = s.statusline.mode(p.cyan),
     MiniStatuslineDevinfo = s.statusline.section,
+    MiniStatuslineWorkspace = { fg = p.green },
     MiniStatuslinePath = s.statusline.section,
     MiniStatuslineDiagnostics = s.statusline.section,
     MiniStatuslineInputState = s.statusline.section,

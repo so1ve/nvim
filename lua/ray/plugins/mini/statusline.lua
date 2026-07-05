@@ -23,6 +23,16 @@ local function statusline_macro()
   return statusline_escape("recording @" .. register)
 end
 
+local function statusline_workspace()
+  local workspace = vim.fn.fnamemodify(vim.fn.getcwd(0), ":t")
+
+  if workspace == "" then
+    return ""
+  end
+
+  return statusline_section(workspace:upper())
+end
+
 local function statusline_pretty_path()
   local path = vim.api.nvim_buf_get_name(0)
 
@@ -237,6 +247,7 @@ end
 
 local function statusline_active()
   local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
+  local workspace = statusline_workspace()
   local git = statusline_git()
   local diff = statusline_diff()
   local file = statusline_file()
@@ -245,6 +256,7 @@ local function statusline_active()
 
   return MiniStatusline.combine_groups({
     { hl = mode_hl, strings = { mode } },
+    { hl = "MiniStatuslineWorkspace", strings = { workspace } },
     { hl = "MiniStatuslineDevinfo", strings = { git, diff } },
     "%<",
     { hl = "MiniStatuslinePath", strings = { file } },
