@@ -24,8 +24,8 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- Editing
 map("n", "x", '"_x', { desc = "Delete without yanking" })
--- Disable `q` since it is easy to hit by accident and enter recording mode, which can be confusing
 map("n", "q", "<Nop>", { noremap = true, silent = true })
+map("n", "Q", "q", { noremap = true, silent = true })
 map({ "i", "c" }, "jj", "<Esc>", { desc = "Exit insert or command-line mode" })
 map({ "i", "c" }, "jk", "<Esc>", { desc = "Exit insert or command-line mode" })
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
