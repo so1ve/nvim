@@ -3,7 +3,7 @@ return {
   event = "InsertEnter",
   opts = {
     check_ts = true,
-    disable_filetype = { "snacks_picker_input", "fff_input", "grug-far" },
+    disable_filetype = { "snacks_picker_input", "grug-far" },
   },
   config = function(_, opts)
     local npairs = require("nvim-autopairs")

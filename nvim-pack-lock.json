@@ -45,10 +45,6 @@
       "rev": "8bfd2808994a988c975694122f68624b8a219f5f",
       "src": "https://github.com/folke/edgy.nvim"
     },
-    "fff.nvim": {
-      "rev": "18f546a4fe8939d884b495a7d761f4905ad205a3",
-      "src": "https://github.com/dmtrKovalenko/fff.nvim"
-    },
     "filler-begone.nvim": {
       "rev": "122018c0f54519b9ee16fb0e31b96989a7682e1c",
       "src": "https://github.com/saghen/filler-begone.nvim"

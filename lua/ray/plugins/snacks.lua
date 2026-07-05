@@ -57,8 +57,8 @@ return {
         preset = {
           header = greeting(),
           keys = {
-            { key = "f", desc = "Find file", action = ":lua require('fff').find_files()" },
-            { key = "g", desc = "Find text", action = ":lua require('fff').live_grep()" },
+            { key = "f", desc = "Find file", action = ":lua Snacks.picker.files()" },
+            { key = "g", desc = "Find text", action = ":lua Snacks.picker.grep()" },
             { key = "r", desc = "Recent files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
             {
               key = "G",
@@ -191,6 +191,20 @@ return {
           Snacks.picker.gh_pr({ state = "all" })
         end,
         desc = "GitHub Pull Requests (all)",
+      },
+      {
+        "<leader>ff",
+        function()
+          Snacks.picker.files()
+        end,
+        desc = "Find files",
+      },
+      {
+        "<leader>fg",
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = "Live grep",
       },
       {
         "<leader>fb",
