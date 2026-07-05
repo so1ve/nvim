@@ -68,7 +68,10 @@ return function(spec)
     hint = {
       type = "window",
       position = "bottom",
-      float_opts = { border = "rounded" },
+      float_opts = {
+        border = "rounded",
+        zindex = 999,
+      },
     },
   })
   spec.hint = hint(spec)
