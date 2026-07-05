@@ -125,13 +125,6 @@ return {
           ft = "snacks_notif",
         },
       },
-      scroll = {
-        filter = function(buf)
-          return vim.g.snacks_scroll ~= false
-            and vim.b[buf].snacks_scroll ~= false
-            and vim.bo[buf].filetype == "snacks_picker_preview"
-        end,
-      },
       statuscolumn = {},
       terminal = {
         shell = terminal.shell.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
