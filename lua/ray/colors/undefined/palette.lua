@@ -50,7 +50,9 @@ return {
   diff_delete_bg = "#3f3335",
   diff_add_fg = "#85e89d",
   diff_add_bg = "#2f3f34",
-  diff_change_fg = "#ffab70",
+  diff_change_fg = "#e6cc77",
+  diff_change_bg = "#343126",
+  diff_text_bg = "#4a402b",
   diff_header = "#79b8ff",
 
   markdown_heading_bg = {

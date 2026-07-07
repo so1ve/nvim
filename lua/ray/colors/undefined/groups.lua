@@ -99,9 +99,9 @@ function M.get(p)
     LspReferenceWrite = { bg = p.selection },
 
     DiffAdd = { bg = p.diff_add_bg },
-    DiffChange = {},
+    DiffChange = { bg = p.diff_change_bg },
     DiffDelete = { bg = p.diff_delete_bg },
-    DiffText = { bg = p.bg_alt },
+    DiffText = { bg = p.diff_text_bg },
 
     Directory = s.kind.folder,
     Title = s.title,
