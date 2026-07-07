@@ -11,9 +11,7 @@ local function trouble_filter(position)
 end
 
 return {
-  src = "file:///C:/Workspace/panels.nvim",
-  name = "panels.nvim",
-  main = "panels",
+  "so1ve/panels.nvim",
   opts = {
     panels = {
       ["grug-far"] = {
