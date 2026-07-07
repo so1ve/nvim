@@ -140,7 +140,7 @@
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "panels.nvim": {
-      "rev": "e3598fabe75f4146c60214713b7e4371cac55725",
+      "rev": "14f4a7ae765d57fa2684a59c67cf72a87b045c57",
       "src": "https://github.com/so1ve/panels.nvim"
     },
     "plenary.nvim": {
