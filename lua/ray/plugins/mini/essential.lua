@@ -47,6 +47,13 @@ function M.setup()
 
   require("mini.git").setup()
   require("mini.align").setup()
+  require("mini.pairs").setup({
+    mappings = {
+      ['"'] = false,
+      ["'"] = false,
+      ["`"] = false,
+    },
+  })
   require("mini.surround").setup()
   require("mini.jump").setup()
   require("mini.cursorword").setup({ delay = 0 })
