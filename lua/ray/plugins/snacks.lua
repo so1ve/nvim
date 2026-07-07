@@ -29,7 +29,6 @@ local function greeting()
 end
 
 local terminal = require("ray.config.terminal")
-local edgy = require("ray.integrations.edgy")
 local symbols = require("ray.config.symbols")
 
 return {
@@ -319,7 +318,9 @@ return {
       {
         "<leader>tt",
         function()
-          Snacks.terminal(nil, { count = 1, cwd = vim.fn.getcwd(0) })
+          require("panels").open("snacks.terminal", function()
+            Snacks.terminal(nil, { count = 1, cwd = vim.fn.getcwd(0) })
+          end)
         end,
         desc = "Toggle terminal",
       },
@@ -332,14 +333,4 @@ return {
       },
     },
   },
-  edgy.view_spec(
-    "bottom",
-    edgy.view("Terminal", "snacks_terminal", {
-      filter = function(_, win)
-        local snacks_win = vim.w[win].snacks_win
-
-        return snacks_win and snacks_win.position == "bottom" and snacks_win.relative == "editor"
-      end,
-    })
-  ),
 }

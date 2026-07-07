@@ -1,4 +1,3 @@
-local edgy = require("ray.integrations.edgy")
 local ignore = require("ray.config.ignore")
 
 local function rg_flags()
@@ -39,10 +38,12 @@ return {
       {
         "<leader>sr",
         function()
-          require("grug-far").open({
-            transient = true,
-            prefills = { paths = vim.fn.expand("%") },
-          })
+          require("panels").open("grug-far", function()
+            require("grug-far").open({
+              transient = true,
+              prefills = { paths = vim.fn.expand("%") },
+            })
+          end)
         end,
         mode = { "n", "x" },
         desc = "Search and replace current file",
@@ -50,12 +51,13 @@ return {
       {
         "<leader>sR",
         function()
-          require("grug-far").open({ transient = true })
+          require("panels").open("grug-far", function()
+            require("grug-far").open({ transient = true })
+          end)
         end,
         mode = { "n", "x" },
         desc = "Search and replace",
       },
     },
   },
-  edgy.view_spec("right", edgy.view("Search & Replace", "grug-far")),
 }

@@ -1,6 +1,5 @@
 local map = vim.keymap.set
 local map_multistep = require("mini.keymap").map_multistep
-local window_resize = require("ray.integrations.edgy.resize")
 
 -- Remove builtin mappings that conflict with plugin/LSP behavior. When LSP is not
 -- ready for references, `gr` otherwise opens the builtin key hint menu instead of
@@ -113,19 +112,13 @@ map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
-map("n", "<C-Right>", function()
-  window_resize.resize("width", 2)
-end, { desc = "Increase window width" })
-map("n", "<C-Left>", function()
-  window_resize.resize("width", -2)
-end, { desc = "Decrease window width" })
-map("n", "<C-Up>", function()
-  window_resize.resize("height", 2)
-end, { desc = "Increase window height" })
-map("n", "<C-Down>", function()
-  window_resize.resize("height", -2)
-end, { desc = "Decrease window height" })
-map("n", "<leader>=", window_resize.equalize, { desc = "Equalize windows" })
+map("n", "<C-Right>", "<C-w>>", { desc = "Increase window width" })
+map("n", "<C-Left>", "<C-w><", { desc = "Decrease window width" })
+map("n", "<C-Up>", "<C-w>+", { desc = "Increase window height" })
+map("n", "<C-Down>", "<C-w>-", { desc = "Decrease window height" })
+map("n", "<leader>=", function()
+  require("panels").equalize()
+end, { desc = "Equalize windows" })
 
 -- Insert-mode navigation
 map("i", "<A-h>", "<Left>", { desc = "Move left cursor" })

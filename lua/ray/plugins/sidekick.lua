@@ -1,13 +1,3 @@
-local edgy = require("ray.integrations.edgy")
-
-local cli_view = edgy.view("AI CLI", "sidekick_terminal", {
-  filter = function(_, win)
-    return vim.api.nvim_win_get_config(win).relative == ""
-  end,
-  size = { width = 1 / 3 },
-  wo = { winbar = false },
-})
-
 return {
   {
     "folke/sidekick.nvim",
@@ -22,9 +12,11 @@ return {
       },
       {
         "<leader>ao",
-        edgy.with_focus(cli_view, function()
-          require("sidekick.cli").toggle({ name = "opencode" })
-        end),
+        function()
+          require("panels").open("sidekick.cli", function()
+            require("sidekick.cli").toggle({ name = "opencode" })
+          end)
+        end,
         desc = "Toggle OpenCode",
       },
       -- {
@@ -96,5 +88,4 @@ return {
       require("sidekick").setup(opts)
     end,
   },
-  edgy.view_spec("right", cli_view),
 }

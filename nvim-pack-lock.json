@@ -1,7 +1,7 @@
 {
   "plugins": {
     "async.nvim": {
-      "rev": "e2a813be9cd143ab1181de6d8a0720e0230cd86e",
+      "rev": "46adf61a022d5c923f981d527443f406e7d0f63e",
       "src": "https://github.com/lewis6991/async.nvim"
     },
     "blink.cmp": {
@@ -14,7 +14,7 @@
       "src": "https://github.com/so1ve/code-action-menu.nvim"
     },
     "codesettings.nvim": {
-      "rev": "b1f4f53a68c47203d0ba0c7d71db5ea88042110b",
+      "rev": "4a8a2f4abca7637e1d72ca718d694d84771a99a6",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "colorful-menu.nvim": {
@@ -41,10 +41,6 @@
       "rev": "b9f10d68116bd3f8d54197a067e11cebfb41b268",
       "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
-    "edgy.nvim": {
-      "rev": "8bfd2808994a988c975694122f68624b8a219f5f",
-      "src": "https://github.com/folke/edgy.nvim"
-    },
     "filler-begone.nvim": {
       "rev": "122018c0f54519b9ee16fb0e31b96989a7682e1c",
       "src": "https://github.com/saghen/filler-begone.nvim"
@@ -66,7 +62,7 @@
       "src": "https://github.com/Bilal2453/luvit-meta"
     },
     "markdown-plus.nvim": {
-      "rev": "003f5a83de9dad0c6a5a86c375745cb359e60d3a",
+      "rev": "59075587b4540abd5fac68232c39d5a46db6d44c",
       "src": "https://github.com/YousefHadder/markdown-plus.nvim"
     },
     "mason-tool-installer.nvim": {
@@ -78,7 +74,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "c5cdbadeb423ff724e27a42ab2d1c504d1d6fc5a",
+      "rev": "928971c3cfe99ddf29659acc31214cfa836fabe4",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "multicursor.nvim": {
@@ -86,7 +82,7 @@
       "src": "https://github.com/jake-stewart/multicursor.nvim"
     },
     "neogit": {
-      "rev": "43ea1a0854052e583f647e0b35879f0158a70a78",
+      "rev": "6fc2fa890bd2031ed999c074daab0fb4feff20a5",
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "neoscroll.nvim": {
@@ -111,7 +107,7 @@
       "version": "'28259d282068628f078295a1a23317ae918934d9'"
     },
     "noicelet.nvim": {
-      "rev": "6f5433b84a14c8ce407ede53706891030fb2d1f2",
+      "rev": "c2dbaf8a14d832660b85bf866f834f4a3b8dfd01",
       "src": "https://github.com/so1ve/noicelet.nvim"
     },
     "nvim-lint": {
@@ -143,6 +139,10 @@
       "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
       "src": "https://github.com/stevearc/overseer.nvim"
     },
+    "panels.nvim": {
+      "rev": "e3598fabe75f4146c60214713b7e4371cac55725",
+      "src": "https://github.com/so1ve/panels.nvim"
+    },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
@@ -161,7 +161,7 @@
       "version": "9.0.0 - 10.0.0"
     },
     "schemastore.nvim": {
-      "rev": "6ff1f21b2e2b77ec59f7433ce2d9fbc052d908ac",
+      "rev": "19adbfb1c4d4049b691be0d840936b109de0f5ea",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "sidekick.nvim": {
@@ -177,7 +177,7 @@
       "src": "https://github.com/so1ve/tiny-comment.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "18c5bcfd4e3cd55946830016780641e3901fecb2",
+      "rev": "6264451f14119d63a52580e5198d6baf8518b0b2",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "tiny-md.nvim": {

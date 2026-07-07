@@ -14,4 +14,4 @@
 
 ## TODOs
 
-- [ ] replace `edgy.nvim` with `mini.windows` once released
+- [ ] consider replacing and deprecating `panels.nvim` with `mini.windows` when it is released?
