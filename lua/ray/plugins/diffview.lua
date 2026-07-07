@@ -11,7 +11,9 @@ return {
     "DiffviewClose",
   },
   opts = function()
-    local close = "<cmd>DiffviewClose<cr>"
+    local close = function()
+      require("diffview").close(nil, { force = false })
+    end
     local close_map = { "n", "q", close, { desc = "Close Diffview" } }
 
     return {
