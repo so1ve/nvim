@@ -33,6 +33,7 @@ return {
         qflist = { n = "<localleader>F" },
         refresh = { n = "<C-r>" },
       },
+      startInInsertMode = false,
     },
     keys = {
       {
