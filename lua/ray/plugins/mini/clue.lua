@@ -161,7 +161,7 @@ function M.setup()
       operator_clues(),
       gen_clues.g(),
       gen_clues.marks(),
-      gen_clues.registers({ show_contents = true }),
+      gen_clues.registers(),
       gen_clues.windows({
         submode_move = true,
         submode_navigate = true,
