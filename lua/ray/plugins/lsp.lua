@@ -80,41 +80,58 @@ local function configure_lsp_buffer(event)
 end
 
 return {
-  "neovim/nvim-lspconfig",
-  event = { "BufReadPre", "BufNewFile" },
-  dependencies = {
-    "saghen/blink.cmp",
-    "b0o/schemastore.nvim",
+  {
+    "so1ve/code-action-menu.nvim",
+    event = "LspAttach",
+    opts = {},
   },
-  opts = {
-    servers = {
-      ["*"] = {
-        capabilities = {
-          workspace = {
-            fileOperations = {
-              didRename = true,
-              willRename = true,
+  {
+    "so1ve/noicelet.nvim",
+    event = "LspAttach",
+    opts = {
+      window = {
+        x_padding = 10,
+        y_padding = 2,
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "saghen/blink.cmp",
+      "b0o/schemastore.nvim",
+    },
+    opts = {
+      servers = {
+        ["*"] = {
+          capabilities = {
+            workspace = {
+              fileOperations = {
+                didRename = true,
+                willRename = true,
+              },
             },
           },
         },
       },
     },
+    config = function(_, opts)
+      local languages = require("ray.config.languages")
+
+      vim.lsp.config("*", server_defaults(opts))
+
+      for server_name, config in pairs(languages.servers) do
+        vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
+      end
+
+      for _, server_name in ipairs(languages.collect("lsp")) do
+        vim.lsp.enable(server_name)
+      end
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = configure_lsp_buffer,
+      })
+    end,
   },
-  config = function(_, opts)
-    local languages = require("ray.config.languages")
-
-    vim.lsp.config("*", server_defaults(opts))
-
-    for server_name, config in pairs(languages.servers) do
-      vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
-    end
-
-    for _, server_name in ipairs(languages.collect("lsp")) do
-      vim.lsp.enable(server_name)
-    end
-
-    vim.api.nvim_create_autocmd("LspAttach", {
-      callback = configure_lsp_buffer,
-    })
-  end,
 }
