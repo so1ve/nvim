@@ -40,7 +40,7 @@ function M.patch()
   end
 
   hacks.on_module("neogit.lib.git.index", function(index)
-    hacks.wrap(index, "neogit_issue_1957_windows_hunk_paths", "generate_patch", function(generate_patch)
+    hacks.wrap(index, "NeogitOrg/neogit#1957", "generate_patch", function(generate_patch)
       return function(hunk, opts)
         local patch = generate_patch(hunk, opts)
         local path = repo_relative_path(hunk.file)
