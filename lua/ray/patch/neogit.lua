@@ -39,6 +39,49 @@ function M.patch()
     return
   end
 
+  hacks.on_module("neogit.buffers.status.actions", function(actions)
+    hacks.once(actions, "NeogitOrg/neogit#1984", function()
+      local cleanup_items
+      local index = 1
+
+      while true do
+        local name, value = debug.getupvalue(actions.n_discard, index)
+        assert(name, "Neogit cleanup_items upvalue not found")
+
+        if name == "cleanup_items" then
+          cleanup_items = value
+          break
+        end
+
+        index = index + 1
+      end
+
+      index = 1
+      while true do
+        local name, neogit_absolute_path = debug.getupvalue(cleanup_items, index)
+        assert(name, "Neogit absolute_path upvalue not found")
+
+        if name == "absolute_path" then
+          local absolute_path_index = index
+
+          debug.setupvalue(cleanup_items, absolute_path_index, function(path)
+            if is_absolute_path(path) then
+              return vim.fs.normalize(path)
+            end
+
+            return neogit_absolute_path(path)
+          end)
+          hacks.cleanup(function()
+            debug.setupvalue(cleanup_items, absolute_path_index, neogit_absolute_path)
+          end)
+          return
+        end
+
+        index = index + 1
+      end
+    end)
+  end)
+
   hacks.on_module("neogit.lib.git.index", function(index)
     hacks.wrap(index, "NeogitOrg/neogit#1957", "generate_patch", function(generate_patch)
       return function(hunk, opts)
