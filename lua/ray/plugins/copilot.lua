@@ -41,6 +41,14 @@ return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "InsertEnter",
+  dependencies = {
+    {
+      "copilotlsp-nvim/copilot-lsp",
+      init = function()
+        vim.g.copilot_nes_debounce = 350
+      end,
+    },
+  },
 
   opts = {
     filetypes = {
@@ -52,6 +60,10 @@ return {
       keymap = {
         accept = false,
       },
+    },
+    nes = {
+      enabled = true,
+      auto_trigger = true,
     },
     server_opts_overrides = {
       on_exit = restart_copilot,

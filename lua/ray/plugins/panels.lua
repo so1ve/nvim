@@ -30,13 +30,6 @@ return {
         position = "bottom",
         ft = "OverseerOutput",
       },
-      ["sidekick.cli"] = {
-        title = "AI CLI",
-        position = "right",
-        ft = "sidekick_terminal",
-        size = 1 / 3,
-        wo = { winbar = false },
-      },
       ["snacks.terminal"] = {
         title = "Terminal",
         position = "bottom",
