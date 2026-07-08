@@ -1,19 +1,3 @@
-local ignore = require("ray.config.ignore")
-
-local function rg_flags()
-  local flags = {}
-
-  for _, name in ipairs(ignore.names) do
-    flags[#flags + 1] = "--glob=!" .. name
-  end
-
-  for _, pattern in ipairs(ignore.patterns) do
-    flags[#flags + 1] = "--glob=!" .. pattern
-  end
-
-  return table.concat(flags, " ")
-end
-
 return {
   {
     "MagicDuck/grug-far.nvim",
@@ -21,7 +5,6 @@ return {
     opts = {
       engines = {
         ripgrep = {
-          extraArgs = rg_flags(),
           defaults = {
             flags = "--smart-case",
           },

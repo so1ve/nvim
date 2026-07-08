@@ -47,8 +47,15 @@ function M.setup()
       vim.keymap.set("n", "K", "k", { buffer = args.data.buf_id, desc = "Move up" })
       vim.keymap.set("n", "gh", function()
         show_hidden = not show_hidden
-        require("mini.files").refresh(opts)
+        files.refresh(opts)
       end, { buffer = args.data.buf_id, desc = "Toggle hidden entries" })
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "RayGitIgnoreCacheUpdated",
+    callback = function()
+      files.refresh(opts)
     end,
   })
 
