@@ -98,6 +98,11 @@ return {
         },
         server = {
           on_attach = attach_rust_keymaps,
+          settings = function(project_root, default_settings)
+            return require("codesettings").loader():root_dir(project_root):with_local_settings("rust-analyzer", {
+              settings = default_settings,
+            }).settings
+          end,
           default_settings = {
             ["rust-analyzer"] = {
               cargo = {
