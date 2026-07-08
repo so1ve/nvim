@@ -19,13 +19,6 @@ local function with_project_settings(config)
   })
 end
 
-local function server_defaults(opts)
-  local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
-  local servers = opts.servers or {}
-
-  return with_project_settings(vim.tbl_deep_extend("force", { capabilities = capabilities }, servers["*"] or {}))
-end
-
 local function configure_lsp_buffer(event)
   local bufnr = event.buf
   local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -118,8 +111,9 @@ return {
     },
     config = function(_, opts)
       local languages = require("ray.config.languages")
+      local servers = opts.servers or {}
 
-      vim.lsp.config("*", server_defaults(opts))
+      vim.lsp.config("*", with_project_settings(servers["*"]))
 
       for server_name, config in pairs(languages.servers) do
         vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
