@@ -12,6 +12,7 @@ end
 
 return {
   "so1ve/panels.nvim",
+  event = "VeryLazy",
   opts = {
     panels = {
       ["grug-far"] = {
@@ -62,7 +63,7 @@ return {
         title = "Help",
         position = "bottom",
         ft = "help",
-        size = 20,
+        size = 1 / 2,
         filter = function(buf)
           return vim.bo[buf].buftype == "help"
         end,
