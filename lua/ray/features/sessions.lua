@@ -3,7 +3,6 @@ local sessions = require("mini.sessions")
 local M = {}
 
 local session_dir = vim.fn.stdpath("state") .. "/sessions"
-local minimum_buffers = 1
 
 local function encode_path(path)
   return path:gsub("[\\/:]+", "%%")
@@ -33,55 +32,33 @@ local function read_session(name)
   end
 end
 
-local function is_file_buffer(bufnr)
-  return vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_get_name(bufnr) ~= ""
-end
-
-local function has_enough_file_buffers()
-  local count = 0
-
+local function has_file_buffer()
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if is_file_buffer(bufnr) then
-      count = count + 1
-
-      if count >= minimum_buffers then
-        return true
-      end
+    if vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_get_name(bufnr) ~= "" then
+      return true
     end
   end
-
   return false
 end
 
 local function save_session(verbose, require_file_buffer)
-  if require_file_buffer and not has_enough_file_buffers() then
+  if require_file_buffer and not has_file_buffer() then
     return
   end
 
-  sessions.write(current_session_name(), {
-    force = true,
-    verbose = verbose,
-  })
+  sessions.write(current_session_name(), { force = true, verbose = verbose })
 end
 
 local function session_item(path)
   local name = vim.fn.fnamemodify(path, ":t")
-  local stem = vim.fn.fnamemodify(name, ":r")
-
-  return {
-    dir = decode_path(stem),
-    name = name,
-    path = path,
-  }
+  return { dir = decode_path(vim.fn.fnamemodify(name, ":r")), name = name }
 end
 
 local function list_sessions()
   local paths = vim.fn.glob(session_dir .. "/*.vim", true, true)
-
   table.sort(paths, function(a, b)
     return vim.fn.getftime(a) > vim.fn.getftime(b)
   end)
-
   return vim.tbl_map(session_item, paths)
 end
 
