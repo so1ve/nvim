@@ -69,8 +69,23 @@ return {
     opts.adapters = adapters
 
     local neotest = require("neotest")
-
     neotest.setup(opts)
+
+    -- register q to close neotest output and output panel windows
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "neotest-output-panel", "neotest-output" },
+      callback = function(args)
+        vim.keymap.set("n", "q", function()
+          local filetype = vim.bo[args.buf].filetype
+
+          if filetype == "neotest-output-panel" then
+            neotest.output_panel.close()
+          elseif filetype == "neotest-output" then
+            vim.api.nvim_win_close(0, true)
+          end
+        end, { buffer = args.buf, desc = "Close neotest window", nowait = true, silent = true })
+      end,
+    })
 
     local map = function(keys, rhs, desc)
       vim.keymap.set("n", "<leader>T" .. keys, rhs, { desc = desc })
