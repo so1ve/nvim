@@ -15,6 +15,11 @@ return {
       init = function()
         vim.g.rustaceanvim = {
           server = {
+            on_attach = function(_, bufnr)
+              vim.keymap.set("n", "<leader>ce", function()
+                vim.cmd.RustLsp("expandMacro")
+              end, { buffer = bufnr, desc = "Expand macro" })
+            end,
             settings = function(project_root, default_settings)
               return require("codesettings").loader():root_dir(project_root):with_local_settings("rust-analyzer", {
                 settings = default_settings,
