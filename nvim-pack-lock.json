@@ -119,7 +119,7 @@
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "panels.nvim": {
-      "rev": "14f4a7ae765d57fa2684a59c67cf72a87b045c57",
+      "rev": "a13148ed8443d7de964729b69c46cac309d71172",
       "src": "https://github.com/so1ve/panels.nvim"
     },
     "plenary.nvim": {
@@ -140,7 +140,7 @@
       "version": "9.0.0 - 10.0.0"
     },
     "schemastore.nvim": {
-      "rev": "19adbfb1c4d4049b691be0d840936b109de0f5ea",
+      "rev": "e954496f8ef22904e8a84f5078f4a110fdc7a0d3",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "sidekick.nvim": {
