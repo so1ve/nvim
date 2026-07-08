@@ -23,13 +23,7 @@ function M.sign_group(severity)
 end
 
 function M.open_float()
-  local bufnr, winid = vim.diagnostic.open_float({ scope = "line" })
-
-  if bufnr then
-    require("ray.utils.keymaps").map_display_line_motion(bufnr)
-  end
-
-  return bufnr, winid
+  return vim.diagnostic.open_float({ scope = "line" })
 end
 
 function M.setup()

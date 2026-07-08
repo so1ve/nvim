@@ -4,8 +4,6 @@ vim.opt_local.conceallevel = 2
 vim.opt_local.formatoptions:remove("r")
 vim.opt_local.formatoptions:append("o")
 
-require("ray.utils.keymaps").map_display_line_motion()
-
 local list_parser = require("markdown-plus.list.parser")
 local list_handler_utils = require("markdown-plus.list.handler_utils")
 

@@ -40,6 +40,8 @@ map("x", "<leader>yp", '"_d"0P', { desc = "Replace selection with yanked text" }
 map("x", "<leader>yP", '"_d"0P', { desc = "Replace selection with yanked text" })
 
 -- Line motions
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down display line", expr = true, silent = true })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up display line", expr = true, silent = true })
 map({ "n", "x", "o" }, "H", "^", { desc = "Move to first non-blank character" })
 map({ "n", "x", "o" }, "L", "$", { desc = "Move to end of line" })
 
