@@ -19,18 +19,6 @@ function M.get(p)
     SnacksWinKeySep = s.separator,
     SnacksWinKeyDesc = s.dim,
 
-    SnacksDashboardNormal = s.normal,
-    SnacksDashboardHeader = s.title,
-    SnacksDashboardTitle = s.title,
-    SnacksDashboardDesc = { fg = p.green },
-    SnacksDashboardKey = s.key,
-    SnacksDashboardSpecial = s.key,
-    SnacksDashboardIcon = s.muted,
-    SnacksDashboardFile = { fg = p.fg },
-    SnacksDashboardDir = { fg = p.green },
-    SnacksDashboardFooter = s.muted,
-    SnacksDashboardTerminal = s.normal,
-
     SnacksPicker = s.popup_editor.normal,
     SnacksPickerBox = s.popup_editor.normal,
     SnacksPickerBoxBorder = s.popup_editor.border,

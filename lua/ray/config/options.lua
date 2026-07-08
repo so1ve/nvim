@@ -168,5 +168,4 @@ opt.ttimeoutlen = 10
 opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- messages
-opt.shortmess:append("I")
 opt.messagesopt = "wait:1000,history:500,progress:c"
