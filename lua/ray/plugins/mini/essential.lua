@@ -99,8 +99,6 @@ function M.setup()
     file = { suffix = "" },
     treesitter = { suffix = "" },
   })
-
-  require("ray.features.sessions").setup()
 end
 
 return M

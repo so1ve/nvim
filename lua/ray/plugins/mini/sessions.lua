@@ -1,7 +1,5 @@
 local sessions = require("mini.sessions")
 
-local M = {}
-
 local session_dir = vim.fn.stdpath("state") .. "/sessions"
 
 local function encode_path(path)
@@ -49,17 +47,17 @@ local function save_session(verbose, require_file_buffer)
   sessions.write(current_session_name(), { force = true, verbose = verbose })
 end
 
-local function session_item(path)
-  local name = vim.fn.fnamemodify(path, ":t")
-  return { dir = decode_path(vim.fn.fnamemodify(name, ":r")), name = name }
-end
-
 local function list_sessions()
   local paths = vim.fn.glob(session_dir .. "/*.vim", true, true)
+
   table.sort(paths, function(a, b)
     return vim.fn.getftime(a) > vim.fn.getftime(b)
   end)
-  return vim.tbl_map(session_item, paths)
+
+  return vim.tbl_map(function(path)
+    local name = vim.fn.fnamemodify(path, ":t")
+    return { dir = decode_path(vim.fn.fnamemodify(name, ":r")), name = name }
+  end, paths)
 end
 
 local function select_session()
@@ -87,9 +85,11 @@ local function load_last_session()
   end
 end
 
-function M.load()
+local function load_project_session()
   read_session(current_session_name())
 end
+
+local M = {}
 
 function M.setup()
   sessions.setup({
@@ -123,7 +123,7 @@ function M.setup()
     end,
   })
 
-  vim.keymap.set("n", "<leader>pr", M.load, { desc = "Restore project session" })
+  vim.keymap.set("n", "<leader>pr", load_project_session, { desc = "Restore project session" })
   vim.keymap.set("n", "<leader>pw", function()
     save_session(true, false)
   end, { desc = "Save session" })
