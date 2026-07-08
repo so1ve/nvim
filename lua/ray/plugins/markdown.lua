@@ -6,6 +6,15 @@ return {
       "nvim-mini/mini.nvim",
       "so1ve/tiny-treesitter.nvim",
     },
+    init = function()
+      vim.api.nvim_create_autocmd("BufWinEnter", {
+        callback = function(event)
+          if vim.bo[event.buf].filetype == "markdown" then
+            require("render-markdown.core.manager").attach(event.buf)
+          end
+        end,
+      })
+    end,
     opts = {
       heading = {
         backgrounds = {
