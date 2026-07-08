@@ -150,7 +150,6 @@ function M.setup()
       { mode = "n", keys = "<Leader>r", desc = "+Refactor" },
       { mode = "n", keys = "<Leader>s", desc = "+Search" },
       { mode = "n", keys = "<Leader>t", desc = "+Terminal" },
-      { mode = "n", keys = "<Leader>T", desc = "+Test" },
       { mode = "n", keys = "<Leader>u", desc = "+UI" },
       { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
       { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
