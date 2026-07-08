@@ -1,30 +1,8 @@
-local function refresh_visible_diagnostics(winid)
-  if not vim.api.nvim_win_is_valid(winid) then
-    return
-  end
-
-  vim.api.nvim_win_call(winid, function()
-    local tiny_diag = require("tiny-inline-diagnostic")
-
-    if not tiny_diag.config then
-      return
-    end
-
-    local bufnr = vim.api.nvim_get_current_buf()
-    require("tiny-inline-diagnostic.renderer").safe_render(tiny_diag.config, bufnr)
-
-    if vim.api.nvim__redraw then
-      vim.api.nvim__redraw({ win = winid, valid = true, flush = false })
-    end
-  end)
-end
-
 return {
   "rachartier/tiny-inline-diagnostic.nvim",
   event = "LspAttach",
   keys = {
-    { "<leader>di", "<cmd>TinyInlineDiag toggle_cursor_only<cr>", desc = "Toggle cursor-only diagnostics" },
-    { "<leader>dI", "<cmd>TinyInlineDiag toggle<cr>", desc = "Toggle inline diagnostics" },
+    { "<leader>di", "<cmd>TinyInlineDiag toggle<cr>", desc = "Toggle inline diagnostics" },
   },
   opts = {
     hi = {
@@ -38,7 +16,10 @@ return {
     },
   },
   config = function(_, opts)
-    require("tiny-inline-diagnostic").setup(opts)
+    local tiny_diag = require("tiny-inline-diagnostic")
+    local renderer = require("tiny-inline-diagnostic.renderer")
+
+    tiny_diag.setup(opts)
 
     vim.api.nvim_create_autocmd("WinScrolled", {
       callback = function(event)
@@ -50,7 +31,11 @@ return {
         end
 
         vim.schedule(function()
-          refresh_visible_diagnostics(winid)
+          vim.api.nvim_win_call(winid, function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            renderer.safe_render(tiny_diag.config, bufnr)
+            vim.api.nvim__redraw({ win = winid, valid = true, flush = false })
+          end)
         end)
       end,
     })
