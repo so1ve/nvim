@@ -52,9 +52,6 @@ return {
   },
   {
     "niekdomi/conflict.nvim",
-    dependencies = {
-      "nvimtools/hydra.nvim",
-    },
     event = "BufReadPre",
     opts = {
       default_mappings = {
@@ -68,63 +65,35 @@ return {
       },
     },
     config = function(_, opts)
-      local Hydra = require("ray.integrations.hydra")
       local conflict = require("conflict")
 
       conflict.setup(opts)
 
-      Hydra({
-        name = "Git Conflicts",
-        mode = "n",
-        body = "<leader>gc",
-        heads = {
-          {
-            "n",
-            function()
-              conflict.navigate("next")
-            end,
-            { desc = "Next", group = "Move" },
-          },
-          {
-            "p",
-            function()
-              conflict.navigate("prev")
-            end,
-            { desc = "Previous", group = "Move" },
-          },
-          { "r", "<cmd>Conflict refresh<cr>", { desc = "Refresh", group = "Move" } },
-          {
-            "c",
-            function()
-              conflict.choose("current")
-            end,
-            { desc = "Current", group = "Accept" },
-          },
-          {
-            "i",
-            function()
-              conflict.choose("incoming")
-            end,
-            { desc = "Incoming", group = "Accept" },
-          },
-          {
-            "B",
-            function()
-              conflict.choose("both")
-            end,
-            { desc = "Both", group = "Accept" },
-          },
-          {
-            "b",
-            function()
-              conflict.choose("base")
-            end,
-            { desc = "Base", group = "Accept" },
-          },
-          { "l", conflict.list, { exit = true, desc = "Files", group = "Lists" } },
-          { "Q", conflict.qflist, { exit_before = true, desc = "Quickfix", group = "Lists" } },
-        },
-      })
+      local map = function(keys, rhs, desc)
+        vim.keymap.set("n", "<leader>gc" .. keys, rhs, { desc = desc })
+      end
+
+      map("n", function()
+        conflict.navigate("next")
+      end, "Next conflict")
+      map("p", function()
+        conflict.navigate("prev")
+      end, "Previous conflict")
+      map("r", "<cmd>Conflict refresh<cr>", "Refresh conflicts")
+      map("c", function()
+        conflict.choose("current")
+      end, "Accept current")
+      map("i", function()
+        conflict.choose("incoming")
+      end, "Accept incoming")
+      map("B", function()
+        conflict.choose("both")
+      end, "Accept both")
+      map("b", function()
+        conflict.choose("base")
+      end, "Accept base")
+      map("l", conflict.list, "Conflict files")
+      map("Q", conflict.qflist, "Conflicts quickfix")
     end,
   },
   {

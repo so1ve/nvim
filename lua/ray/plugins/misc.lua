@@ -1,8 +1,5 @@
 return {
   {
-    "nvimtools/hydra.nvim",
-  },
-  {
     "saghen/filler-begone.nvim",
     event = "VeryLazy",
   },
