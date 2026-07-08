@@ -22,10 +22,6 @@ function M.sign_group(severity)
   return "DiagnosticSign" .. (names[severity] or "Info")
 end
 
-function M.open_float()
-  return vim.diagnostic.open_float({ scope = "line" })
-end
-
 function M.setup()
   vim.diagnostic.config({
     float = {
