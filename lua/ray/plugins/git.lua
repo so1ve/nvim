@@ -5,6 +5,7 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "dlyongemallo/diffview-plus.nvim",
+      "so1ve/copilot-ai-commit.nvim",
     },
     keys = {
       {
@@ -35,7 +36,7 @@ return {
       mappings = {
         status = {
           ["C"] = function()
-            require("ray.features.git.ai-commit").commit_with_generated_message()
+            require("copilot-ai-commit").commit_with_generated_message()
           end,
         },
       },
@@ -45,7 +46,7 @@ return {
       },
     },
     config = function(_, opts)
-      require("ray.features.git.ai-commit").setup()
+      require("copilot-ai-commit").setup()
       require("ray.patch.neogit").patch()
       require("neogit").setup(opts)
     end,
