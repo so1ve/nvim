@@ -4,7 +4,6 @@ local excluded_filetypes = {
   "help",
   "markdown",
 }
-local windows = require("ray.utils.windows")
 
 local M = {}
 
@@ -54,7 +53,8 @@ function M.setup()
   end
 
   local function update_map()
-    if not windows.is_normal_win(vim.api.nvim_get_current_win()) then
+    local win = vim.api.nvim_get_current_win()
+    if win == 0 or not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_config(win).relative ~= "" then
       return
     end
 
