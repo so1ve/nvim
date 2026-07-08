@@ -20,6 +20,18 @@ return {
         position = "right",
         ft = "grug-far",
       },
+      ["neotest.output"] = {
+        title = "Neotest Output",
+        position = "bottom",
+        ft = "neotest-output-panel",
+        size = 15,
+      },
+      ["neotest.summary"] = {
+        title = "Neotest",
+        position = "left",
+        ft = "neotest-summary",
+        wo = { winbar = false },
+      },
       ["overseer.list"] = {
         title = "Tasks",
         position = "bottom",
