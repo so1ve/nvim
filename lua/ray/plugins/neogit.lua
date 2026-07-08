@@ -46,7 +46,7 @@ return {
     },
     config = function(_, opts)
       require("ray.features.git.ai-commit").setup()
-      require("ray.patch.neogit.hunk-paths").patch()
+      require("ray.patch.neogit").patch()
       require("neogit").setup(opts)
     end,
   },
