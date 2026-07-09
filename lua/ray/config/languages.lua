@@ -1,4 +1,4 @@
-local modules = require("ray.utils.modules")
+local utils = require("ray.utils")
 
 local M = {
   by_filetype = {},
@@ -63,7 +63,7 @@ local function merge_servers(servers)
 end
 
 local function load_specs()
-  for _, spec in ipairs(modules.load("ray.config.languages")) do
+  for _, spec in ipairs(utils.load("ray.config.languages")) do
     merge_languages(spec.languages)
     merge_filetypes(spec.filetypes)
     merge_servers(spec.servers)
