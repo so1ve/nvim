@@ -125,9 +125,6 @@ return {
     map("S", function()
       neotest.run.stop()
     end, "Stop test")
-    map("d", function()
-      neotest.run.run({ strategy = "dap" })
-    end, "Debug nearest test")
   end,
   keys = {
     { "<leader>T", desc = "Test" },
