@@ -28,10 +28,13 @@ return {
       dependencies = {
         "fredrikaverpil/neotest-golang",
       },
+      build = function()
+        vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait() -- Optional, but recommended
+      end,
       opts = {
         adapters = {
           ["neotest-golang"] = {
-            -- go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
+            runner = "gotestsum",
           },
         },
       },
