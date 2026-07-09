@@ -27,10 +27,10 @@ return {
       picker = {
         sources = {
           lsp_symbols = {
-            filter = symbols.snacks_lsp_symbol_filter(),
+            filter = symbols.snacks_lsp_symbol_filter,
           },
           lsp_workspace_symbols = {
-            filter = symbols.snacks_lsp_symbol_filter(),
+            filter = symbols.snacks_lsp_symbol_filter,
           },
         },
         actions = {

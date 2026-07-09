@@ -1,25 +1,5 @@
 local M = {}
 
-local function copy(spec)
-  local result = {}
-
-  for key, value in pairs(spec) do
-    result[key] = value
-  end
-
-  return result
-end
-
-function M.extend(spec, overrides)
-  local result = copy(spec)
-
-  for key, value in pairs(overrides) do
-    result[key] = value
-  end
-
-  return result
-end
-
 function M.get(p)
   -- Color contract:
   -- Green is the single theme accent: titles, focused popup/input borders, prompts, active chrome, and file/folder wayfinding.

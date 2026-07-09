@@ -1,5 +1,9 @@
 local M = {}
 
+function M.extend(...)
+  return vim.tbl_extend("force", ...)
+end
+
 function M.load(module)
   local loaded = {}
 

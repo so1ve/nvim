@@ -8,18 +8,18 @@ local excluded_filetypes = {
 local M = {}
 
 function M.setup()
+  local map = require("mini.map")
+
   vim.api.nvim_create_autocmd("FileType", {
     pattern = excluded_filetypes,
     callback = function(event)
       vim.b[event.buf].minimap_disable = true
 
-      if _G.MiniMap ~= nil and event.buf == vim.api.nvim_get_current_buf() then
-        MiniMap.close()
+      if event.buf == vim.api.nvim_get_current_buf() then
+        map.close()
       end
     end,
   })
-
-  local map = require("mini.map")
 
   map.setup({
     integrations = {
@@ -53,8 +53,7 @@ function M.setup()
   end
 
   local function update_map()
-    local win = vim.api.nvim_get_current_win()
-    if win == 0 or not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_config(win).relative ~= "" then
+    if vim.api.nvim_win_get_config(0).relative ~= "" then
       return
     end
 

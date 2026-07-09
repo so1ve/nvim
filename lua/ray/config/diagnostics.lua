@@ -18,10 +18,6 @@ function M.sign(severity)
   return signs[severity] or "•"
 end
 
-function M.sign_group(severity)
-  return "DiagnosticSign" .. (names[severity] or "Info")
-end
-
 function M.setup()
   vim.diagnostic.config({
     float = {

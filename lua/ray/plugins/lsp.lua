@@ -1,9 +1,11 @@
+local utils = require("ray.utils")
+
 local function with_project_settings(config)
   config = config or {}
 
   local before_init = config.before_init
 
-  return vim.tbl_extend("force", config, {
+  return utils.extend(config, {
     before_init = function(init_params, client_config)
       if before_init then
         before_init(init_params, client_config)
@@ -35,7 +37,7 @@ local function configure_lsp_buffer(event)
   local supports_workspace_symbols = client:supports_method(workspace_symbol_method)
 
   local function map(lhs, rhs, desc, opts)
-    local keymap_opts = vim.tbl_extend("force", { buffer = bufnr, desc = desc }, opts or {})
+    local keymap_opts = utils.extend({ buffer = bufnr, desc = desc }, opts or {})
 
     vim.keymap.set("n", lhs, rhs, keymap_opts)
   end

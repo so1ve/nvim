@@ -1,11 +1,12 @@
 local M = {}
 local styles = require("ray.colors.undefined.styles")
+local utils = require("ray.utils")
 
 function M.get(p)
   local s = styles.get(p)
 
   local function markdown_heading(level)
-    return styles.extend(s.title, { bg = p.markdown_heading_bg[level] })
+    return utils.extend(s.title, { bg = p.markdown_heading_bg[level] })
   end
 
   return {

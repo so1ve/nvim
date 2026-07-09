@@ -1,5 +1,6 @@
 local M = {}
 local styles = require("ray.colors.undefined.styles")
+local utils = require("ray.utils")
 
 function M.get(p)
   local s = styles.get(p)
@@ -7,7 +8,7 @@ function M.get(p)
   local groups = {
     SnacksNormal = s.float.normal,
     SnacksNormalNC = s.float.normal_nc,
-    SnacksWinBar = styles.extend(s.popup_editor.title, { fg = p.fg }),
+    SnacksWinBar = utils.extend(s.popup_editor.title, { fg = p.fg }),
     SnacksWinBarNC = { fg = p.muted, bg = s.popup_editor.normal.bg },
     SnacksTitle = s.popup_editor.title,
     SnacksFooter = s.dim,

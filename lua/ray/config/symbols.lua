@@ -20,22 +20,18 @@ M.lsp_symbol_kinds = {
   "Variable",
 }
 
-function M.snacks_lsp_symbol_filter()
-  return {
-    default = M.lsp_symbol_kinds,
-    help = true,
-    markdown = true,
-  }
-end
+M.snacks_lsp_symbol_filter = {
+  default = M.lsp_symbol_kinds,
+  help = true,
+  markdown = true,
+}
 
-function M.trouble_lsp_symbol_filter()
-  return {
-    ["not"] = { ft = "lua", kind = "Package" },
-    any = {
-      ft = { "help", "markdown" },
-      kind = M.lsp_symbol_kinds,
-    },
-  }
-end
+M.trouble_lsp_symbol_filter = {
+  ["not"] = { ft = "lua", kind = "Package" },
+  any = {
+    ft = { "help", "markdown" },
+    kind = M.lsp_symbol_kinds,
+  },
+}
 
 return M

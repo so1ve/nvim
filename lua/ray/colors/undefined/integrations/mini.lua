@@ -1,5 +1,6 @@
 local M = {}
 local styles = require("ray.colors.undefined.styles")
+local utils = require("ray.utils")
 
 function M.get(p)
   local s = styles.get(p)
@@ -27,12 +28,12 @@ function M.get(p)
     MiniStatuslineDiagnosticWarn = { fg = p.orange, bg = p.bg_dark },
     MiniStatuslineDiagnosticInfo = { fg = p.blue, bg = p.bg_dark },
     MiniStatuslineDiagnosticHint = { fg = p.green, bg = p.bg_dark },
-    MiniTablineCurrent = styles.extend(s.tabline.current, { bg = p.selection }),
+    MiniTablineCurrent = utils.extend(s.tabline.current, { bg = p.selection }),
     MiniTablineVisible = s.tabline.visible,
     MiniTablineHidden = s.tabline.hidden,
-    MiniTablineModifiedCurrent = styles.extend(s.tabline.current, { fg = p.orange, bg = p.selection }),
-    MiniTablineModifiedVisible = styles.extend(s.tabline.visible, { fg = p.orange }),
-    MiniTablineModifiedHidden = styles.extend(s.tabline.hidden, { fg = p.orange }),
+    MiniTablineModifiedCurrent = utils.extend(s.tabline.current, { fg = p.orange, bg = p.selection }),
+    MiniTablineModifiedVisible = utils.extend(s.tabline.visible, { fg = p.orange }),
+    MiniTablineModifiedHidden = utils.extend(s.tabline.hidden, { fg = p.orange }),
     MiniTablineFill = s.tabline.fill,
     MiniTablineTabpagesection = s.tabline.focus_indicator,
     MiniTablineTrunc = s.tabline.trunc,

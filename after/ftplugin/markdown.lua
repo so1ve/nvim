@@ -56,14 +56,10 @@ local function quote_keys()
   return content:match("^%s*$") and "<C-U>" or "<C-G>u<CR>" .. quote_prefix
 end
 
-local function feed(keys)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
-end
-
 vim.keymap.set("i", "<CR>", function()
   local keys = quote_keys()
   if keys then
-    feed(keys)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
     return
   end
 

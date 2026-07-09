@@ -117,12 +117,10 @@ function M.each_language(callback)
   end
 end
 
-function M.extend()
+local function apply_extensions()
   for _, extend in ipairs(M.extensions) do
     extend(M, helpers)
   end
-
-  return M
 end
 
 function M.get(filetype, field, fallback)
@@ -144,6 +142,6 @@ function M.map(field)
 end
 
 load_specs()
-M.extend()
+apply_extensions()
 
 return M
