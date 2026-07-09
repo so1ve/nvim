@@ -47,7 +47,6 @@ return {
     },
     config = function(_, opts)
       require("copilot-ai-commit").setup()
-      require("ray.patch.neogit").patch()
       require("neogit").setup(opts)
     end,
   },

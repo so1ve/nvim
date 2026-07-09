@@ -46,7 +46,7 @@
       "src": "https://github.com/Saecki/crates.nvim"
     },
     "diffview-plus.nvim": {
-      "rev": "b9f10d68116bd3f8d54197a067e11cebfb41b268",
+      "rev": "1c095f26f268871a6ef06e5cc90f92573c725f95",
       "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
     "filler-begone.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/jake-stewart/multicursor.nvim"
     },
     "neogit": {
-      "rev": "6fc2fa890bd2031ed999c074daab0fb4feff20a5",
+      "rev": "95ab34f3137a01e830d01eb494fa508390d8c0b3",
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "neotest": {
@@ -132,7 +132,7 @@
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "panels.nvim": {
-      "rev": "a13148ed8443d7de964729b69c46cac309d71172",
+      "rev": "b3b878c659ad330b1c670572941e0ed05b415020",
       "src": "https://github.com/so1ve/panels.nvim"
     },
     "plenary.nvim": {
