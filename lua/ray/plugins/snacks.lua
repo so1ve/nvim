@@ -26,6 +26,9 @@ return {
       quickfile = {},
       picker = {
         sources = {
+          files = {
+            hidden = true,
+          },
           lsp_symbols = {
             filter = symbols.snacks_lsp_symbol_filter,
           },
