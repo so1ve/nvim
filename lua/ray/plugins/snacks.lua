@@ -257,7 +257,7 @@ return {
         function()
           require("panels").open("snacks.terminal", function()
             Snacks.terminal(nil, { count = 1, cwd = vim.fn.getcwd(0) })
-          end)
+          end, { reuse = false })
         end,
         desc = "Toggle terminal",
       },
