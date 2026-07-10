@@ -1,3 +1,5 @@
+local formatters = require("ray.config.formatters")
+
 return {
   filetypes = {
     extension = {
@@ -8,18 +10,26 @@ return {
     json = {
       treesitter = "json",
       lsp = { "jsonls", "eslint" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     jsonc = {
       treesitter = "json",
       lsp = { "jsonls", "eslint" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     toml = {
       treesitter = "toml",
       lsp = { "tombi" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
     yaml = {
       treesitter = "yaml",
       lsp = { "yamlls" },
+      tools = formatters.prettier_tools,
+      formatters = formatters.prettier_formatters,
     },
   },
   servers = {
