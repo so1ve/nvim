@@ -4,7 +4,7 @@ return {
     cmd = "Neogit",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "dlyongemallo/diffview-plus.nvim",
+      "esmuellert/codediff.nvim",
       "so1ve/copilot-ai-commit.nvim",
     },
     keys = {
@@ -27,12 +27,12 @@ return {
         section = { "", "" },
       },
       integrations = {
-        codediff = false,
-        diffview = true,
+        codediff = true,
+        diffview = false,
         snacks = false,
         mini_pick = false,
       },
-      diff_viewer = "diffview",
+      diff_viewer = "codediff",
       mappings = {
         status = {
           ["C"] = function()
@@ -97,30 +97,46 @@ return {
     end,
   },
   {
-    "dlyongemallo/diffview-plus.nvim",
-    main = "diffview",
-    cmd = {
-      "DiffviewOpen",
-      "DiffviewToggle",
-      "DiffviewFileHistory",
-      "DiffviewDiffFiles",
-      "DiffviewMergeFiles",
-      "DiffviewDiffDirs",
-      "DiffviewClose",
-    },
-    opts = function()
-      local close = function()
-        require("diffview").close(nil, { force = false })
-      end
-      local close_map = { "n", "q", close, { desc = "Close Diffview" } }
-
-      return {
-        keymaps = {
-          view = { close_map },
-          file_panel = { close_map },
-          file_history_panel = { close_map },
+    "esmuellert/codediff.nvim",
+    cmd = "CodeDiff",
+    opts = {
+      diff = {
+        compute_moves = true,
+      },
+      explorer = {
+        initial_focus = "explorer",
+        visible_groups = {
+          staged = true,
+          unstaged = true,
+          conflicts = true,
         },
-      }
-    end,
+      },
+      keymaps = {
+        view = {
+          next_file = "<Tab>",
+          prev_file = "<S-Tab>",
+        },
+        explorer = {
+          refresh = "<c-r>",
+          stage_all = "S",
+          unstage_all = "U",
+          restore = "x",
+        },
+        conflict = {
+          next_conflict = "<leader>gcn",
+          prev_conflict = "<leader>gcp",
+          accept_incoming = "<leader>gci",
+          accept_current = "<leader>gcc",
+          accept_both = "<leader>gcb",
+          discard = "<leader>gcB",
+          accept_all_incoming = "<leader>gcI",
+          accept_all_current = "<leader>gcC",
+          accept_all_both = "<leader>gcA",
+          discard_all = "<leader>gcX",
+          diffget_incoming = "2do",
+          diffget_current = "3do",
+        },
+      },
+    },
   },
 }
