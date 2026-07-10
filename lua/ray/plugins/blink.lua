@@ -28,17 +28,8 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "nvim-mini/mini.nvim",
-    "xzbdmw/colorful-menu.nvim",
     "so1ve/tiny-md.nvim",
   },
-  config = function(_, opts)
-    require("colorful-menu").setup({
-      ls = {
-        fallback = false,
-      },
-    })
-    require("blink.cmp").setup(opts)
-  end,
   opts = {
     appearance = {
       kind_icons = require("ray.config.icons").symbols,
@@ -81,49 +72,12 @@ return {
       menu = {
         draw = {
           gap = 2,
+          treesitter = { "lsp" },
           columns = { { "kind_icon" }, { "label" }, { "detail" }, { "kind" } },
           components = {
-            label = {
-              text = function(ctx)
-                local highlights_info = require("colorful-menu").blink_highlights(ctx)
-
-                if highlights_info then
-                  return highlights_info.label
-                end
-
-                return ctx.label
-              end,
-              highlight = function(ctx)
-                local highlights_info = require("colorful-menu").blink_highlights(ctx)
-
-                if highlights_info then
-                  local highlights = highlights_info.highlights or {}
-
-                  for _, idx in ipairs(ctx.label_matched_indices) do
-                    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-                  end
-
-                  return highlights
-                end
-
-                local highlights = {
-                  { 0, #ctx.label, group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel" },
-                }
-
-                for _, idx in ipairs(ctx.label_matched_indices) do
-                  table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-                end
-
-                return highlights
-              end,
-            },
             detail = {
               width = { max = 30 },
               text = function(ctx)
-                if require("colorful-menu").blink_highlights(ctx) then
-                  return ""
-                end
-
                 local detail = ctx.item and ctx.item.detail
 
                 if type(detail) ~= "string" then

@@ -21,10 +21,6 @@
       "rev": "4a8a2f4abca7637e1d72ca718d694d84771a99a6",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
-    "colorful-menu.nvim": {
-      "rev": "196ddf16d5f8fec09ba7f20e6b153aa5188e907b",
-      "src": "https://github.com/xzbdmw/colorful-menu.nvim"
-    },
     "conflict.nvim": {
       "rev": "fdc879c34c528aab90e1b90c5d408d141f31fef8",
       "src": "https://github.com/niekdomi/conflict.nvim"
