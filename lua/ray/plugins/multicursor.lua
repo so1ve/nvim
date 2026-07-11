@@ -1,3 +1,4 @@
+-- TODO: https://x.com/justinmk/status/2075633035504910551
 return {
   "jake-stewart/multicursor.nvim",
   keys = {

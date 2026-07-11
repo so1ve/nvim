@@ -1,5 +1,5 @@
 -- Keep MiniSnippets: nested sessions are required so snippets can expand inside active snippets.
--- could be replaced by native vim.snippet after upgrading to nvim 0.13
+-- TODO: could be replaced by native vim.snippet after upgrading to nvim 0.13
 -- (that's why I move from mini.snippets -> vim.snippet and then back to mini.snippets btw)
 local M = {}
 
