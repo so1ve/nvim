@@ -192,6 +192,10 @@
       "rev": "d8b1671db6de96e3c4e44ce5cfd1c9c31d3828bf",
       "src": "https://github.com/DrKJeff16/wezterm-types"
     },
+    "yanky.nvim": {
+      "rev": "020c22d0cfa60358569e49d1d7b91630f175aef0",
+      "src": "https://github.com/gbprod/yanky.nvim"
+    },
     "zpack.nvim": {
       "rev": "c8b4e8d597ec5da5102e66ce7d73b77fa727b90c",
       "src": "https://github.com/zuqini/zpack.nvim"
