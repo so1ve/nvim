@@ -18,7 +18,7 @@
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "codesettings.nvim": {
-      "rev": "4a8a2f4abca7637e1d72ca718d694d84771a99a6",
+      "rev": "5e0137a014cda7a47b24497c844339ef25a21b0f",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "conflict.nvim": {
@@ -54,7 +54,7 @@
       "src": "https://github.com/willothy/flatten.nvim"
     },
     "grug-far.nvim": {
-      "rev": "c69859c1d5427ab5fc7ed12380ab521b4e336691",
+      "rev": "beb2ce490b72048c587e8a3d919cba1b4608bb04",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "lazydev.nvim": {
@@ -78,7 +78,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "fdc8b9701616863e44f7a7a0802cfe16bd866539",
+      "rev": "4171fba613b64ade9a28e198bd5b4fea5ba45e22",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "multicursor.nvim": {
@@ -111,7 +111,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
+      "rev": "d6ac7a0d46555d44bf21f4f9c65f5201f818b475",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
@@ -132,7 +132,7 @@
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "panels.nvim": {
-      "rev": "a1cf1c547d3efe70938acc090df21631607ac7b7",
+      "rev": "fd951b72bd45baeab0a6cb174c4e09b62cdd6757",
       "src": "https://github.com/so1ve/panels.nvim"
     },
     "plenary.nvim": {
