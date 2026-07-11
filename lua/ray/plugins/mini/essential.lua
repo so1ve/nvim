@@ -85,9 +85,6 @@ function M.setup()
 
   require("mini.move").setup()
   require("mini.operators").setup({
-    evaluate = { prefix = "" },
-    exchange = { prefix = "gX" },
-    multiply = { prefix = "gm" },
     replace = { prefix = "gR" },
     sort = { prefix = "" },
   })
