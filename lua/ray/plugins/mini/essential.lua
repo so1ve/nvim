@@ -22,6 +22,10 @@ function M.setup()
     end,
   })
 
+  local icons = require("mini.icons")
+  icons.setup()
+  icons.mock_nvim_web_devicons()
+
   local ai = require("mini.ai")
   local gen_ai_spec = require("mini.extra").gen_ai_spec
   local ts = ai.gen_spec.treesitter
