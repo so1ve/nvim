@@ -33,11 +33,7 @@ map_multistep("i", "<C-h>", { "minisnippets_prev", "jump_before_open" })
 
 -- Clipboard
 map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
-map("n", "<leader>yp", '"0p', { desc = "Paste yanked text after cursor" })
-map("n", "<leader>yP", '"0P', { desc = "Paste yanked text before cursor" })
 map("n", "<leader>yi", "i<C-r>0<Esc>", { desc = "Insert yanked text at cursor" })
-map("x", "<leader>yp", '"_d"0P', { desc = "Replace selection with yanked text" })
-map("x", "<leader>yP", '"_d"0P', { desc = "Replace selection with yanked text" })
 
 -- Line motions
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down display line", expr = true, silent = true })
