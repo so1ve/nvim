@@ -23,7 +23,10 @@ function M.setup()
 
   map.setup({
     integrations = {
-      map.gen_integration.builtin_search({ search = "MiniMapSearch" }),
+      -- FIXME: `builtin_search` moves the source cursor and restores it via
+      -- `winrestview()`, but cursor-relative float geometry stays stale until redraw,
+      -- so DiagnosticChanged refreshes can send blink.cmp to the top-left corner.
+      -- map.gen_integration.builtin_search({ search = "MiniMapSearch" }),
       map.gen_integration.diagnostic({
         error = "MiniMapDiagnosticError",
         warn = "MiniMapDiagnosticWarn",
