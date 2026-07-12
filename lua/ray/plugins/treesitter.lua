@@ -66,10 +66,6 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
-    branch = "main",
-    opts = {
-      move = { set_jumps = true },
-    },
     keys = {
       {
         "]f",
