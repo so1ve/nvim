@@ -26,6 +26,7 @@ function M.setup()
       -- FIXME: `builtin_search` moves the source cursor and restores it via
       -- `winrestview()`, but cursor-relative float geometry stays stale until redraw,
       -- so DiagnosticChanged refreshes can send blink.cmp to the top-left corner.
+      -- Wait for https://github.com/nvim-mini/mini.nvim/issues/2509
       -- map.gen_integration.builtin_search({ search = "MiniMapSearch" }),
       map.gen_integration.diagnostic({
         error = "MiniMapDiagnosticError",
