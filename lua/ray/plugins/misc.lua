@@ -9,4 +9,8 @@ return {
     priority = 1001,
     opts = {},
   },
+  {
+    "wakatime/vim-wakatime",
+    event = "VeryLazy",
+  },
 }
