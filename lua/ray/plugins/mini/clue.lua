@@ -156,7 +156,6 @@ function M.setup()
       { mode = { "n", "x" }, keys = "<Leader>m<C-k>", desc = "Add cursor up", postkeys = "<Leader>m" },
       { mode = { "n", "x" }, keys = "<Leader>ma", desc = "Add all matches" },
       { mode = "n", keys = "<Leader>n", desc = "+Notifications" },
-      { mode = "n", keys = "<Leader>o", desc = "+Overseer" },
       { mode = "n", keys = "<Leader>p", desc = "+Project" },
       { mode = "n", keys = "<Leader>q", desc = "+Quit / Buffer / Window" },
       { mode = "n", keys = "<Leader>r", desc = "+Refactor" },

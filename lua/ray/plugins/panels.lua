@@ -32,25 +32,10 @@ return {
         ft = "neotest-summary",
         wo = { winbar = false },
       },
-      ["overseer.list"] = {
-        title = "Tasks",
+      ["better-term"] = {
         position = "bottom",
-        ft = "OverseerList",
-      },
-      ["overseer.output"] = {
-        title = "Task Output",
-        position = "bottom",
-        ft = "OverseerOutput",
-      },
-      ["snacks.terminal"] = {
-        title = "Terminal",
-        position = "bottom",
-        ft = "snacks_terminal",
-        filter = function(_, win)
-          local snacks_win = vim.w[win].snacks_win
-
-          return snacks_win and snacks_win.position == "bottom" and snacks_win.relative == "editor"
-        end,
+        ft = "better_term",
+        size = 15,
       },
       ["trouble.lsp"] = {
         title = "LSP",
@@ -83,7 +68,7 @@ return {
         position = "bottom",
         ft = "",
         filter = function(buf)
-          return vim.bo[buf].buftype == "terminal"
+          return vim.bo[buf].buftype == "terminal" and vim.bo[buf].filetype ~= "better_term"
         end,
       },
     },

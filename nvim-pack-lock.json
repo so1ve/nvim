@@ -4,6 +4,10 @@
       "rev": "46adf61a022d5c923f981d527443f406e7d0f63e",
       "src": "https://github.com/lewis6991/async.nvim"
     },
+    "betterTerm.nvim": {
+      "rev": "8111818c82a5ed01a24317f32892ad67765375b2",
+      "src": "https://github.com/CRAG666/betterTerm.nvim"
+    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
@@ -129,10 +133,6 @@
     "nvim-ts-autotag": {
       "rev": "88c1453db4ba7dd24131086fe51fdf74e587d275",
       "src": "https://github.com/windwp/nvim-ts-autotag"
-    },
-    "overseer.nvim": {
-      "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
-      "src": "https://github.com/stevearc/overseer.nvim"
     },
     "panels.nvim": {
       "rev": "61f9ffe29e84b8ea8b64ba130c6d0ab4b0ac314f",

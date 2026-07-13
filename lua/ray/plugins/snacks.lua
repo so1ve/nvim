@@ -1,18 +1,3 @@
-local function term_nav(direction)
-  return function(win)
-    if win:is_floating() then
-      return "<C-" .. direction .. ">"
-    end
-
-    vim.schedule(function()
-      vim.cmd.wincmd(direction)
-    end)
-
-    return ""
-  end
-end
-
-local terminal = require("ray.config.terminal")
 local symbols = require("ray.config.symbols")
 
 return {
@@ -65,25 +50,6 @@ return {
         },
       },
       statuscolumn = {},
-      terminal = {
-        shell = terminal.shell.shell and { terminal.shell.shell, terminal.shell.flag } or nil,
-        win = {
-          keys = {
-            nav_h = { "<C-h>", term_nav("h"), desc = "Move to left window", expr = true, mode = "t" },
-            nav_j = { "<C-j>", term_nav("j"), desc = "Move to lower window", expr = true, mode = "t" },
-            nav_k = { "<C-k>", term_nav("k"), desc = "Move to upper window", expr = true, mode = "t" },
-            nav_l = { "<C-l>", term_nav("l"), desc = "Move to right window", expr = true, mode = "t" },
-            paste = {
-              "<C-v>",
-              function()
-                vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
-              end,
-              desc = "Paste from clipboard",
-              mode = "t",
-            },
-          },
-        },
-      },
       gh = {},
       rename = {},
       words = { enabled = false },
@@ -254,15 +220,6 @@ return {
           Snacks.picker.git_status()
         end,
         desc = "Git status",
-      },
-      {
-        "<leader>tt",
-        function()
-          require("panels").open("snacks.terminal", function()
-            Snacks.terminal(nil, { count = 1, cwd = vim.fn.getcwd(0) })
-          end, { reuse = false })
-        end,
-        desc = "Toggle terminal",
       },
       {
         "<leader>cR",
