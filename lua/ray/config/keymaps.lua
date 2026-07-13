@@ -133,3 +133,8 @@ map("n", "<leader>cd", function()
   vim.diagnostic.open_float({ scope = "line" })
 end, { desc = "Line diagnostics" })
 map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location list" })
+
+-- Git
+map("n", "<leader>gr", function()
+  require("ray.config.ignore").refresh()
+end, { desc = "Refresh ignored files" })
