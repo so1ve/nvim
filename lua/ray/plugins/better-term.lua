@@ -23,6 +23,14 @@ return {
       desc = "Toggle terminal",
     },
     {
+      "<C-q>",
+      function()
+        require("betterTerm").close(vim.fn.bufname("%"))
+      end,
+      mode = "t",
+      desc = "Close current terminal",
+    },
+    {
       "<leader>ts",
       function()
         require("betterTerm").select()
@@ -36,16 +44,14 @@ return {
       end,
       desc = "Rename terminal",
     },
-    {
-      "<leader>tc",
-      function()
-        require("betterTerm").cycle(1)
-      end,
-      mode = { "n", "t" },
-      desc = "Cycle terminal",
-    },
   },
   opts = {
+    new_tab_mapping = "<C-n>",
     jump_tab_mapping = "<A-$tab>",
+    index_base = 1,
+    predefined = {
+      { index = 1, name = "Main" },
+      { index = 2, name = "Server" },
+    },
   },
 }
