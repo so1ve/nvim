@@ -25,14 +25,12 @@ vim.api.nvim_create_user_command("RayKeywordPrg", function() end, { nargs = "*" 
 
 -- ui
 opt.termguicolors = true
-opt.belloff = "all"
 opt.number = true
 opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.laststatus = 3
 opt.showtabline = 2
-opt.showcmd = true
 opt.showcmdloc = "statusline"
 opt.showmode = false
 opt.title = true
@@ -67,7 +65,6 @@ opt.linebreak = true
 opt.breakindent = true
 
 -- folds
-opt.foldenable = true
 opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
@@ -163,7 +160,6 @@ opt.splitkeep = "screen"
 opt.fileformats = { "unix", "dos", "mac" }
 opt.undofile = true
 opt.swapfile = false
-opt.autoread = true
 
 -- sessions
 opt.sessionoptions = { "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "localoptions" }
