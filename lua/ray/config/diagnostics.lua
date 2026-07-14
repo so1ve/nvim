@@ -38,9 +38,7 @@ function M.setup()
     },
     severity_sort = true,
     signs = { text = signs },
-    update_in_insert = false,
-    virtual_text = false,
-    virtual_lines = false,
+    virtual_text = true,
   })
 end
 
