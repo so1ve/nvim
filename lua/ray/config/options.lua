@@ -47,7 +47,14 @@ opt.virtualedit = "block"
 opt.confirm = true
 opt.keywordprg = ":RayKeywordPrg"
 
-require("ray.config.terminal").setup()
+if vim.fn.has("win32") == 1 then
+  opt.shell = "pwsh -NoLogo"
+  opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+  opt.shellquote = ""
+  opt.shellxquote = ""
+  opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  opt.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+end
 
 -- scrolling
 opt.scrolloff = 3

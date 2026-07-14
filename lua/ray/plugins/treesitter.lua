@@ -1,44 +1,67 @@
-local languages = require("ray.config.languages")
+local parser_overrides = {
+  javascriptreact = "javascript",
+  jsonc = "json",
+  plaintex = "latex",
+  ps1 = "powershell",
+  tex = "latex",
+  typescriptreact = "tsx",
+  ["yaml.docker-compose"] = "yaml",
+  ["yaml.github-actions"] = "yaml",
+}
 
 return {
   {
     "so1ve/tiny-treesitter.nvim",
     lazy = false,
     opts = {
-      ensure_installed = languages.collect("treesitter", {
-        extra = {
-          "bash",
-          "diff",
-          "gitcommit",
-          "lua",
-          "markdown",
-          "markdown_inline",
-          "regex",
-          "vim",
-        },
-        fallback = vim.treesitter.language.get_lang,
-      }),
+      ensure_installed = {
+        "bib",
+        "c",
+        "cpp",
+        "css",
+        "dockerfile",
+        "go",
+        "gomod",
+        "gosum",
+        "gotmpl",
+        "gowork",
+        "html",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "latex",
+        "powershell",
+        "python",
+        "rust",
+        "scss",
+        "toml",
+        "typescript",
+        "tsx",
+        "typst",
+        "vue",
+        "yaml",
+        "zig",
+        "bash",
+        "diff",
+        "gitcommit",
+        "markdown_inline",
+        "regex",
+        "vim",
+      },
       auto_install = true,
     },
     config = function(_, opts)
       require("tiny-treesitter").setup(opts)
 
-      local aliases = {}
-      for filetype, language in pairs(languages.by_filetype) do
-        local parser = language.treesitter
-        if parser and parser ~= filetype then
-          aliases[parser] = aliases[parser] or {}
-          table.insert(aliases[parser], filetype)
-        end
-      end
-      for parser, filetypes in pairs(aliases) do
-        vim.treesitter.language.register(parser, filetypes)
+      for filetype, parser in pairs(parser_overrides) do
+        vim.treesitter.language.register(parser, filetype)
       end
 
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(event)
           local filetype = vim.bo[event.buf].filetype
-          local parser = languages.get(filetype, "treesitter", vim.treesitter.language.get_lang)
+          local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
           if parser and vim.treesitter.language.add(parser) == true then
             vim.treesitter.start(event.buf, parser)
           end

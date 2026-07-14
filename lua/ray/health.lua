@@ -20,14 +20,6 @@ function M.check()
       vim.health.error((name .. " is missing"))
     end
   end
-
-  if vim.fn.has("win32") == 1 then
-    if vim.fn.executable("pwsh") == 1 then
-      vim.health.ok("PowerShell shell is available")
-    else
-      vim.health.error("PowerShell is missing; terminal commands may not work as configured")
-    end
-  end
 end
 
 return M

@@ -1,18 +1,3 @@
-local lsp_packages = {
-  cssls = "css-lsp",
-  docker_compose_language_service = "docker-compose-language-service",
-  dockerls = "dockerfile-language-server",
-  eslint = "eslint-lsp",
-  html = "html-lsp",
-  jsonls = "json-lsp",
-  lua_ls = "lua-language-server",
-  powershell_es = "powershell-editor-services",
-  stylelint_lsp = "stylelint-language-server",
-  unocss = "unocss-language-server",
-  vue_ls = "vue-language-server",
-  yamlls = "yaml-language-server",
-}
-
 return {
   {
     "mason-org/mason.nvim",
@@ -27,22 +12,41 @@ return {
     dependencies = {
       "mason-org/mason.nvim",
     },
-    opts = function()
-      local languages = require("ray.config.languages")
-      local packages = vim.list_extend(
-        vim.tbl_map(function(server)
-          return lsp_packages[server] or server
-        end, languages.collect("lsp")),
-        languages.collect("tools")
-      )
-
-      return {
-        ensure_installed = vim.fn.uniq(vim.fn.sort(packages)),
-        integrations = {
-          ["mason-null-ls"] = false,
-          ["mason-nvim-dap"] = false,
-        },
-      }
-    end,
+    opts = {
+      ensure_installed = {
+        "basedpyright",
+        "clangd",
+        "css-lsp",
+        "docker-compose-language-service",
+        "dockerfile-language-server",
+        "eslint-lsp",
+        "gofumpt",
+        "goimports",
+        "gopls",
+        "html-lsp",
+        "json-lsp",
+        "latexindent",
+        "lua-language-server",
+        "marksman",
+        "powershell-editor-services",
+        "prettier",
+        "prettierd",
+        "ruff",
+        "stylelint-language-server",
+        "stylua",
+        "texlab",
+        "tinymist",
+        "tombi",
+        "unocss-language-server",
+        "vtsls",
+        "vue-language-server",
+        "yaml-language-server",
+        "zls",
+      },
+      integrations = {
+        ["mason-null-ls"] = false,
+        ["mason-nvim-dap"] = false,
+      },
+    },
   },
 }
