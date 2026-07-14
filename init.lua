@@ -1,8 +1,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.cmd.colorscheme("undefined")
-
 require("ray.config.options")
 require("ray.config.ui2")
 require("ray.config.diagnostics").setup()
@@ -12,3 +10,5 @@ require("ray.config.ignore").setup()
 require("ray.config.zpack")
 require("ray.config.keymaps")
 require("ray.config.commands")
+
+vim.cmd.colorscheme("undefined")
