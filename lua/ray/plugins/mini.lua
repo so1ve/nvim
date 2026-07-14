@@ -891,29 +891,6 @@ return {
         return table.concat(parts, " ") .. "%#MiniStatuslineDiagnostics#"
       end
 
-      local function statusline_copilot()
-        if not statusline_show_fileinfo() then
-          return ""
-        end
-
-        local copilot_client = require("copilot.client")
-        local copilot_status = require("copilot.status")
-        local copilot_util = require("copilot.util")
-
-        if copilot_client.is_disabled() then
-          return statusline_escape("")
-        end
-
-        local attach_status = copilot_util.get_buffer_attach_status(vim.api.nvim_get_current_buf())
-        local not_attached = attach_status:find(copilot_util.ATTACH_STATUS_NOT_ATTACHED_PREFIX, 1, true) == 1
-
-        if attach_status == copilot_util.ATTACH_STATUS_MANUALLY_DETACHED or not_attached then
-          return statusline_escape("")
-        end
-
-        return statusline_escape(copilot_status.data.status == "InProgress" and "" or "")
-      end
-
       local function statusline_file()
         local path = vim.api.nvim_buf_get_name(0)
 
@@ -960,7 +937,6 @@ return {
           { hl = "MiniStatuslineDiagnostics", strings = { diagnostics } },
           "%=",
           { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
-          { hl = "MiniStatuslineInputState", strings = { statusline_copilot() } },
           { hl = "MiniStatuslineMetadata", strings = { statusline_escape(metadata) } },
           { hl = mode_hl, strings = { "%l/%L:%v" } },
         })
@@ -984,18 +960,6 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
         callback = redraw_statusline,
-      })
-
-      require("copilot.status").register_status_notification_handler(redraw_statusline)
-
-      vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-          if client and client.name == "copilot" then
-            redraw_statusline()
-          end
-        end,
       })
     end
 
