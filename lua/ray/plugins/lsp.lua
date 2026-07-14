@@ -357,7 +357,6 @@ return {
     },
   },
   { "DrKJeff16/wezterm-types" },
-  { "Bilal2453/luvit-meta" },
   {
     "mrcjkb/rustaceanvim",
     version = vim.version.range("^9"),

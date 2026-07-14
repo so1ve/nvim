@@ -65,10 +65,6 @@
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
     },
-    "luvit-meta": {
-      "rev": "cc9b2d412d2fbd30b94a70cfc214c2a3be27a0a2",
-      "src": "https://github.com/Bilal2453/luvit-meta"
-    },
     "markdown-plus.nvim": {
       "rev": "59075587b4540abd5fac68232c39d5a46db6d44c",
       "src": "https://github.com/YousefHadder/markdown-plus.nvim"
