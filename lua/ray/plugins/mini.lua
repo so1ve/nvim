@@ -833,27 +833,6 @@ return {
         return "%#" .. hl .. "#" .. statusline_escape(text)
       end
 
-      local function statusline_git()
-        if MiniStatusline.is_truncated(40) then
-          return ""
-        end
-
-        local summary = vim.b.minigit_summary
-
-        if not summary or not summary.head_name then
-          return ""
-        end
-
-        local head = summary.head_name == "HEAD" and summary.head:sub(1, 7) or summary.head_name
-        local in_progress = summary.in_progress
-
-        if in_progress and in_progress ~= "" then
-          head = head .. "|" .. in_progress
-        end
-
-        return statusline_escape(" " .. head)
-      end
-
       local function statusline_diff()
         if MiniStatusline.is_truncated(75) or type(vim.b.minidiff_summary) ~= "table" then
           return ""
@@ -966,7 +945,7 @@ return {
       local function statusline_active()
         local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
         local workspace = statusline_workspace()
-        local git = statusline_git()
+        local git = MiniStatusline.section_git({ trunc_width = trunc_width })
         local diff = statusline_diff()
         local file = statusline_file()
         local diagnostics = statusline_diagnostic_counts()
