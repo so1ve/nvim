@@ -1,26 +1,3 @@
-local function with_project_settings(config)
-  local before_init = config.before_init
-
-  return vim.tbl_extend("force", config, {
-    before_init = function(init_params, client_config)
-      if before_init then
-        before_init(init_params, client_config)
-      end
-
-      local loader = require("codesettings").loader()
-      if client_config.root_dir then
-        loader = loader:root_dir(client_config.root_dir)
-      end
-
-      local client_rename = {
-        ["rust_analyzer"] = "rust-analyzer",
-      }
-      local settings_name = client_rename[client_config.name] or client_config.name
-      loader:with_local_settings(settings_name, client_config)
-    end,
-  })
-end
-
 local function expand_rust_macro(client, bufnr)
   local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
 
@@ -479,7 +456,22 @@ return {
     },
     config = function()
       for server_name, config in pairs(servers) do
-        vim.lsp.config(server_name, with_project_settings(type(config) == "function" and config() or config))
+        config = type(config) == "function" and config() or config
+        local before_init = config.before_init
+
+        config.before_init = function(init_params, client_config)
+          if before_init then
+            before_init(init_params, client_config)
+          end
+          local loader = require("codesettings").loader()
+          if client_config.root_dir then
+            loader = loader:root_dir(client_config.root_dir)
+          end
+          local settings_name = client_config.name == "rust_analyzer" and "rust-analyzer" or client_config.name
+          loader:with_local_settings(settings_name, client_config)
+        end
+
+        vim.lsp.config(server_name, config)
 
         if server_name ~= "*" then
           vim.lsp.enable(server_name)
