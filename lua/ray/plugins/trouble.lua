@@ -34,16 +34,11 @@ return {
     },
     {
       "<leader>xl",
-      panel("trouble.lsp", "Trouble lsp toggle win.position=right"),
-      desc = "LSP definitions/references",
-    },
-    {
-      "<leader>xL",
       panel("trouble.problems", "Trouble loclist toggle"),
       desc = "Location list",
     },
     {
-      "<leader>xQ",
+      "<leader>xq",
       panel("trouble.problems", "Trouble qflist toggle"),
       desc = "Quickfix list",
     },
