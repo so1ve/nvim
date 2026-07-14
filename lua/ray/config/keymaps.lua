@@ -142,4 +142,5 @@ map("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics location
 -- Git
 map("n", "<leader>gr", function()
   require("ray.config.ignore").refresh()
+  vim.notify("Refreshed ignored files", vim.log.levels.INFO, { title = "Git Ignore" })
 end, { desc = "Refresh ignored files" })
