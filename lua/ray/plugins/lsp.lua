@@ -12,9 +12,41 @@ local function with_project_settings(config)
         loader = loader:root_dir(client_config.root_dir)
       end
 
-      loader:with_local_settings(client_config.name, client_config)
+      local client_rename = {
+        ["rust_analyzer"] = "rust-analyzer",
+      }
+      local settings_name = client_rename[client_config.name] or client_config.name
+      loader:with_local_settings(settings_name, client_config)
     end,
   })
+end
+
+local function expand_rust_macro(client, bufnr)
+  local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+
+  client:request("rust-analyzer/expandMacro", params, function(err, result)
+    if err then
+      vim.notify(err.message or "Failed to expand macro", vim.log.levels.ERROR)
+      return
+    end
+
+    if not result then
+      vim.notify("No macro under cursor", vim.log.levels.INFO)
+      return
+    end
+
+    vim.schedule(function()
+      local expansion_bufnr = vim.api.nvim_create_buf(false, true)
+
+      vim.api.nvim_buf_set_lines(expansion_bufnr, 0, -1, false, vim.split(result.expansion, "\r?\n"))
+      vim.bo[expansion_bufnr].bufhidden = "wipe"
+      vim.bo[expansion_bufnr].filetype = "rust"
+      vim.bo[expansion_bufnr].modifiable = false
+
+      vim.cmd("botright vsplit")
+      vim.api.nvim_win_set_buf(0, expansion_bufnr)
+    end)
+  end, bufnr)
 end
 
 local function configure_lsp_buffer(event)
@@ -334,6 +366,54 @@ local servers = {
       formatterMode = "typstyle",
     },
   },
+  rust_analyzer = {
+    on_attach = function(client, bufnr)
+      vim.keymap.set("n", "<leader>ce", function()
+        expand_rust_macro(client, bufnr)
+      end, { buffer = bufnr, desc = "Expand macro" })
+    end,
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          allFeatures = true,
+          loadOutDirsFromCheck = true,
+          buildScripts = {
+            enable = true,
+          },
+        },
+        checkOnSave = true,
+        check = {
+          command = "clippy",
+        },
+        diagnostics = {
+          enable = true,
+        },
+        files = {
+          exclude = {
+            ".direnv",
+            ".git",
+            ".github",
+            ".gitlab",
+            ".jj",
+            ".venv",
+            "bin",
+            "node_modules",
+            "target",
+            "venv",
+          },
+          watcher = "client",
+        },
+        procMacro = {
+          enable = true,
+        },
+        rustfmt = {
+          rangeFormatting = {
+            enable = true,
+          },
+        },
+      },
+    },
+  },
   stylelint_lsp = {
     filetypes = { "css", "scss", "html", "vue" },
     settings = {
@@ -357,72 +437,6 @@ return {
     },
   },
   { "DrKJeff16/wezterm-types" },
-  {
-    "mrcjkb/rustaceanvim",
-    version = vim.version.range("^9"),
-    lazy = false,
-    init = function()
-      vim.g.rustaceanvim = {
-        server = {
-          on_attach = function(_, bufnr)
-            vim.keymap.set("n", "<leader>ce", function()
-              vim.cmd.RustLsp("expandMacro")
-            end, { buffer = bufnr, desc = "Expand macro" })
-          end,
-          settings = function(project_root, default_settings)
-            return require("codesettings").loader():root_dir(project_root):with_local_settings("rust-analyzer", {
-              settings = default_settings,
-            }).settings
-          end,
-          default_settings = {
-            ["rust-analyzer"] = {
-              cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = true,
-                buildScripts = {
-                  enable = true,
-                },
-              },
-              checkOnSave = true,
-              check = {
-                command = "clippy",
-              },
-              diagnostics = {
-                enable = true,
-              },
-              files = {
-                exclude = {
-                  ".direnv",
-                  ".git",
-                  ".github",
-                  ".gitlab",
-                  ".jj",
-                  ".venv",
-                  "bin",
-                  "node_modules",
-                  "target",
-                  "venv",
-                },
-                watcher = "client",
-              },
-              procMacro = {
-                enable = true,
-              },
-              rustfmt = {
-                rangeFormatting = {
-                  enable = true,
-                },
-              },
-            },
-          },
-        },
-        dap = {
-          autoload_configurations = false,
-          adapter = false,
-        },
-      }
-    end,
-  },
   {
     "Saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
