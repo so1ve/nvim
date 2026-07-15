@@ -2983,14 +2983,17 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "x", '"_x', { desc = "Delete without yanking" })
 map("n", "q", "<Nop>", { noremap = true, silent = true })
 map("n", "Q", "q", { noremap = true, silent = true })
-map({ "i", "c" }, "jj", "<Esc>", { desc = "Exit insert or command-line mode" })
+map({ "i", "s", "c" }, "jj", "<Esc>", { desc = "Exit" })
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
+map("s", "<C-z>", "<Esc>u<Cmd>lua vim.snippet.stop()<CR>i", { desc = "Undo" })
 map("i", "<C-y>", "<C-o><C-r>", { desc = "Redo" })
+map("s", "<C-y>", "<Esc><C-r>i", { desc = "Redo" })
 map_multistep({ "i", "s" }, "<C-l>", { "vimsnippet_next", "jump_after_close" })
 map_multistep({ "i", "s" }, "<C-h>", { "vimsnippet_prev", "jump_before_open" })
 
 -- Clipboard
 map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
+map("s", "<C-v>", '<C-g>"_c<C-r>+', { desc = "Paste from clipboard" })
 map("n", "<leader>yi", "i<C-r>0<Esc>", { desc = "Insert yanked text at cursor" })
 
 -- Line motions
@@ -3081,11 +3084,11 @@ map("n", "<leader>=", function()
   require("panels").equalize()
 end, { desc = "Equalize windows" })
 
--- Insert-mode navigation
-map("i", "<A-h>", "<Left>", { desc = "Move left cursor" })
-map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
-map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
-map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
+-- Editing-mode navigation
+map({ "i", "s" }, "<A-h>", "<Left>", { desc = "Move left cursor" })
+map({ "i", "s" }, "<A-j>", "<Down>", { desc = "Move down cursor" })
+map({ "i", "s" }, "<A-k>", "<Up>", { desc = "Move up cursor" })
+map({ "i", "s" }, "<A-l>", "<Right>", { desc = "Move right cursor" })
 
 -- Command-line navigation
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
