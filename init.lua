@@ -1,24 +1,16 @@
--- #############################
--- # Globals                   #
--- #############################
-
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--- #############################
--- # Helpers                   #
--- #############################
+local g = vim.g
+local opt = vim.opt
 
 local map = vim.keymap.set
 local autocmd = vim.api.nvim_create_autocmd
 local command = vim.api.nvim_create_user_command
 
+g.mapleader = " "
+g.maplocalleader = " "
+
 -- #############################
 -- # Options                   #
 -- #############################
-
-local g = vim.g
-local opt = vim.opt
 
 g.loaded_python_provider = 0
 g.loaded_python3_provider = 0
@@ -192,7 +184,83 @@ opt.completeopt = { "menu", "menuone", "noselect" }
 -- messages
 opt.messagesopt = "wait:1000,history:500,progress:c"
 
+-- #############################
+-- # UI2                       #
+-- #############################
+
 require("vim._core.ui2").enable()
+
+-- #############################
+-- # Plugins                   #
+-- #############################
+
+local gh = function(repo)
+  return "https://github.com/" .. repo
+end
+
+vim.pack.add({
+  gh("nvim-mini/mini.nvim"),
+  gh("willothy/flatten.nvim"),
+  gh("folke/snacks.nvim"),
+  gh("mrjones2014/codesettings.nvim"),
+  gh("mason-org/mason.nvim"),
+  gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
+  gh("so1ve/tiny-treesitter.nvim"),
+}, { confirm = false, load = true })
+
+vim.pack.add({
+  gh("CRAG666/betterTerm.nvim"),
+  { src = gh("saghen/blink.cmp"), version = vim.version.range("1.*") },
+  gh("so1ve/tiny-md.nvim"),
+  gh("stevearc/conform.nvim"),
+  gh("zbirenbaum/copilot.lua"),
+  gh("copilotlsp-nvim/copilot-lsp"),
+  gh("gbprod/yanky.nvim"),
+  gh("Wansmer/treesj"),
+  gh("so1ve/tiny-comment.nvim"),
+  gh("NeogitOrg/neogit"),
+  gh("nvim-lua/plenary.nvim"),
+  gh("esmuellert/codediff.nvim"),
+  gh("so1ve/copilot-ai-commit.nvim"),
+  gh("niekdomi/conflict.nvim"),
+  gh("MagicDuck/grug-far.nvim"),
+  gh("folke/lazydev.nvim"),
+  gh("DrKJeff16/wezterm-types"),
+  gh("Saecki/crates.nvim"),
+  gh("so1ve/code-action-menu.nvim"),
+  gh("so1ve/noicelet.nvim"),
+  gh("neovim/nvim-lspconfig"),
+  gh("b0o/schemastore.nvim"),
+  gh("MeanderingProgrammer/render-markdown.nvim"),
+  gh("YousefHadder/markdown-plus.nvim"),
+  gh("nvim-treesitter/nvim-treesitter-textobjects"),
+  gh("wakatime/vim-wakatime"),
+  gh("jake-stewart/multicursor.nvim"),
+  gh("so1ve/panels.nvim"),
+  gh("ThePrimeagen/refactoring.nvim"),
+  gh("lewis6991/async.nvim"),
+  gh("nvim-treesitter/nvim-treesitter-context"),
+  gh("windwp/nvim-ts-autotag"),
+  gh("folke/trouble.nvim"),
+}, { confirm = false, load = false })
+
+local safely = require("mini.misc").safely
+
+local function load_plugins(when, names, configure)
+  safely(when, function()
+    for _, name in ipairs(type(names) == "table" and names or { names }) do
+      vim.cmd.packadd(name)
+    end
+
+    if configure then
+      configure()
+    end
+  end)
+end
+
+safely("now", function()
+  require("flatten").setup()
+end)
 
 -- #############################
 -- # Diagnostics               #
@@ -262,6 +330,10 @@ vim.filetype.add({
     ["docker%-compose%..*%.ya?ml"] = "yaml.docker-compose",
   },
 })
+
+-- #############################
+-- # ftplugins                 #
+-- #############################
 
 autocmd("FileType", {
   pattern = "markdown",
@@ -482,65 +554,11 @@ local lsp_symbol_kinds = {
 }
 
 -- #############################
--- # Plugin Manager            #
--- #############################
-
-vim.pack.add({ "https://github.com/zuqini/zpack.nvim" })
-
-local plugins = {}
-
--- #############################
 -- # Terminal                  #
 -- #############################
 
-plugins[#plugins + 1] = {
-  "CRAG666/betterTerm.nvim",
-  keys = {
-    {
-      "<leader>tt",
-      function()
-        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-          if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == "better_term" then
-            if vim.api.nvim_get_current_win() == win then
-              require("betterTerm").open()
-            else
-              vim.api.nvim_win_hide(win)
-            end
-            return
-          end
-        end
-
-        require("panels").open("better-term", function()
-          require("betterTerm").open()
-        end, { reuse = false })
-      end,
-      mode = { "n", "t" },
-      desc = "Toggle terminal",
-    },
-    {
-      "<C-q>",
-      function()
-        require("betterTerm").close(vim.fn.bufname("%"))
-      end,
-      mode = "t",
-      desc = "Close current terminal",
-    },
-    {
-      "<leader>ts",
-      function()
-        require("betterTerm").select()
-      end,
-      desc = "Select terminal",
-    },
-    {
-      "<leader>tr",
-      function()
-        require("betterTerm").rename()
-      end,
-      desc = "Rename terminal",
-    },
-  },
-  opts = {
+load_plugins("later", "betterTerm.nvim", function()
+  require("betterTerm").setup({
     new_tab_mapping = "<C-n>",
     jump_tab_mapping = "<A-$tab>",
     index_base = 1,
@@ -548,22 +566,44 @@ plugins[#plugins + 1] = {
       { index = 1, name = "Main" },
       { index = 2, name = "Server" },
     },
-  },
-}
+  })
+end)
+
+map({ "n", "t" }, "<leader>tt", function()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == "better_term" then
+      if vim.api.nvim_get_current_win() == win then
+        require("betterTerm").open()
+      else
+        vim.api.nvim_win_hide(win)
+      end
+      return
+    end
+  end
+
+  require("panels").open("better-term", function()
+    require("betterTerm").open()
+  end, { reuse = false })
+end, { desc = "Toggle terminal" })
+
+map("t", "<C-q>", function()
+  require("betterTerm").close(vim.fn.bufname("%"))
+end, { desc = "Close current terminal" })
+
+map("n", "<leader>ts", function()
+  require("betterTerm").select()
+end, { desc = "Select terminal" })
+
+map("n", "<leader>tr", function()
+  require("betterTerm").rename()
+end, { desc = "Rename terminal" })
 
 -- #############################
 -- # Completion                #
 -- #############################
 
-plugins[#plugins + 1] = {
-  "saghen/blink.cmp",
-  version = vim.version.range("1.*"),
-  event = { "InsertEnter", "CmdlineEnter" },
-  dependencies = {
-    "nvim-mini/mini.nvim",
-    "so1ve/tiny-md.nvim",
-  },
-  opts = {
+load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
+  require("blink.cmp").setup({
     appearance = {
       kind_icons = {
         Array = "",
@@ -732,50 +772,44 @@ plugins[#plugins + 1] = {
     signature = {
       enabled = true,
     },
-  },
-}
+  })
+end)
 
 -- #############################
 -- # Project Settings          #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "mrjones2014/codesettings.nvim",
-    lazy = false,
-    opts = function()
-      local Control = require("codesettings.extensions").Control
+safely("now", function()
+  local Control = require("codesettings.extensions").Control
 
-      return {
-        loader_extensions = {
-          "codesettings.extensions.vscode",
-          {
-            object = function(root, context)
-              local gopls = root.gopls
+  require("codesettings").setup({
+    loader_extensions = {
+      "codesettings.extensions.vscode",
+      {
+        object = function(root, context)
+          local gopls = root.gopls
 
-              if #context.path ~= 0 or type(gopls) ~= "table" then
-                return Control.CONTINUE
-              end
+          if #context.path ~= 0 or type(gopls) ~= "table" then
+            return Control.CONTINUE
+          end
 
-              for _, source in pairs({ gopls.build, gopls.formatting, gopls.ui }) do
-                if type(source) == "table" then
-                  for key, value in pairs(source) do
-                    if gopls[key] == nil then
-                      gopls[key] = value
-                    end
-                  end
+          for _, source in pairs({ gopls.build, gopls.formatting, gopls.ui }) do
+            if type(source) == "table" then
+              for key, value in pairs(source) do
+                if gopls[key] == nil then
+                  gopls[key] = value
                 end
               end
+            end
+          end
 
-              return Control.CONTINUE
-            end,
-          },
-        },
-        live_reload = true,
-      }
-    end,
-  },
-})
+          return Control.CONTINUE
+        end,
+      },
+    },
+    live_reload = true,
+  })
+end)
 
 -- #############################
 -- # Formatting                #
@@ -785,21 +819,8 @@ vim.env.PRETTIERD_LOCAL_PRETTIER_ONLY = "1"
 
 local prettier = { "prettierd", "prettier", stop_after_first = true }
 
-plugins[#plugins + 1] = {
-  "stevearc/conform.nvim",
-  cmd = { "ConformInfo" },
-  event = { "BufWritePre" },
-  keys = {
-    {
-      "<leader>cf",
-      function()
-        require("conform").format({ async = true })
-      end,
-      mode = { "n", "v" },
-      desc = "Format buffer",
-    },
-  },
-  opts = {
+load_plugins("later", "conform.nvim", function()
+  require("conform").setup({
     default_format_opts = {
       lsp_format = "fallback",
     },
@@ -829,8 +850,12 @@ plugins[#plugins + 1] = {
         async = true,
       }
     end,
-  },
-}
+  })
+end)
+
+map({ "n", "v" }, "<leader>cf", function()
+  require("conform").format({ async = true })
+end, { desc = "Format buffer" })
 
 -- #############################
 -- # Copilot                   #
@@ -875,20 +900,10 @@ local function restart_copilot(code)
   end, restart.delay)
 end
 
-plugins[#plugins + 1] = {
-  "zbirenbaum/copilot.lua",
-  cmd = "Copilot",
-  event = "InsertEnter",
-  dependencies = {
-    {
-      "copilotlsp-nvim/copilot-lsp",
-      init = function()
-        vim.g.copilot_nes_debounce = 350
-      end,
-    },
-  },
+vim.g.copilot_nes_debounce = 350
 
-  opts = {
+load_plugins("later", { "copilot-lsp", "copilot.lua" }, function()
+  require("copilot").setup({
     filetypes = {
       markdown = true,
     },
@@ -906,299 +921,239 @@ plugins[#plugins + 1] = {
     server_opts_overrides = {
       on_exit = restart_copilot,
     },
-  },
+  })
 
-  config = function(_, opts)
-    require("copilot").setup(opts)
+  autocmd("User", {
+    pattern = "BlinkCmpMenuOpen",
+    callback = function()
+      require("copilot.suggestion").dismiss()
+      vim.b.copilot_suggestion_hidden = true
+    end,
+  })
 
-    autocmd("User", {
-      pattern = "BlinkCmpMenuOpen",
-      callback = function()
-        require("copilot.suggestion").dismiss()
-        vim.b.copilot_suggestion_hidden = true
-      end,
-    })
-
-    autocmd("User", {
-      pattern = "BlinkCmpMenuClose",
-      callback = function()
-        vim.b.copilot_suggestion_hidden = false
-      end,
-    })
-  end,
-}
+  autocmd("User", {
+    pattern = "BlinkCmpMenuClose",
+    callback = function()
+      vim.b.copilot_suggestion_hidden = false
+    end,
+  })
+end)
 
 -- #############################
 -- # Editing                   #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "gbprod/yanky.nvim",
-    dependencies = { "folke/snacks.nvim" },
-    keys = {
-      { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
-      { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put after cursor" },
-      { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put before cursor" },
-      { "gp", "<Plug>(YankyGPutAfter)", mode = { "n", "x" }, desc = "Put after cursor and move cursor" },
-      { "gP", "<Plug>(YankyGPutBefore)", mode = { "n", "x" }, desc = "Put before cursor and move cursor" },
-      { "<C-p>", "<Plug>(YankyPreviousEntry)", desc = "Previous yank" },
-      { "<C-n>", "<Plug>(YankyNextEntry)", desc = "Next yank" },
-      {
-        "<leader>fy",
-        function()
-          Snacks.picker.yanky()
-        end,
-        mode = { "n", "x" },
-        desc = "Yank history",
-      },
+load_plugins("later", "yanky.nvim", function()
+  require("yanky").setup({
+    highlight = {
+      on_put = false,
+      timer = 300,
     },
-    opts = {
-      highlight = {
-        on_put = false,
-        timer = 300,
-      },
-    },
-  },
-  -- not using mini.splitjoin because it doesn't support rust match arms
-  --
-  -- ```
-  -- match arm {
-  --     true => {
-  --         1
-  --     }
-  -- }
-  -- ```
-  --
-  -- to
-  --
-  -- ```
-  -- match arm {
-  --     true => 1
-  -- }
-  {
-    "Wansmer/treesj",
-    keys = {
-      {
-        "gs",
-        function()
-          require("treesj").toggle()
-        end,
-        desc = "Toggle split/join",
-      },
-    },
-    opts = {
-      use_default_keymaps = false,
-    },
-  },
-  {
-    "so1ve/tiny-comment.nvim",
-    keys = {
-      { "gco", desc = "Add comment below" },
-      { "gcO", desc = "Add comment above" },
-      { "gcA", desc = "Add comment at end of line" },
-    },
-    opts = {},
-  },
-})
+  })
+end)
+
+map({ "n", "x" }, "y", "<Plug>(YankyYank)", { desc = "Yank text" })
+map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { desc = "Put after cursor" })
+map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { desc = "Put before cursor" })
+map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { desc = "Put after cursor and move cursor" })
+map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { desc = "Put before cursor and move cursor" })
+map("n", "<C-p>", "<Plug>(YankyPreviousEntry)", { desc = "Previous yank" })
+map("n", "<C-n>", "<Plug>(YankyNextEntry)", { desc = "Next yank" })
+map({ "n", "x" }, "<leader>fy", function()
+  Snacks.picker.yanky()
+end, { desc = "Yank history" })
+
+-- not using mini.splitjoin because it doesn't support rust match arms
+--
+-- ```
+-- match arm {
+--     true => {
+--         1
+--     }
+-- }
+-- ```
+--
+-- to
+--
+-- ```
+-- match arm {
+--     true => 1
+-- }
+load_plugins("later", "treesj", function()
+  require("treesj").setup({
+    use_default_keymaps = false,
+  })
+end)
+
+map("n", "gs", function()
+  require("treesj").toggle()
+end, { desc = "Toggle split/join" })
+
+load_plugins("later", "tiny-comment.nvim", function()
+  require("tiny-comment").setup()
+end)
 
 -- #############################
 -- # Git                       #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "NeogitOrg/neogit",
-    cmd = "Neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "esmuellert/codediff.nvim",
-      "so1ve/copilot-ai-commit.nvim",
+load_plugins("later", { "plenary.nvim", "codediff.nvim", "copilot-ai-commit.nvim", "neogit" }, function()
+  require("copilot-ai-commit").setup()
+  require("neogit").setup({
+    treesitter_diff_highlight = true,
+    disable_insert_on_commit = true,
+    process_spinner = true,
+    graph_style = "kitty",
+    signs = {
+      hunk = { "", "" },
+      item = { "", "" },
+      section = { "", "" },
     },
-    keys = {
-      {
-        "<leader>gg",
-        function()
-          require("neogit").open()
+    integrations = {
+      codediff = true,
+      diffview = false,
+      snacks = false,
+      mini_pick = false,
+    },
+    diff_viewer = "codediff",
+    mappings = {
+      status = {
+        ["C"] = function()
+          require("copilot-ai-commit").commit_with_generated_message()
         end,
-        desc = "Git status",
       },
     },
-    opts = {
-      treesitter_diff_highlight = true,
-      disable_insert_on_commit = true,
-      process_spinner = true,
-      graph_style = "kitty",
-      signs = {
-        hunk = { "", "" },
-        item = { "", "" },
-        section = { "", "" },
-      },
-      integrations = {
-        codediff = true,
-        diffview = false,
-        snacks = false,
-        mini_pick = false,
-      },
-      diff_viewer = "codediff",
-      mappings = {
-        status = {
-          ["C"] = function()
-            require("copilot-ai-commit").commit_with_generated_message()
-          end,
-        },
-      },
-      commit_editor = {
-        staged_diff_split_kind = "vsplit",
-        spell_check = false,
+    commit_editor = {
+      staged_diff_split_kind = "vsplit",
+      spell_check = false,
+    },
+  })
+end)
+
+map("n", "<leader>gg", function()
+  require("neogit").open()
+end, { desc = "Git status" })
+
+load_plugins("later", "conflict.nvim", function()
+  local conflict = require("conflict")
+
+  conflict.setup({
+    default_mappings = {
+      current = false,
+      incoming = false,
+      both = false,
+      base = false,
+      none = false,
+      next = false,
+      prev = false,
+    },
+  })
+
+  local git_map = function(keys, rhs, desc)
+    map("n", "<leader>gc" .. keys, rhs, { desc = desc })
+  end
+
+  git_map("n", function()
+    conflict.navigate("next")
+  end, "Next conflict")
+  git_map("p", function()
+    conflict.navigate("prev")
+  end, "Previous conflict")
+  git_map("r", "<cmd>Conflict refresh<cr>", "Refresh conflicts")
+  git_map("c", function()
+    conflict.choose("current")
+  end, "Accept current")
+  git_map("i", function()
+    conflict.choose("incoming")
+  end, "Accept incoming")
+  git_map("B", function()
+    conflict.choose("both")
+  end, "Accept both")
+  git_map("b", function()
+    conflict.choose("base")
+  end, "Accept base")
+  git_map("l", conflict.list, "Conflict files")
+  git_map("Q", conflict.qflist, "Conflicts quickfix")
+end)
+
+load_plugins("later", "codediff.nvim", function()
+  require("codediff").setup({
+    diff = {
+      compute_moves = true,
+    },
+    explorer = {
+      initial_focus = "explorer",
+      visible_groups = {
+        staged = true,
+        unstaged = true,
+        conflicts = true,
       },
     },
-    config = function(_, opts)
-      require("copilot-ai-commit").setup()
-      require("neogit").setup(opts)
-    end,
-  },
-  {
-    "niekdomi/conflict.nvim",
-    event = "BufReadPre",
-    opts = {
-      default_mappings = {
-        current = false,
-        incoming = false,
-        both = false,
-        base = false,
-        none = false,
-        next = false,
-        prev = false,
-      },
-    },
-    config = function(_, opts)
-      local conflict = require("conflict")
-
-      conflict.setup(opts)
-
-      local git_map = function(keys, rhs, desc)
-        map("n", "<leader>gc" .. keys, rhs, { desc = desc })
-      end
-
-      git_map("n", function()
-        conflict.navigate("next")
-      end, "Next conflict")
-      git_map("p", function()
-        conflict.navigate("prev")
-      end, "Previous conflict")
-      git_map("r", "<cmd>Conflict refresh<cr>", "Refresh conflicts")
-      git_map("c", function()
-        conflict.choose("current")
-      end, "Accept current")
-      git_map("i", function()
-        conflict.choose("incoming")
-      end, "Accept incoming")
-      git_map("B", function()
-        conflict.choose("both")
-      end, "Accept both")
-      git_map("b", function()
-        conflict.choose("base")
-      end, "Accept base")
-      git_map("l", conflict.list, "Conflict files")
-      git_map("Q", conflict.qflist, "Conflicts quickfix")
-    end,
-  },
-  {
-    "esmuellert/codediff.nvim",
-    cmd = "CodeDiff",
-    opts = {
-      diff = {
-        compute_moves = true,
+    keymaps = {
+      view = {
+        next_file = "<Tab>",
+        prev_file = "<S-Tab>",
       },
       explorer = {
-        initial_focus = "explorer",
-        visible_groups = {
-          staged = true,
-          unstaged = true,
-          conflicts = true,
-        },
+        refresh = "<c-r>",
+        stage_all = "S",
+        unstage_all = "U",
+        restore = "x",
       },
-      keymaps = {
-        view = {
-          next_file = "<Tab>",
-          prev_file = "<S-Tab>",
-        },
-        explorer = {
-          refresh = "<c-r>",
-          stage_all = "S",
-          unstage_all = "U",
-          restore = "x",
-        },
-        conflict = {
-          next_conflict = "<leader>gcn",
-          prev_conflict = "<leader>gcp",
-          accept_incoming = "<leader>gci",
-          accept_current = "<leader>gcc",
-          accept_both = "<leader>gcb",
-          discard = "<leader>gcB",
-          accept_all_incoming = "<leader>gcI",
-          accept_all_current = "<leader>gcC",
-          accept_all_both = "<leader>gcA",
-          discard_all = "<leader>gcX",
-          diffget_incoming = "2do",
-          diffget_current = "3do",
-        },
+      conflict = {
+        next_conflict = "<leader>gcn",
+        prev_conflict = "<leader>gcp",
+        accept_incoming = "<leader>gci",
+        accept_current = "<leader>gcc",
+        accept_both = "<leader>gcb",
+        discard = "<leader>gcB",
+        accept_all_incoming = "<leader>gcI",
+        accept_all_current = "<leader>gcC",
+        accept_all_both = "<leader>gcA",
+        discard_all = "<leader>gcX",
+        diffget_incoming = "2do",
+        diffget_current = "3do",
       },
     },
-  },
-})
+  })
+end)
 
 -- #############################
 -- # Search and Replace        #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "MagicDuck/grug-far.nvim",
-    cmd = { "GrugFar", "GrugFarWithin" },
-    opts = {
-      engines = {
-        ripgrep = {
-          defaults = {
-            flags = "--smart-case",
-          },
+load_plugins("later", "grug-far.nvim", function()
+  require("grug-far").setup({
+    engines = {
+      ripgrep = {
+        defaults = {
+          flags = "--smart-case",
         },
       },
-      keymaps = {
-        close = { n = "q" },
-        qflist = { n = "<localleader>F" },
-        refresh = { n = "<C-r>" },
-      },
-      startInInsertMode = false,
     },
-    keys = {
-      {
-        "<leader>sr",
-        function()
-          require("panels").open("grug-far", function()
-            require("grug-far").open({
-              transient = true,
-              prefills = { paths = vim.fn.expand("%") },
-            })
-          end)
-        end,
-        mode = { "n", "x" },
-        desc = "Search and replace current file",
-      },
-      {
-        "<leader>sR",
-        function()
-          require("panels").open("grug-far", function()
-            require("grug-far").open({ transient = true })
-          end)
-        end,
-        mode = { "n", "x" },
-        desc = "Search and replace",
-      },
+    keymaps = {
+      close = { n = "q" },
+      qflist = { n = "<localleader>F" },
+      refresh = { n = "<C-r>" },
     },
-  },
-})
+    startInInsertMode = false,
+  })
+end)
+
+map({ "n", "x" }, "<leader>sr", function()
+  require("panels").open("grug-far", function()
+    require("grug-far").open({
+      transient = true,
+      prefills = { paths = vim.fn.expand("%") },
+    })
+  end)
+end, { desc = "Search and replace current file" })
+
+map({ "n", "x" }, "<leader>sR", function()
+  require("panels").open("grug-far", function()
+    require("grug-far").open({ transient = true })
+  end)
+end, { desc = "Search and replace" })
 
 -- #############################
 -- # LSP                       #
@@ -1603,1319 +1558,1245 @@ local servers = {
   },
 }
 
-vim.list_extend(plugins, {
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
-        { path = "wezterm-types", mods = { "wezterm" } },
-      },
+load_plugins("filetype:lua", { "wezterm-types", "lazydev.nvim" }, function()
+  require("lazydev").setup({
+    library = {
+      { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      { path = "snacks.nvim", words = { "Snacks" } },
+      { path = "wezterm-types", mods = { "wezterm" } },
     },
-  },
-  { "DrKJeff16/wezterm-types" },
-  {
-    "Saecki/crates.nvim",
-    event = { "BufRead Cargo.toml" },
-    opts = {
-      completion = {
-        crates = {
-          enabled = true,
-        },
-      },
-      lsp = {
+  })
+end)
+
+load_plugins("later", "crates.nvim", function()
+  require("crates").setup({
+    completion = {
+      crates = {
         enabled = true,
-        actions = true,
-        completion = true,
-        hover = true,
       },
     },
-  },
-
-  {
-    "so1ve/code-action-menu.nvim",
-    event = "LspAttach",
-    opts = {},
-  },
-  {
-    "so1ve/noicelet.nvim",
-    event = "LspAttach",
-    opts = {
-      window = {
-        x_padding = 10,
-        y_padding = 2,
-      },
+    lsp = {
+      enabled = true,
+      actions = true,
+      completion = true,
+      hover = true,
     },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "saghen/blink.cmp",
-      "b0o/schemastore.nvim",
+  })
+end)
+
+load_plugins("later", "code-action-menu.nvim", function()
+  require("code-action-menu").setup()
+end)
+
+load_plugins("later", "noicelet.nvim", function()
+  require("noicelet").setup({
+    window = {
+      x_padding = 10,
+      y_padding = 2,
     },
-    config = function()
-      for server_name, config in pairs(servers) do
-        config = type(config) == "function" and config() or config
-        local before_init = config.before_init
+  })
+end)
 
-        config.before_init = function(init_params, client_config)
-          if before_init then
-            before_init(init_params, client_config)
-          end
-          local loader = require("codesettings").loader()
-          if client_config.root_dir then
-            loader = loader:root_dir(client_config.root_dir)
-          end
-          loader:with_local_settings(
-            client_config.name == "rust_analyzer" and "rust-analyzer" or client_config.name,
-            client_config
-          )
-        end
+load_plugins("now", { "schemastore.nvim", "nvim-lspconfig" }, function()
+  for server_name, config in pairs(servers) do
+    config = type(config) == "function" and config() or config
+    local before_init = config.before_init
 
-        vim.lsp.config(server_name, config)
-
-        if server_name ~= "*" then
-          vim.lsp.enable(server_name)
-        end
+    config.before_init = function(init_params, client_config)
+      if before_init then
+        before_init(init_params, client_config)
       end
+      local loader = require("codesettings").loader()
+      if client_config.root_dir then
+        loader = loader:root_dir(client_config.root_dir)
+      end
+      loader:with_local_settings(
+        client_config.name == "rust_analyzer" and "rust-analyzer" or client_config.name,
+        client_config
+      )
+    end
 
-      autocmd("LspAttach", {
-        callback = configure_lsp_buffer,
-      })
-    end,
-  },
-})
+    vim.lsp.config(server_name, config)
+
+    if server_name ~= "*" then
+      vim.lsp.enable(server_name)
+    end
+  end
+
+  autocmd("LspAttach", {
+    callback = configure_lsp_buffer,
+  })
+end)
 
 -- #############################
 -- # Markdown                  #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = "markdown",
-    dependencies = {
-      "nvim-mini/mini.nvim",
-      "so1ve/tiny-treesitter.nvim",
-    },
-    init = function()
-      autocmd("BufWinEnter", {
-        callback = function(event)
-          if vim.bo[event.buf].filetype == "markdown" then
-            require("render-markdown.core.manager").attach(event.buf)
-          end
-        end,
-      })
-    end,
-    opts = {
-      heading = {
-        backgrounds = {
-          "RenderMarkdownH1Bg",
-          "RenderMarkdownH2Bg",
-          "RenderMarkdownH3Bg",
-          "RenderMarkdownH4Bg",
-          "RenderMarkdownH5Bg",
-          "RenderMarkdownH6Bg",
-        },
-        foregrounds = {
-          "RenderMarkdownH1",
-          "RenderMarkdownH2",
-          "RenderMarkdownH3",
-          "RenderMarkdownH4",
-          "RenderMarkdownH5",
-          "RenderMarkdownH6",
-        },
-      },
-      bullet = {
-        enabled = false,
-      },
-    },
-  },
-  {
-    "so1ve/tiny-md.nvim",
-    dependencies = {
-      "MeanderingProgrammer/render-markdown.nvim",
-    },
-    opts = {
-      render_markdown = {
-        bullet = {
-          enabled = true,
-        },
-        html = {
-          comment = {
-            conceal = false,
-          },
-        },
-      },
-    },
-  },
-  {
-    "YousefHadder/markdown-plus.nvim",
-    ft = "markdown",
-    opts = {
-      keymaps = {
-        enabled = false,
-      },
-    },
-  },
+autocmd("BufWinEnter", {
+  callback = function(event)
+    if vim.bo[event.buf].filetype == "markdown" then
+      require("render-markdown.core.manager").attach(event.buf)
+    end
+  end,
 })
+
+load_plugins("filetype:markdown", { "render-markdown.nvim", "tiny-md.nvim", "markdown-plus.nvim" }, function()
+  require("render-markdown").setup({
+    heading = {
+      backgrounds = {
+        "RenderMarkdownH1Bg",
+        "RenderMarkdownH2Bg",
+        "RenderMarkdownH3Bg",
+        "RenderMarkdownH4Bg",
+        "RenderMarkdownH5Bg",
+        "RenderMarkdownH6Bg",
+      },
+      foregrounds = {
+        "RenderMarkdownH1",
+        "RenderMarkdownH2",
+        "RenderMarkdownH3",
+        "RenderMarkdownH4",
+        "RenderMarkdownH5",
+        "RenderMarkdownH6",
+      },
+    },
+    bullet = {
+      enabled = false,
+    },
+  })
+
+  require("tiny-md").setup({
+    render_markdown = {
+      bullet = {
+        enabled = true,
+      },
+      html = {
+        comment = {
+          conceal = false,
+        },
+      },
+    },
+  })
+
+  require("markdown-plus").setup({
+    keymaps = {
+      enabled = false,
+    },
+  })
+end)
 
 -- #############################
 -- # Mason                     #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "mason-org/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonLog", "MasonUninstall", "MasonUpdate" },
-    opts = {},
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    -- Its startup installer is wired through the plugin's VimEnter hook, so it
-    -- needs to be loaded before VimEnter rather than on VeryLazy.
-    lazy = false,
-    dependencies = {
-      "mason-org/mason.nvim",
+safely("now", function()
+  require("mason").setup()
+  require("mason-tool-installer").setup({
+    ensure_installed = {
+      "basedpyright",
+      "clangd",
+      "css-lsp",
+      "docker-compose-language-service",
+      "dockerfile-language-server",
+      "eslint-lsp",
+      "gofumpt",
+      "goimports",
+      "gopls",
+      "html-lsp",
+      "json-lsp",
+      "latexindent",
+      "lua-language-server",
+      "marksman",
+      "powershell-editor-services",
+      "prettier",
+      "prettierd",
+      "ruff",
+      "stylelint-language-server",
+      "stylua",
+      "texlab",
+      "tinymist",
+      "tombi",
+      "unocss-language-server",
+      "vtsls",
+      "vue-language-server",
+      "yaml-language-server",
+      "zls",
     },
-    opts = {
-      ensure_installed = {
-        "basedpyright",
-        "clangd",
-        "css-lsp",
-        "docker-compose-language-service",
-        "dockerfile-language-server",
-        "eslint-lsp",
-        "gofumpt",
-        "goimports",
-        "gopls",
-        "html-lsp",
-        "json-lsp",
-        "latexindent",
-        "lua-language-server",
-        "marksman",
-        "powershell-editor-services",
-        "prettier",
-        "prettierd",
-        "ruff",
-        "stylelint-language-server",
-        "stylua",
-        "texlab",
-        "tinymist",
-        "tombi",
-        "unocss-language-server",
-        "vtsls",
-        "vue-language-server",
-        "yaml-language-server",
-        "zls",
-      },
-      integrations = {
-        ["mason-null-ls"] = false,
-        ["mason-nvim-dap"] = false,
-      },
+    integrations = {
+      ["mason-null-ls"] = false,
+      ["mason-nvim-dap"] = false,
     },
-  },
-})
+  })
+end)
 
 -- #############################
 -- # Mini                      #
 -- #############################
 
 do
-  plugins[#plugins + 1] = {
-    "nvim-mini/mini.nvim",
-    lazy = false,
-    priority = 1000,
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-    },
-    config = function()
-      local excluded_filetypes = {
-        "bigfile",
-        "gitcommit",
-        "help",
-        "markdown",
+  safely("now", function()
+    local excluded_filetypes = {
+      "bigfile",
+      "gitcommit",
+      "help",
+      "markdown",
+    }
+
+    do
+      -- clue
+      local clue = require("mini.clue")
+      local gen_clues = clue.gen_clues
+
+      local objects = {
+        { "=", "assignment" },
+        { "/", "comment" },
+        { "B", "buffer" },
+        { "F", "call" },
+        { "I", "indent" },
+        { "a", "argument" },
+        { "b", "block" },
+        { "c", "class" },
+        { "f", "function" },
+        { "i", "conditional" },
+        { "r", "return" },
+        { "s", "statement" },
+        { "(", "() block" },
+        { ")", "() block" },
+        { "[", "[] block" },
+        { "]", "[] block" },
+        { "{", "{} block" },
+        { "}", "{} block" },
+        { "<", "<> block" },
+        { ">", "<> block" },
+        { '"', '" string' },
+        { "'", "' string" },
+        { "`", "` string" },
+        { "q", "quote" },
+        { "t", "tag" },
+        { "w", "word" },
+        { "W", "WORD" },
+        { "p", "paragraph" },
       }
 
-      do
-        -- clue
-        local clue = require("mini.clue")
-        local gen_clues = clue.gen_clues
+      local object_prefixes = {
+        { "a", "around " },
+        { "i", "inside " },
+        { "an", "around next " },
+        { "in", "inside next " },
+        { "al", "around last " },
+        { "il", "inside last " },
+      }
 
-        local objects = {
-          { "=", "assignment" },
-          { "/", "comment" },
-          { "B", "buffer" },
-          { "F", "call" },
-          { "I", "indent" },
-          { "a", "argument" },
-          { "b", "block" },
-          { "c", "class" },
-          { "f", "function" },
-          { "i", "conditional" },
-          { "r", "return" },
-          { "s", "statement" },
-          { "(", "() block" },
-          { ")", "() block" },
-          { "[", "[] block" },
-          { "]", "[] block" },
-          { "{", "{} block" },
-          { "}", "{} block" },
-          { "<", "<> block" },
-          { ">", "<> block" },
-          { '"', '" string' },
-          { "'", "' string" },
-          { "`", "` string" },
-          { "q", "quote" },
-          { "t", "tag" },
-          { "w", "word" },
-          { "W", "WORD" },
-          { "p", "paragraph" },
-        }
+      local operator_targets = {
+        { "w", "word" },
+        { "W", "WORD" },
+        { "$", "to line end" },
+        { "0", "to line start" },
+        { "^", "to first non-blank" },
+        { "gg", "to file start" },
+        { "G", "to file end" },
+        { "%", "matching pair" },
+        { "/", "search forward" },
+        { "?", "search backward" },
+        { "f", "find char forward" },
+        { "F", "find char backward" },
+        { "t", "till char forward" },
+        { "T", "till char backward" },
+      }
 
-        local object_prefixes = {
-          { "a", "around " },
-          { "i", "inside " },
-          { "an", "around next " },
-          { "in", "inside next " },
-          { "al", "around last " },
-          { "il", "inside last " },
-        }
+      local generated_clues = {
+        { mode = { "o", "x" }, keys = "a", desc = "+Around" },
+        { mode = { "o", "x" }, keys = "i", desc = "+Inside" },
+        { mode = { "o", "x" }, keys = "an", desc = "+Around next" },
+        { mode = { "o", "x" }, keys = "in", desc = "+Inside next" },
+        { mode = { "o", "x" }, keys = "al", desc = "+Around last" },
+        { mode = { "o", "x" }, keys = "il", desc = "+Inside last" },
+      }
 
-        local operator_targets = {
-          { "w", "word" },
-          { "W", "WORD" },
-          { "$", "to line end" },
-          { "0", "to line start" },
-          { "^", "to first non-blank" },
-          { "gg", "to file start" },
-          { "G", "to file end" },
-          { "%", "matching pair" },
-          { "/", "search forward" },
-          { "?", "search backward" },
-          { "f", "find char forward" },
-          { "F", "find char backward" },
-          { "t", "till char forward" },
-          { "T", "till char backward" },
-        }
+      for _, prefix in ipairs(object_prefixes) do
+        for _, object in ipairs(objects) do
+          generated_clues[#generated_clues + 1] =
+            { mode = { "o", "x" }, keys = prefix[1] .. object[1], desc = prefix[2] .. object[2] }
+        end
+      end
 
-        local generated_clues = {
-          { mode = { "o", "x" }, keys = "a", desc = "+Around" },
-          { mode = { "o", "x" }, keys = "i", desc = "+Inside" },
-          { mode = { "o", "x" }, keys = "an", desc = "+Around next" },
-          { mode = { "o", "x" }, keys = "in", desc = "+Inside next" },
-          { mode = { "o", "x" }, keys = "al", desc = "+Around last" },
-          { mode = { "o", "x" }, keys = "il", desc = "+Inside last" },
-        }
+      local operators = {
+        { "d", "Delete" },
+        { "y", "Yank" },
+        { "c", "Change" },
+      }
+
+      for _, operator in ipairs(operators) do
+        local key = operator[1]
+        local action = operator[2]
+
+        generated_clues[#generated_clues + 1] = { mode = "n", keys = key, desc = "+" .. action }
+        generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. key, desc = "line" }
+
+        for _, target in ipairs(operator_targets) do
+          generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. target[1], desc = target[2] }
+        end
 
         for _, prefix in ipairs(object_prefixes) do
+          generated_clues[#generated_clues + 1] =
+            { mode = "n", keys = key .. prefix[1], desc = "+" .. prefix[2] .. "textobject" }
+
           for _, object in ipairs(objects) do
-            generated_clues[#generated_clues + 1] =
-              { mode = { "o", "x" }, keys = prefix[1] .. object[1], desc = prefix[2] .. object[2] }
+            generated_clues[#generated_clues + 1] = {
+              mode = "n",
+              keys = key .. prefix[1] .. object[1],
+              desc = prefix[2] .. object[2],
+            }
           end
         end
-
-        local operators = {
-          { "d", "Delete" },
-          { "y", "Yank" },
-          { "c", "Change" },
-        }
-
-        for _, operator in ipairs(operators) do
-          local key = operator[1]
-          local action = operator[2]
-
-          generated_clues[#generated_clues + 1] = { mode = "n", keys = key, desc = "+" .. action }
-          generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. key, desc = "line" }
-
-          for _, target in ipairs(operator_targets) do
-            generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. target[1], desc = target[2] }
-          end
-
-          for _, prefix in ipairs(object_prefixes) do
-            generated_clues[#generated_clues + 1] =
-              { mode = "n", keys = key .. prefix[1], desc = "+" .. prefix[2] .. "textobject" }
-
-            for _, object in ipairs(objects) do
-              generated_clues[#generated_clues + 1] = {
-                mode = "n",
-                keys = key .. prefix[1] .. object[1],
-                desc = prefix[2] .. object[2],
-              }
-            end
-          end
-        end
-
-        clue.setup({
-          triggers = {
-            { mode = { "n", "x" }, keys = "<Leader>" },
-            { mode = "n", keys = "d" },
-            { mode = "n", keys = "y" },
-            { mode = "n", keys = "c" },
-            { mode = { "o", "x" }, keys = "a" },
-            { mode = { "o", "x" }, keys = "i" },
-            { mode = { "n", "x" }, keys = "g" },
-            { mode = { "n", "x" }, keys = "z" },
-            { mode = "n", keys = "<C-w>" },
-            { mode = "n", keys = "[" },
-            { mode = "n", keys = "]" },
-            { mode = { "n", "x" }, keys = "'" },
-            { mode = { "n", "x" }, keys = "`" },
-            { mode = { "n", "x" }, keys = '"' },
-            { mode = "i", keys = "<C-x>" },
-            { mode = { "i", "c" }, keys = "<C-r>" },
-            { mode = { "n", "x" }, keys = "s" },
-          },
-          clues = {
-            { mode = "n", keys = "<Leader>a", desc = "+AI" },
-            { mode = "n", keys = "<Leader>b", desc = "+Buffer" },
-            { mode = "n", keys = "<Leader>c", desc = "+Code" },
-            { mode = "n", keys = "<Leader>d", desc = "+Diagnostics" },
-            { mode = "n", keys = "<Leader>f", desc = "+Find" },
-            { mode = "n", keys = "<Leader>g", desc = "+Git" },
-            { mode = "n", keys = "<Leader>gc", desc = "+Conflicts" },
-            { mode = "n", keys = "<Leader>gcn", desc = "Next", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcp", desc = "Previous", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcr", desc = "Refresh", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcc", desc = "Accept current", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gci", desc = "Accept incoming", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcB", desc = "Accept both", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcb", desc = "Accept base", postkeys = "<Leader>gc" },
-            { mode = "n", keys = "<Leader>gcl", desc = "Files" },
-            { mode = "n", keys = "<Leader>gcQ", desc = "Quickfix" },
-            { mode = "n", keys = "<Leader>m", desc = "+Multicursor" },
-            { mode = { "n", "x" }, keys = "<Leader>m<C-j>", desc = "Add cursor down", postkeys = "<Leader>m" },
-            { mode = { "n", "x" }, keys = "<Leader>m<C-k>", desc = "Add cursor up", postkeys = "<Leader>m" },
-            { mode = { "n", "x" }, keys = "<Leader>ma", desc = "Add all matches" },
-            { mode = "n", keys = "<Leader>n", desc = "+Notifications" },
-            { mode = "n", keys = "<Leader>p", desc = "+Project" },
-            { mode = "n", keys = "<Leader>q", desc = "+Quit / Buffer / Window" },
-            { mode = "n", keys = "<Leader>r", desc = "+Refactor" },
-            { mode = "n", keys = "<Leader>s", desc = "+Search" },
-            { mode = "n", keys = "<Leader>t", desc = "+Terminal" },
-            { mode = "n", keys = "<Leader>T", desc = "+Test" },
-            { mode = "n", keys = "<Leader>Tr", desc = "Run nearest", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>Tt", desc = "Run file", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>TT", desc = "Run all files", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>Tl", desc = "Run last", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>Ts", desc = "Summary" },
-            { mode = "n", keys = "<Leader>To", desc = "Output" },
-            { mode = "n", keys = "<Leader>TO", desc = "Output panel" },
-            { mode = "n", keys = "<Leader>Ta", desc = "Attach" },
-            { mode = "n", keys = "<Leader>Tw", desc = "Watch file", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>TS", desc = "Stop", postkeys = "<Leader>T" },
-            { mode = "n", keys = "<Leader>Td", desc = "Debug nearest" },
-            { mode = "n", keys = "<Leader>u", desc = "+UI" },
-            { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
-            { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
-            { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
-
-            gen_clues.builtin_completion(),
-            generated_clues,
-            gen_clues.g(),
-            gen_clues.marks(),
-            gen_clues.registers(),
-            gen_clues.windows({
-              submode_move = true,
-              submode_navigate = true,
-              submode_resize = true,
-            }),
-            gen_clues.square_brackets(),
-            gen_clues.z(),
-          },
-          window = {
-            delay = 300,
-            config = {
-              width = "auto",
-            },
-          },
-        })
       end
 
-      do
-        -- diff
-        local diff = require("mini.diff")
+      clue.setup({
+        triggers = {
+          { mode = { "n", "x" }, keys = "<Leader>" },
+          { mode = "n", keys = "d" },
+          { mode = "n", keys = "y" },
+          { mode = "n", keys = "c" },
+          { mode = { "o", "x" }, keys = "a" },
+          { mode = { "o", "x" }, keys = "i" },
+          { mode = { "n", "x" }, keys = "g" },
+          { mode = { "n", "x" }, keys = "z" },
+          { mode = "n", keys = "<C-w>" },
+          { mode = "n", keys = "[" },
+          { mode = "n", keys = "]" },
+          { mode = { "n", "x" }, keys = "'" },
+          { mode = { "n", "x" }, keys = "`" },
+          { mode = { "n", "x" }, keys = '"' },
+          { mode = "i", keys = "<C-x>" },
+          { mode = { "i", "c" }, keys = "<C-r>" },
+          { mode = { "n", "x" }, keys = "s" },
+        },
+        clues = {
+          { mode = "n", keys = "<Leader>a", desc = "+AI" },
+          { mode = "n", keys = "<Leader>b", desc = "+Buffer" },
+          { mode = "n", keys = "<Leader>c", desc = "+Code" },
+          { mode = "n", keys = "<Leader>d", desc = "+Diagnostics" },
+          { mode = "n", keys = "<Leader>f", desc = "+Find" },
+          { mode = "n", keys = "<Leader>g", desc = "+Git" },
+          { mode = "n", keys = "<Leader>gc", desc = "+Conflicts" },
+          { mode = "n", keys = "<Leader>gcn", desc = "Next", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcp", desc = "Previous", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcr", desc = "Refresh", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcc", desc = "Accept current", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gci", desc = "Accept incoming", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcB", desc = "Accept both", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcb", desc = "Accept base", postkeys = "<Leader>gc" },
+          { mode = "n", keys = "<Leader>gcl", desc = "Files" },
+          { mode = "n", keys = "<Leader>gcQ", desc = "Quickfix" },
+          { mode = "n", keys = "<Leader>m", desc = "+Multicursor" },
+          { mode = { "n", "x" }, keys = "<Leader>m<C-j>", desc = "Add cursor down", postkeys = "<Leader>m" },
+          { mode = { "n", "x" }, keys = "<Leader>m<C-k>", desc = "Add cursor up", postkeys = "<Leader>m" },
+          { mode = { "n", "x" }, keys = "<Leader>ma", desc = "Add all matches" },
+          { mode = "n", keys = "<Leader>n", desc = "+Notifications" },
+          { mode = "n", keys = "<Leader>p", desc = "+Project" },
+          { mode = "n", keys = "<Leader>q", desc = "+Quit / Buffer / Window" },
+          { mode = "n", keys = "<Leader>r", desc = "+Refactor" },
+          { mode = "n", keys = "<Leader>s", desc = "+Search" },
+          { mode = "n", keys = "<Leader>t", desc = "+Terminal" },
+          { mode = "n", keys = "<Leader>T", desc = "+Test" },
+          { mode = "n", keys = "<Leader>Tr", desc = "Run nearest", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>Tt", desc = "Run file", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>TT", desc = "Run all files", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>Tl", desc = "Run last", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>Ts", desc = "Summary" },
+          { mode = "n", keys = "<Leader>To", desc = "Output" },
+          { mode = "n", keys = "<Leader>TO", desc = "Output panel" },
+          { mode = "n", keys = "<Leader>Ta", desc = "Attach" },
+          { mode = "n", keys = "<Leader>Tw", desc = "Watch file", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>TS", desc = "Stop", postkeys = "<Leader>T" },
+          { mode = "n", keys = "<Leader>Td", desc = "Debug nearest" },
+          { mode = "n", keys = "<Leader>u", desc = "+UI" },
+          { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
+          { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
+          { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
 
-        diff.setup({
-          view = {
-            style = "sign",
-            signs = { add = "▌", change = "▌", delete = "▌" },
+          gen_clues.builtin_completion(),
+          generated_clues,
+          gen_clues.g(),
+          gen_clues.marks(),
+          gen_clues.registers(),
+          gen_clues.windows({
+            submode_move = true,
+            submode_navigate = true,
+            submode_resize = true,
+          }),
+          gen_clues.square_brackets(),
+          gen_clues.z(),
+        },
+        window = {
+          delay = 300,
+          config = {
+            width = "auto",
           },
-          mappings = {
-            apply = "gh",
-            reset = "gH",
-            textobject = "gh",
-            goto_first = "[C",
-            goto_prev = "[c",
-            goto_next = "]c",
-            goto_last = "]C",
-          },
-        })
+        },
+      })
+    end
 
-        map("n", "<leader>go", function()
-          diff.toggle_overlay(0)
-        end, { desc = "Toggle diff overlay" })
+    do
+      -- diff
+      local diff = require("mini.diff")
 
-        map("n", "<leader>gh", function()
-          local hunks = diff.export("qf", { scope = "current" })
+      diff.setup({
+        view = {
+          style = "sign",
+          signs = { add = "▌", change = "▌", delete = "▌" },
+        },
+        mappings = {
+          apply = "gh",
+          reset = "gH",
+          textobject = "gh",
+          goto_first = "[C",
+          goto_prev = "[c",
+          goto_next = "]c",
+          goto_last = "]C",
+        },
+      })
 
-          if #hunks == 0 then
-            vim.notify("No hunks in current file", vim.log.levels.INFO)
+      map("n", "<leader>go", function()
+        diff.toggle_overlay(0)
+      end, { desc = "Toggle diff overlay" })
 
+      map("n", "<leader>gh", function()
+        local hunks = diff.export("qf", { scope = "current" })
+
+        if #hunks == 0 then
+          vim.notify("No hunks in current file", vim.log.levels.INFO)
+
+          return
+        end
+
+        vim.fn.setqflist(hunks, "r")
+        vim.cmd.copen()
+      end, { desc = "Current file hunks" })
+    end
+
+    do
+      -- essential
+      autocmd({ "BufReadPost", "BufNewFile", "BufWinEnter", "FileType" }, {
+        callback = function(event)
+          local buf = event.buf
+          if not vim.api.nvim_buf_is_valid(buf) then
             return
           end
 
-          vim.fn.setqflist(hunks, "r")
-          vim.cmd.copen()
-        end, { desc = "Current file hunks" })
-      end
+          if vim.bo[buf].buftype ~= "" or vim.tbl_contains(excluded_filetypes, vim.bo[buf].filetype) then
+            vim.b[buf].miniindentscope_disable = true
+            vim.b[buf].minicursorword_disable = true
+          end
+        end,
+      })
 
-      do
-        -- essential
-        autocmd({ "BufReadPost", "BufNewFile", "BufWinEnter", "FileType" }, {
-          callback = function(event)
-            local buf = event.buf
-            if not vim.api.nvim_buf_is_valid(buf) then
-              return
+      local icons = require("mini.icons")
+      icons.setup()
+      icons.mock_nvim_web_devicons()
+
+      local ai = require("mini.ai")
+      local gen_ai_spec = require("mini.extra").gen_ai_spec
+      local ts = ai.gen_spec.treesitter
+      ai.setup({
+        n_lines = 500,
+        search_method = "cover",
+        custom_textobjects = {
+          ["="] = ts({ a = "@assignment.outer", i = "@assignment.inner" }),
+          ["/"] = ts({ a = "@comment.outer", i = "@comment.inner" }),
+          B = gen_ai_spec.buffer(),
+          F = ts({ a = "@call.outer", i = "@call.inner" }),
+          I = gen_ai_spec.indent(),
+          a = ts({ a = "@parameter.outer", i = "@parameter.inner" }),
+          b = ts({ a = "@block.outer", i = "@block.inner" }),
+          c = ts({ a = "@class.outer", i = "@class.inner" }),
+          f = ts({ a = "@function.outer", i = "@function.inner" }),
+          i = ts({ a = "@conditional.outer", i = "@conditional.inner" }),
+          r = ts({ a = "@return.outer", i = "@return.inner" }),
+          -- intentional: use outer for both because inner is not consistent across languages
+          s = ts({ a = "@statement.outer", i = "@statement.outer" }),
+        },
+      })
+
+      require("mini.git").setup()
+      require("mini.align").setup()
+      require("mini.pairs").setup({
+        mappings = {
+          ['"'] = false,
+          ["'"] = false,
+          ["`"] = false,
+        },
+      })
+      require("mini.surround").setup()
+      require("mini.jump").setup()
+      require("mini.cursorword").setup({ delay = 0 })
+      require("mini.indentscope").setup({
+        symbol = "│",
+        draw = {
+          animation = function()
+            return 8
+          end,
+        },
+        mappings = {
+          object_scope = "",
+          object_scope_with_border = "",
+          goto_top = "",
+          goto_bottom = "",
+        },
+      })
+
+      local jump2d = require("mini.jump2d")
+      local spotter =
+        jump2d.gen_spotter.union(jump2d.builtin_opts.word_start.spotter, jump2d.gen_spotter.pattern(".+", "end"))
+      jump2d.setup({
+        spotter = spotter,
+        labels = "abcdefghijklmnopqrstuvwxyz",
+        view = { n_steps_ahead = 2 },
+        allowed_windows = { not_current = false },
+        mappings = { start_jumping = "<leader>j" },
+      })
+
+      require("mini.move").setup()
+      require("mini.operators").setup({
+        exchange = { prefix = "gX" },
+        replace = { prefix = "gR" },
+        sort = { prefix = "" },
+      })
+      require("mini.misc").setup_restore_cursor()
+      require("mini.trailspace").setup()
+      require("mini.bracketed").setup({
+        buffer = { suffix = "" },
+        comment = { suffix = "" },
+        file = { suffix = "" },
+        treesitter = { suffix = "" },
+      })
+    end
+
+    do
+      -- files
+
+      local show_hidden = false
+
+      local files = require("mini.files")
+
+      local opts = {
+        content = {
+          filter = function(entry)
+            return show_hidden or not is_ignored(entry.path or entry.name)
+          end,
+          highlight = function(entry)
+            if is_ignored(entry.path or entry.name) then
+              return "MiniFilesHidden"
             end
 
-            if vim.bo[buf].buftype ~= "" or vim.tbl_contains(excluded_filetypes, vim.bo[buf].filetype) then
-              vim.b[buf].miniindentscope_disable = true
-              vim.b[buf].minicursorword_disable = true
-            end
+            return files.default_highlight(entry)
           end,
-        })
+        },
+        mappings = {
+          go_in = "L",
+          go_in_plus = "<C-l>",
+          go_out = "H",
+          go_out_plus = "<C-h>",
+          synchronize = "s",
+        },
+        options = {
+          lsp_timeout = 0,
+        },
+        windows = {
+          preview = true,
+          width_preview = 40,
+        },
+      }
 
-        local icons = require("mini.icons")
-        icons.setup()
-        icons.mock_nvim_web_devicons()
+      files.setup(opts)
 
-        local ai = require("mini.ai")
-        local gen_ai_spec = require("mini.extra").gen_ai_spec
-        local ts = ai.gen_spec.treesitter
-        ai.setup({
-          n_lines = 500,
-          search_method = "cover",
-          custom_textobjects = {
-            ["="] = ts({ a = "@assignment.outer", i = "@assignment.inner" }),
-            ["/"] = ts({ a = "@comment.outer", i = "@comment.inner" }),
-            B = gen_ai_spec.buffer(),
-            F = ts({ a = "@call.outer", i = "@call.inner" }),
-            I = gen_ai_spec.indent(),
-            a = ts({ a = "@parameter.outer", i = "@parameter.inner" }),
-            b = ts({ a = "@block.outer", i = "@block.inner" }),
-            c = ts({ a = "@class.outer", i = "@class.inner" }),
-            f = ts({ a = "@function.outer", i = "@function.inner" }),
-            i = ts({ a = "@conditional.outer", i = "@conditional.inner" }),
-            r = ts({ a = "@return.outer", i = "@return.inner" }),
-            -- intentional: use outer for both because inner is not consistent across languages
-            s = ts({ a = "@statement.outer", i = "@statement.outer" }),
-          },
-        })
-
-        require("mini.git").setup()
-        require("mini.align").setup()
-        require("mini.pairs").setup({
-          mappings = {
-            ['"'] = false,
-            ["'"] = false,
-            ["`"] = false,
-          },
-        })
-        require("mini.surround").setup()
-        require("mini.jump").setup()
-        require("mini.cursorword").setup({ delay = 0 })
-        require("mini.indentscope").setup({
-          symbol = "│",
-          draw = {
-            animation = function()
-              return 8
-            end,
-          },
-          mappings = {
-            object_scope = "",
-            object_scope_with_border = "",
-            goto_top = "",
-            goto_bottom = "",
-          },
-        })
-
-        local jump2d = require("mini.jump2d")
-        local spotter =
-          jump2d.gen_spotter.union(jump2d.builtin_opts.word_start.spotter, jump2d.gen_spotter.pattern(".+", "end"))
-        jump2d.setup({
-          spotter = spotter,
-          labels = "abcdefghijklmnopqrstuvwxyz",
-          view = { n_steps_ahead = 2 },
-          allowed_windows = { not_current = false },
-          mappings = { start_jumping = "<leader>j" },
-        })
-
-        require("mini.move").setup()
-        require("mini.operators").setup({
-          exchange = { prefix = "gX" },
-          replace = { prefix = "gR" },
-          sort = { prefix = "" },
-        })
-        require("mini.misc").setup_restore_cursor()
-        require("mini.trailspace").setup()
-        require("mini.bracketed").setup({
-          buffer = { suffix = "" },
-          comment = { suffix = "" },
-          file = { suffix = "" },
-          treesitter = { suffix = "" },
-        })
-      end
-
-      do
-        -- files
-
-        local show_hidden = false
-
-        local files = require("mini.files")
-
-        local opts = {
-          content = {
-            filter = function(entry)
-              return show_hidden or not is_ignored(entry.path or entry.name)
-            end,
-            highlight = function(entry)
-              if is_ignored(entry.path or entry.name) then
-                return "MiniFilesHidden"
-              end
-
-              return files.default_highlight(entry)
-            end,
-          },
-          mappings = {
-            go_in = "L",
-            go_in_plus = "<C-l>",
-            go_out = "H",
-            go_out_plus = "<C-h>",
-            synchronize = "s",
-          },
-          options = {
-            lsp_timeout = 0,
-          },
-          windows = {
-            preview = true,
-            width_preview = 40,
-          },
-        }
-
-        files.setup(opts)
-
-        autocmd("User", {
-          pattern = "MiniFilesBufferCreate",
-          callback = function(args)
-            map("n", "<CR>", function()
-              files.go_in({ close_on_file = true })
-            end, { buffer = args.data.buf_id, desc = "Go in plus" })
-            map("n", "J", "j", { buffer = args.data.buf_id, desc = "Move down" })
-            map("n", "K", "k", { buffer = args.data.buf_id, desc = "Move up" })
-            map("n", "gh", function()
-              show_hidden = not show_hidden
-              files.refresh(opts)
-            end, { buffer = args.data.buf_id, desc = "Toggle hidden entries" })
-          end,
-        })
-
-        autocmd("User", {
-          pattern = "RayGitIgnoreCacheUpdated",
-          callback = function()
+      autocmd("User", {
+        pattern = "MiniFilesBufferCreate",
+        callback = function(args)
+          map("n", "<CR>", function()
+            files.go_in({ close_on_file = true })
+          end, { buffer = args.data.buf_id, desc = "Go in plus" })
+          map("n", "J", "j", { buffer = args.data.buf_id, desc = "Move down" })
+          map("n", "K", "k", { buffer = args.data.buf_id, desc = "Move up" })
+          map("n", "gh", function()
+            show_hidden = not show_hidden
             files.refresh(opts)
-          end,
-        })
+          end, { buffer = args.data.buf_id, desc = "Toggle hidden entries" })
+        end,
+      })
 
-        autocmd("User", {
-          pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
-          callback = function(event)
-            Snacks.rename.on_rename_file(vim.fs.normalize(event.data.from), vim.fs.normalize(event.data.to))
-          end,
-        })
+      autocmd("User", {
+        pattern = "RayGitIgnoreCacheUpdated",
+        callback = function()
+          files.refresh(opts)
+        end,
+      })
 
-        autocmd("User", {
-          pattern = "MiniFilesActionDelete",
-          callback = function(event)
-            Snacks.bufdelete({ file = vim.fs.normalize(event.data.from) })
-          end,
-        })
+      autocmd("User", {
+        pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+        callback = function(event)
+          Snacks.rename.on_rename_file(vim.fs.normalize(event.data.from), vim.fs.normalize(event.data.to))
+        end,
+      })
 
-        map("n", "<leader>e", function()
-          files.close()
+      autocmd("User", {
+        pattern = "MiniFilesActionDelete",
+        callback = function(event)
+          Snacks.bufdelete({ file = vim.fs.normalize(event.data.from) })
+        end,
+      })
+
+      map("n", "<leader>e", function()
+        files.close()
+        files.open(vim.fn.getcwd(), false)
+      end, { desc = "Explore files" })
+      map("n", "<leader>E", function()
+        files.close()
+        local path = vim.api.nvim_buf_get_name(0)
+        -- silently ignore if file doesn't exist
+        if path == "" or not vim.uv.fs_stat(path) then
           files.open(vim.fn.getcwd(), false)
-        end, { desc = "Explore files" })
-        map("n", "<leader>E", function()
-          files.close()
-          local path = vim.api.nvim_buf_get_name(0)
-          -- silently ignore if file doesn't exist
-          if path == "" or not vim.uv.fs_stat(path) then
-            files.open(vim.fn.getcwd(), false)
-            return
-          end
-
-          files.open(path, false)
-          files.reveal_cwd()
-        end, { desc = "Reveal current file" })
-      end
-
-      do
-        -- hipatterns
-        -- Match keyword labels followed by a colon or parenthesis, but not dotted access like vim.log.levels.WARN.
-        local todo_suffix = "%s*[:%(]"
-
-        local function todo_highlighter(keyword, group)
-          return {
-            pattern = {
-              "^()" .. keyword .. "()" .. todo_suffix,
-              "[^%.%w_]()" .. keyword .. "()" .. todo_suffix,
-            },
-            group = function(buf_id, _, data)
-              for _, capture in ipairs(vim.treesitter.get_captures_at_pos(buf_id, data.line - 1, data.from_col - 1)) do
-                if capture.capture:find("^comment") then
-                  return group
-                end
-              end
-            end,
-          }
+          return
         end
 
-        local hipatterns = require("mini.hipatterns")
+        files.open(path, false)
+        files.reveal_cwd()
+      end, { desc = "Reveal current file" })
+    end
 
-        hipatterns.setup({
-          highlighters = {
-            hex_color = hipatterns.gen_highlighter.hex_color(),
+    do
+      -- hipatterns
+      -- Match keyword labels followed by a colon or parenthesis, but not dotted access like vim.log.levels.WARN.
+      local todo_suffix = "%s*[:%(]"
 
-            bug = todo_highlighter("BUG", "MiniHipatternsFixme"),
-            fix = todo_highlighter("FIX", "MiniHipatternsFixme"),
-            fixit = todo_highlighter("FIXIT", "MiniHipatternsFixme"),
-            fixme = todo_highlighter("FIXME", "MiniHipatternsFixme"),
-            hack = todo_highlighter("HACK", "MiniHipatternsHack"),
-            info = todo_highlighter("INFO", "MiniHipatternsNote"),
-            issue = todo_highlighter("ISSUE", "MiniHipatternsFixme"),
-            note = todo_highlighter("NOTE", "MiniHipatternsNote"),
-            optimize = todo_highlighter("OPTIMIZE", "MiniHipatternsPerf"),
-            optim = todo_highlighter("OPTIM", "MiniHipatternsPerf"),
-            passed = todo_highlighter("PASSED", "MiniHipatternsTest"),
-            perf = todo_highlighter("PERF", "MiniHipatternsPerf"),
-            performance = todo_highlighter("PERFORMANCE", "MiniHipatternsPerf"),
-            test = todo_highlighter("TEST", "MiniHipatternsTest"),
-            testing = todo_highlighter("TESTING", "MiniHipatternsTest"),
-            todo = todo_highlighter("TODO", "MiniHipatternsTodo"),
-            warn = todo_highlighter("WARN", "MiniHipatternsWarn"),
-            warning = todo_highlighter("WARNING", "MiniHipatternsWarn"),
+      local function todo_highlighter(keyword, group)
+        return {
+          pattern = {
+            "^()" .. keyword .. "()" .. todo_suffix,
+            "[^%.%w_]()" .. keyword .. "()" .. todo_suffix,
           },
-        })
-      end
-
-      do
-        -- map
-        local minimap = require("mini.map")
-
-        autocmd("FileType", {
-          pattern = excluded_filetypes,
-          callback = function(event)
-            vim.b[event.buf].minimap_disable = true
-
-            if event.buf == vim.api.nvim_get_current_buf() then
-              minimap.close()
+          group = function(buf_id, _, data)
+            for _, capture in ipairs(vim.treesitter.get_captures_at_pos(buf_id, data.line - 1, data.from_col - 1)) do
+              if capture.capture:find("^comment") then
+                return group
+              end
             end
           end,
-        })
+        }
+      end
 
-        minimap.setup({
-          integrations = {
-            -- FIXME: `builtin_search` moves the source cursor and restores it via
-            -- `winrestview()`, but cursor-relative float geometry stays stale until redraw,
-            -- so DiagnosticChanged refreshes can send blink.cmp to the top-left corner.
-            -- Wait for https://github.com/nvim-mini/mini.nvim/issues/2509
-            -- minimap.gen_integration.builtin_search({ search = "MiniMapSearch" }),
-            minimap.gen_integration.diagnostic({
-              error = "MiniMapDiagnosticError",
-              warn = "MiniMapDiagnosticWarn",
-              info = "MiniMapDiagnosticInfo",
-              hint = "MiniMapDiagnosticHint",
-            }),
-            minimap.gen_integration.diff({
-              add = "MiniMapDiffAdd",
-              change = "MiniMapDiffChange",
-              delete = "MiniMapDiffDelete",
-            }),
-          },
-          window = {
-            zindex = 60,
-          },
-        })
+      local hipatterns = require("mini.hipatterns")
 
-        local gap = 20
+      hipatterns.setup({
+        highlighters = {
+          hex_color = hipatterns.gen_highlighter.hex_color(),
 
-        local function should_show_map()
-          if vim.bo.buftype ~= "" or vim.api.nvim_buf_get_name(0) == "" or vim.b.minimap_disable then
-            return false
-          end
+          bug = todo_highlighter("BUG", "MiniHipatternsFixme"),
+          fix = todo_highlighter("FIX", "MiniHipatternsFixme"),
+          fixit = todo_highlighter("FIXIT", "MiniHipatternsFixme"),
+          fixme = todo_highlighter("FIXME", "MiniHipatternsFixme"),
+          hack = todo_highlighter("HACK", "MiniHipatternsHack"),
+          info = todo_highlighter("INFO", "MiniHipatternsNote"),
+          issue = todo_highlighter("ISSUE", "MiniHipatternsFixme"),
+          note = todo_highlighter("NOTE", "MiniHipatternsNote"),
+          optimize = todo_highlighter("OPTIMIZE", "MiniHipatternsPerf"),
+          optim = todo_highlighter("OPTIM", "MiniHipatternsPerf"),
+          passed = todo_highlighter("PASSED", "MiniHipatternsTest"),
+          perf = todo_highlighter("PERF", "MiniHipatternsPerf"),
+          performance = todo_highlighter("PERFORMANCE", "MiniHipatternsPerf"),
+          test = todo_highlighter("TEST", "MiniHipatternsTest"),
+          testing = todo_highlighter("TESTING", "MiniHipatternsTest"),
+          todo = todo_highlighter("TODO", "MiniHipatternsTodo"),
+          warn = todo_highlighter("WARN", "MiniHipatternsWarn"),
+          warning = todo_highlighter("WARNING", "MiniHipatternsWarn"),
+        },
+      })
+    end
 
-          local col = vim.api.nvim_win_get_cursor(0)[2]
-          return vim.api.nvim_win_get_width(0) - col >= gap
-        end
+    do
+      -- map
+      local minimap = require("mini.map")
 
-        local function update_map()
-          if vim.api.nvim_win_get_config(0).relative ~= "" then
-            return
-          end
+      autocmd("FileType", {
+        pattern = excluded_filetypes,
+        callback = function(event)
+          vim.b[event.buf].minimap_disable = true
 
-          local should_show = should_show_map()
-          if vim.w.ray_minimap_visible == should_show then
-            return
-          end
-
-          vim.w.ray_minimap_visible = should_show
-          if should_show then
-            minimap.open()
-          else
+          if event.buf == vim.api.nvim_get_current_buf() then
             minimap.close()
           end
-        end
+        end,
+      })
 
-        autocmd({ "BufWinEnter", "CursorMoved", "CursorMovedI" }, {
-          callback = update_map,
-        })
+      minimap.setup({
+        integrations = {
+          -- FIXME: `builtin_search` moves the source cursor and restores it via
+          -- `winrestview()`, but cursor-relative float geometry stays stale until redraw,
+          -- so DiagnosticChanged refreshes can send blink.cmp to the top-left corner.
+          -- Wait for https://github.com/nvim-mini/mini.nvim/issues/2509
+          -- minimap.gen_integration.builtin_search({ search = "MiniMapSearch" }),
+          minimap.gen_integration.diagnostic({
+            error = "MiniMapDiagnosticError",
+            warn = "MiniMapDiagnosticWarn",
+            info = "MiniMapDiagnosticInfo",
+            hint = "MiniMapDiagnosticHint",
+          }),
+          minimap.gen_integration.diff({
+            add = "MiniMapDiffAdd",
+            change = "MiniMapDiffChange",
+            delete = "MiniMapDiffDelete",
+          }),
+        },
+        window = {
+          zindex = 60,
+        },
+      })
 
-        map("n", "<leader>um", function()
-          minimap.toggle()
-        end, { desc = "Toggle minimap" })
+      local gap = 20
 
-        update_map()
-      end
-
-      do
-        -- sessions
-        local sessions = require("mini.sessions")
-
-        local session_dir = vim.fn.stdpath("state") .. "/sessions"
-
-        local function encode_path(path)
-          return path:gsub("[\\/:]+", "%%")
-        end
-
-        local function decode_path(path)
-          local decoded = path:gsub("%%", "/")
-
-          if jit.os:find("Windows") then
-            decoded = decoded:gsub("^(%w)/", "%1:/")
-          end
-
-          return decoded
-        end
-
-        local function current_session_name()
-          return encode_path(vim.fn.getcwd()) .. ".vim"
-        end
-
-        local function session_path(name)
-          return vim.fs.normalize(session_dir .. "/" .. name)
-        end
-
-        local function read_session(name)
-          if vim.fn.filereadable(session_path(name)) == 1 then
-            sessions.read(name)
-          end
-        end
-
-        local function has_file_buffer()
-          for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_get_name(bufnr) ~= "" then
-              return true
-            end
-          end
+      local function should_show_map()
+        if vim.bo.buftype ~= "" or vim.api.nvim_buf_get_name(0) == "" or vim.b.minimap_disable then
           return false
         end
 
-        local function save_session(verbose, require_file_buffer)
-          if require_file_buffer and not has_file_buffer() then
+        local col = vim.api.nvim_win_get_cursor(0)[2]
+        return vim.api.nvim_win_get_width(0) - col >= gap
+      end
+
+      local function update_map()
+        if vim.api.nvim_win_get_config(0).relative ~= "" then
+          return
+        end
+
+        local should_show = should_show_map()
+        if vim.w.ray_minimap_visible == should_show then
+          return
+        end
+
+        vim.w.ray_minimap_visible = should_show
+        if should_show then
+          minimap.open()
+        else
+          minimap.close()
+        end
+      end
+
+      autocmd({ "BufWinEnter", "CursorMoved", "CursorMovedI" }, {
+        callback = update_map,
+      })
+
+      map("n", "<leader>um", function()
+        minimap.toggle()
+      end, { desc = "Toggle minimap" })
+
+      update_map()
+    end
+
+    do
+      -- sessions
+      local sessions = require("mini.sessions")
+
+      local session_dir = vim.fn.stdpath("state") .. "/sessions"
+
+      local function encode_path(path)
+        return path:gsub("[\\/:]+", "%%")
+      end
+
+      local function decode_path(path)
+        local decoded = path:gsub("%%", "/")
+
+        if jit.os:find("Windows") then
+          decoded = decoded:gsub("^(%w)/", "%1:/")
+        end
+
+        return decoded
+      end
+
+      local function current_session_name()
+        return encode_path(vim.fn.getcwd()) .. ".vim"
+      end
+
+      local function session_path(name)
+        return vim.fs.normalize(session_dir .. "/" .. name)
+      end
+
+      local function read_session(name)
+        if vim.fn.filereadable(session_path(name)) == 1 then
+          sessions.read(name)
+        end
+      end
+
+      local function has_file_buffer()
+        for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_get_name(bufnr) ~= "" then
+            return true
+          end
+        end
+        return false
+      end
+
+      local function save_session(verbose, require_file_buffer)
+        if require_file_buffer and not has_file_buffer() then
+          return
+        end
+
+        sessions.write(current_session_name(), { force = true, verbose = verbose })
+      end
+
+      local function list_sessions()
+        local paths = vim.fn.glob(session_dir .. "/*.vim", true, true)
+
+        table.sort(paths, function(a, b)
+          return vim.fn.getftime(a) > vim.fn.getftime(b)
+        end)
+
+        return vim.tbl_map(function(path)
+          local name = vim.fn.fnamemodify(path, ":t")
+          return { dir = decode_path(vim.fn.fnamemodify(name, ":r")), name = name }
+        end, paths)
+      end
+
+      local function select_session()
+        vim.ui.select(list_sessions(), {
+          prompt = "Select a session: ",
+          format_item = function(item)
+            return vim.fn.fnamemodify(item.dir, ":p:~")
+          end,
+        }, function(item)
+          if not item then
             return
           end
 
-          sessions.write(current_session_name(), { force = true, verbose = verbose })
-        end
-
-        local function list_sessions()
-          local paths = vim.fn.glob(session_dir .. "/*.vim", true, true)
-
-          table.sort(paths, function(a, b)
-            return vim.fn.getftime(a) > vim.fn.getftime(b)
-          end)
-
-          return vim.tbl_map(function(path)
-            local name = vim.fn.fnamemodify(path, ":t")
-            return { dir = decode_path(vim.fn.fnamemodify(name, ":r")), name = name }
-          end, paths)
-        end
-
-        local function select_session()
-          vim.ui.select(list_sessions(), {
-            prompt = "Select a session: ",
-            format_item = function(item)
-              return vim.fn.fnamemodify(item.dir, ":p:~")
-            end,
-          }, function(item)
-            if not item then
-              return
-            end
-
-            save_session(false, true)
-            vim.fn.chdir(item.dir)
-            read_session(item.name)
-          end)
-        end
-
-        local function load_last_session()
-          local latest = list_sessions()[1]
-
-          if latest then
-            read_session(latest.name)
-          end
-        end
-
-        sessions.setup({
-          autoread = false,
-          autowrite = false,
-          directory = session_dir,
-          file = "",
-          force = {
-            delete = false,
-            read = false,
-            write = true,
-          },
-          verbose = {
-            delete = true,
-            read = false,
-            write = true,
-          },
-        })
-
-        autocmd("DirChanged", {
-          callback = function()
-            if vim.v.this_session ~= "" then
-              vim.v.this_session = session_path(current_session_name())
-            end
-          end,
-        })
-
-        autocmd("ExitPre", {
-          callback = function()
-            save_session(false, true)
-          end,
-        })
-
-        map("n", "<leader>pr", function()
-          read_session(current_session_name())
-        end, { desc = "Restore project session" })
-        map("n", "<leader>pw", function()
-          save_session(true, false)
-        end, { desc = "Save session" })
-        map("n", "<leader>ps", select_session, { desc = "Select session" })
-        map("n", "<leader>pl", load_last_session, { desc = "Restore last session" })
+          save_session(false, true)
+          vim.fn.chdir(item.dir)
+          read_session(item.name)
+        end)
       end
 
-      do
-        -- snippets
-        -- Keep MiniSnippets: nested sessions are required so snippets can expand inside active snippets.
-        -- TODO: could be replaced by native vim.snippet after upgrading to nvim 0.13
-        -- (that's why I move from mini.snippets -> vim.snippet and then back to mini.snippets btw)
+      local function load_last_session()
+        local latest = list_sessions()[1]
 
-        local snippets = require("mini.snippets")
-        local gen_loader = snippets.gen_loader
-
-        snippets.setup({
-          snippets = {
-            gen_loader.from_lang({
-              lang_patterns = {
-                javascriptreact = { "**/javascript.json" },
-                typescript = { "**/javascript.json" },
-                typescriptreact = { "**/javascript.json" },
-                vue = { "**/vue.json", "**/javascript.json" },
-              },
-            }),
-          },
-          mappings = {
-            expand = "",
-            jump_next = "",
-            jump_prev = "",
-          },
-          expand = {
-            insert = function(snippet)
-              return snippets.default_insert(snippet, {
-                empty_tabstop = "",
-                empty_tabstop_final = "",
-              })
-            end,
-          },
-        })
-
-        autocmd("ModeChanged", {
-          pattern = "*:n",
-          callback = function()
-            while snippets.session.get() do
-              snippets.session.stop()
-            end
-          end,
-        })
+        if latest then
+          read_session(latest.name)
+        end
       end
 
-      do
-        -- statusline
-        local trunc_width = 120
-        local max_path_width = 100
+      sessions.setup({
+        autoread = false,
+        autowrite = false,
+        directory = session_dir,
+        file = "",
+        force = {
+          delete = false,
+          read = false,
+          write = true,
+        },
+        verbose = {
+          delete = true,
+          read = false,
+          write = true,
+        },
+      })
 
-        local function statusline_escape(text)
-          return tostring(text):gsub("%%", "%%%%")
+      autocmd("DirChanged", {
+        callback = function()
+          if vim.v.this_session ~= "" then
+            vim.v.this_session = session_path(current_session_name())
+          end
+        end,
+      })
+
+      autocmd("ExitPre", {
+        callback = function()
+          save_session(false, true)
+        end,
+      })
+
+      map("n", "<leader>pr", function()
+        read_session(current_session_name())
+      end, { desc = "Restore project session" })
+      map("n", "<leader>pw", function()
+        save_session(true, false)
+      end, { desc = "Save session" })
+      map("n", "<leader>ps", select_session, { desc = "Select session" })
+      map("n", "<leader>pl", load_last_session, { desc = "Restore last session" })
+    end
+
+    do
+      -- snippets
+      -- Keep MiniSnippets: nested sessions are required so snippets can expand inside active snippets.
+      -- TODO: could be replaced by native vim.snippet after upgrading to nvim 0.13
+      -- (that's why I move from mini.snippets -> vim.snippet and then back to mini.snippets btw)
+
+      local snippets = require("mini.snippets")
+      local gen_loader = snippets.gen_loader
+
+      snippets.setup({
+        snippets = {
+          gen_loader.from_lang({
+            lang_patterns = {
+              javascriptreact = { "**/javascript.json" },
+              typescript = { "**/javascript.json" },
+              typescriptreact = { "**/javascript.json" },
+              vue = { "**/vue.json", "**/javascript.json" },
+            },
+          }),
+        },
+        mappings = {
+          expand = "",
+          jump_next = "",
+          jump_prev = "",
+        },
+        expand = {
+          insert = function(snippet)
+            return snippets.default_insert(snippet, {
+              empty_tabstop = "",
+              empty_tabstop_final = "",
+            })
+          end,
+        },
+      })
+
+      autocmd("ModeChanged", {
+        pattern = "*:n",
+        callback = function()
+          while snippets.session.get() do
+            snippets.session.stop()
+          end
+        end,
+      })
+    end
+
+    do
+      -- statusline
+      local trunc_width = 120
+      local max_path_width = 100
+
+      local function statusline_escape(text)
+        return tostring(text):gsub("%%", "%%%%")
+      end
+
+      local function statusline_macro()
+        local register = vim.fn.reg_recording()
+
+        if register == "" then
+          return ""
         end
 
-        local function statusline_macro()
-          local register = vim.fn.reg_recording()
+        return statusline_escape("recording @" .. register)
+      end
 
-          if register == "" then
-            return ""
-          end
+      local function statusline_workspace()
+        local workspace = vim.fn.fnamemodify(vim.fn.getcwd(0), ":t")
 
-          return statusline_escape("recording @" .. register)
+        if workspace == "" then
+          return ""
         end
 
-        local function statusline_workspace()
-          local workspace = vim.fn.fnamemodify(vim.fn.getcwd(0), ":t")
+        return statusline_escape(workspace:upper())
+      end
 
-          if workspace == "" then
-            return ""
-          end
+      local function statusline_pretty_path()
+        local path = vim.api.nvim_buf_get_name(0)
 
-          return statusline_escape(workspace:upper())
+        if path == "" then
+          return ""
         end
 
-        local function statusline_pretty_path()
-          local path = vim.api.nvim_buf_get_name(0)
+        path = vim.fs.normalize(vim.fn.fnamemodify(path, ":p"))
 
-          if path == "" then
-            return ""
-          end
+        local cwd = vim.fs.normalize(vim.fn.getcwd(0))
+        local relative = vim.fs.relpath(cwd, path)
 
-          path = vim.fs.normalize(vim.fn.fnamemodify(path, ":p"))
+        relative = (relative or path):gsub("\\", "/")
 
-          local cwd = vim.fs.normalize(vim.fn.getcwd(0))
-          local relative = vim.fs.relpath(cwd, path)
-
-          relative = (relative or path):gsub("\\", "/")
-
-          if vim.fn.strdisplaywidth(relative) <= max_path_width then
-            return relative
-          end
-
-          local parts = vim.split(relative, "/", { plain = true })
-
-          if #parts <= 2 then
-            return relative
-          end
-
-          for tail_start = 3, #parts do
-            local shortened = { parts[1], "…" }
-
-            for index = tail_start, #parts do
-              table.insert(shortened, parts[index])
-            end
-
-            relative = table.concat(shortened, "/")
-
-            if vim.fn.strdisplaywidth(relative) <= max_path_width then
-              break
-            end
-          end
-
+        if vim.fn.strdisplaywidth(relative) <= max_path_width then
           return relative
         end
 
-        local function statusline_show_fileinfo()
-          return not MiniStatusline.is_truncated(trunc_width) and vim.bo.buftype == ""
+        local parts = vim.split(relative, "/", { plain = true })
+
+        if #parts <= 2 then
+          return relative
         end
 
-        local function redraw_statusline()
-          vim.schedule(function()
-            vim.cmd.redrawstatus()
-          end)
+        for tail_start = 3, #parts do
+          local shortened = { parts[1], "…" }
+
+          for index = tail_start, #parts do
+            table.insert(shortened, parts[index])
+          end
+
+          relative = table.concat(shortened, "/")
+
+          if vim.fn.strdisplaywidth(relative) <= max_path_width then
+            break
+          end
         end
 
-        local function statusline_metadata()
-          if not statusline_show_fileinfo() then
-            return ""
-          end
+        return relative
+      end
 
-          local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
-          local format = vim.bo.fileformat
+      local function statusline_show_fileinfo()
+        return not MiniStatusline.is_truncated(trunc_width) and vim.bo.buftype == ""
+      end
 
-          return string.format("%s[%s]", encoding, format)
+      local function redraw_statusline()
+        vim.schedule(function()
+          vim.cmd.redrawstatus()
+        end)
+      end
+
+      local function statusline_metadata()
+        if not statusline_show_fileinfo() then
+          return ""
         end
 
-        local function statusline_highlight(hl, text)
-          return "%#" .. hl .. "#" .. statusline_escape(text)
+        local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
+        local format = vim.bo.fileformat
+
+        return string.format("%s[%s]", encoding, format)
+      end
+
+      local function statusline_highlight(hl, text)
+        return "%#" .. hl .. "#" .. statusline_escape(text)
+      end
+
+      local function statusline_diff()
+        if MiniStatusline.is_truncated(75) or type(vim.b.minidiff_summary) ~= "table" then
+          return ""
         end
 
-        local function statusline_diff()
-          if MiniStatusline.is_truncated(75) or type(vim.b.minidiff_summary) ~= "table" then
-            return ""
-          end
+        local summary = vim.b.minidiff_summary
+        local parts = {}
 
-          local summary = vim.b.minidiff_summary
-          local parts = {}
-
-          if (summary.add or 0) > 0 then
-            table.insert(parts, statusline_highlight("MiniStatuslineDiffAdd", "+" .. summary.add))
-          end
-
-          if (summary.change or 0) > 0 then
-            table.insert(parts, statusline_highlight("MiniStatuslineDiffChange", "~" .. summary.change))
-          end
-
-          if (summary.delete or 0) > 0 then
-            table.insert(parts, statusline_highlight("MiniStatuslineDiffDelete", "-" .. summary.delete))
-          end
-
-          if #parts == 0 then
-            return ""
-          end
-
-          return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
+        if (summary.add or 0) > 0 then
+          table.insert(parts, statusline_highlight("MiniStatuslineDiffAdd", "+" .. summary.add))
         end
 
-        local function statusline_diagnostic_counts()
-          if MiniStatusline.is_truncated(90) then
-            return ""
-          end
-
-          local counts = vim.diagnostic.count(0)
-
-          local parts = {}
-
-          for _, item in ipairs({
-            { vim.diagnostic.severity.ERROR, "MiniStatuslineDiagnosticError" },
-            { vim.diagnostic.severity.WARN, "MiniStatuslineDiagnosticWarn" },
-            { vim.diagnostic.severity.INFO, "MiniStatuslineDiagnosticInfo" },
-            { vim.diagnostic.severity.HINT, "MiniStatuslineDiagnosticHint" },
-          }) do
-            local severity, group = item[1], item[2]
-            local count = counts[severity] or 0
-
-            if count > 0 then
-              table.insert(parts, statusline_highlight(group, diagnostic_sign(severity) .. " " .. count))
-            end
-          end
-
-          if #parts == 0 then
-            return ""
-          end
-
-          return table.concat(parts, " ") .. "%#MiniStatuslineDiagnostics#"
+        if (summary.change or 0) > 0 then
+          table.insert(parts, statusline_highlight("MiniStatuslineDiffChange", "~" .. summary.change))
         end
 
-        local function statusline_file()
-          local path = vim.api.nvim_buf_get_name(0)
-
-          if path == "" or vim.bo.buftype ~= "" then
-            return ""
-          end
-
-          local icon, icon_hl = MiniIcons.get("file", path)
-          local icon_part = "%#" .. icon_hl .. "#" .. statusline_escape(icon)
-
-          if MiniStatusline.is_truncated(trunc_width) then
-            return icon_part
-          end
-
-          local pretty_path = statusline_pretty_path()
-          local directory, filename = pretty_path:match("^(.*[/\\])([^/\\]+)$")
-          local path_part = "%#MiniStatuslineFilename#" .. statusline_escape(filename or pretty_path)
-
-          if filename then
-            path_part = "%#MiniStatuslineDirectory#"
-              .. statusline_escape(directory)
-              .. "%#MiniStatuslineFilename#"
-              .. statusline_escape(filename)
-          end
-
-          return icon_part .. "%#MiniStatuslinePath# " .. path_part
+        if (summary.delete or 0) > 0 then
+          table.insert(parts, statusline_highlight("MiniStatuslineDiffDelete", "-" .. summary.delete))
         end
 
-        local function statusline_active()
-          local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
-          local workspace = statusline_workspace()
-          local git = MiniStatusline.section_git({ trunc_width = trunc_width })
-          local diff = statusline_diff()
-          local file = statusline_file()
-          local diagnostics = statusline_diagnostic_counts()
-          local metadata = statusline_metadata()
-
-          return MiniStatusline.combine_groups({
-            { hl = mode_hl, strings = { mode } },
-            { hl = "MiniStatuslineWorkspace", strings = { workspace } },
-            { hl = "MiniStatuslineDevinfo", strings = { git, diff } },
-            "%<",
-            { hl = "MiniStatuslinePath", strings = { file } },
-            { hl = "MiniStatuslineDiagnostics", strings = { diagnostics } },
-            "%=",
-            { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
-            { hl = "MiniStatuslineMetadata", strings = { statusline_escape(metadata) } },
-            { hl = mode_hl, strings = { "%l/%L:%v" } },
-          })
+        if #parts == 0 then
+          return ""
         end
 
-        local function statusline_inactive()
-          return "%#MiniStatuslineInactive#%="
+        return table.concat(parts, " ") .. "%#MiniStatuslineDevinfo#"
+      end
+
+      local function statusline_diagnostic_counts()
+        if MiniStatusline.is_truncated(90) then
+          return ""
         end
 
-        require("mini.statusline").setup({
-          content = {
-            active = statusline_active,
-            inactive = statusline_inactive,
-          },
-        })
+        local counts = vim.diagnostic.count(0)
 
-        autocmd({ "RecordingEnter", "RecordingLeave", "DiagnosticChanged" }, {
-          callback = redraw_statusline,
-        })
+        local parts = {}
 
-        autocmd("User", {
-          pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
-          callback = redraw_statusline,
+        for _, item in ipairs({
+          { vim.diagnostic.severity.ERROR, "MiniStatuslineDiagnosticError" },
+          { vim.diagnostic.severity.WARN, "MiniStatuslineDiagnosticWarn" },
+          { vim.diagnostic.severity.INFO, "MiniStatuslineDiagnosticInfo" },
+          { vim.diagnostic.severity.HINT, "MiniStatuslineDiagnosticHint" },
+        }) do
+          local severity, group = item[1], item[2]
+          local count = counts[severity] or 0
+
+          if count > 0 then
+            table.insert(parts, statusline_highlight(group, diagnostic_sign(severity) .. " " .. count))
+          end
+        end
+
+        if #parts == 0 then
+          return ""
+        end
+
+        return table.concat(parts, " ") .. "%#MiniStatuslineDiagnostics#"
+      end
+
+      local function statusline_file()
+        local path = vim.api.nvim_buf_get_name(0)
+
+        if path == "" or vim.bo.buftype ~= "" then
+          return ""
+        end
+
+        local icon, icon_hl = MiniIcons.get("file", path)
+        local icon_part = "%#" .. icon_hl .. "#" .. statusline_escape(icon)
+
+        if MiniStatusline.is_truncated(trunc_width) then
+          return icon_part
+        end
+
+        local pretty_path = statusline_pretty_path()
+        local directory, filename = pretty_path:match("^(.*[/\\])([^/\\]+)$")
+        local path_part = "%#MiniStatuslineFilename#" .. statusline_escape(filename or pretty_path)
+
+        if filename then
+          path_part = "%#MiniStatuslineDirectory#"
+            .. statusline_escape(directory)
+            .. "%#MiniStatuslineFilename#"
+            .. statusline_escape(filename)
+        end
+
+        return icon_part .. "%#MiniStatuslinePath# " .. path_part
+      end
+
+      local function statusline_active()
+        local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = trunc_width })
+        local workspace = statusline_workspace()
+        local git = MiniStatusline.section_git({ trunc_width = trunc_width })
+        local diff = statusline_diff()
+        local file = statusline_file()
+        local diagnostics = statusline_diagnostic_counts()
+        local metadata = statusline_metadata()
+
+        return MiniStatusline.combine_groups({
+          { hl = mode_hl, strings = { mode } },
+          { hl = "MiniStatuslineWorkspace", strings = { workspace } },
+          { hl = "MiniStatuslineDevinfo", strings = { git, diff } },
+          "%<",
+          { hl = "MiniStatuslinePath", strings = { file } },
+          { hl = "MiniStatuslineDiagnostics", strings = { diagnostics } },
+          "%=",
+          { hl = "MiniStatuslineInputState", strings = { statusline_macro(), "%S" } },
+          { hl = "MiniStatuslineMetadata", strings = { statusline_escape(metadata) } },
+          { hl = mode_hl, strings = { "%l/%L:%v" } },
         })
       end
 
-      do
-        -- tabline
-        local tabline = require("mini.tabline")
-
-        tabline.setup({
-          format = function(buf_id, label)
-            local suffix = vim.bo[buf_id].modified and "[+] " or ""
-
-            return " " .. tabline.default_format(buf_id, label) .. suffix .. " "
-          end,
-          tabpage_section = "right",
-        })
+      local function statusline_inactive()
+        return "%#MiniStatuslineInactive#%="
       end
-    end,
-  }
+
+      require("mini.statusline").setup({
+        content = {
+          active = statusline_active,
+          inactive = statusline_inactive,
+        },
+      })
+
+      autocmd({ "RecordingEnter", "RecordingLeave", "DiagnosticChanged" }, {
+        callback = redraw_statusline,
+      })
+
+      autocmd("User", {
+        pattern = { "MiniDiffUpdated", "MiniGitUpdated" },
+        callback = redraw_statusline,
+      })
+    end
+
+    do
+      -- tabline
+      local tabline = require("mini.tabline")
+
+      tabline.setup({
+        format = function(buf_id, label)
+          local suffix = vim.bo[buf_id].modified and "[+] " or ""
+
+          return " " .. tabline.default_format(buf_id, label) .. suffix .. " "
+        end,
+        tabpage_section = "right",
+      })
+    end
+  end)
 end
 
 -- #############################
 -- # Miscellaneous             #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "willothy/flatten.nvim",
-    lazy = false,
-    priority = 1001,
-    opts = {},
-  },
-  {
-    "wakatime/vim-wakatime",
-    event = "VeryLazy",
-  },
-})
+load_plugins("later", "vim-wakatime")
 
 -- #############################
 -- # Multicursor               #
 -- #############################
 
 -- TODO: https://x.com/justinmk/status/2075633035504910551
-plugins[#plugins + 1] = {
-  "jake-stewart/multicursor.nvim",
-  keys = {
-    { "<leader>m", mode = { "n", "x" }, desc = "Multicursor" },
-    { "<C-leftmouse>", mode = "n", desc = "Add cursor with mouse" },
-    { "<C-leftdrag>", mode = "n", desc = "Drag cursor with mouse" },
-    { "<C-leftrelease>", mode = "n", desc = "Release cursor with mouse" },
-  },
-  config = function()
-    local mc = require("multicursor-nvim")
+load_plugins("later", "multicursor.nvim", function()
+  local mc = require("multicursor-nvim")
 
-    mc.setup()
+  mc.setup()
 
-    local append_at_line_end = function()
-      mc.action(function(ctx)
-        ctx:forEachCursor(function(cursor)
-          cursor:feedkeys("$")
-        end)
-      end)
-      mc.feedkeys("a")
-    end
-
-    local add_cursor_down = function()
-      mc.lineAddCursor(1)
-    end
-
-    local add_cursor_up = function()
-      mc.lineAddCursor(-1)
-    end
-
-    local match_all = function()
-      local mode = vim.fn.mode()
-      local cursor = vim.fn.getpos(".")
-      local anchor = vim.fn.getpos("v")
-
-      mc.matchAllAddCursors()
-
-      if mode == "n" then
-        mc.feedkeys("e")
-        return
-      end
-
-      local cursor_before_anchor = cursor[2] < anchor[2] or (cursor[2] == anchor[2] and cursor[3] < anchor[3])
-      local start = cursor_before_anchor and cursor or anchor
-      local row = cursor[2] - start[2]
-      local col = cursor[3] - (row == 0 and start[3] or 1)
-
-      mc.action(function(ctx)
-        ctx:forEachCursor(function(curr)
-          curr:setPos({
-            curr:line() + row,
-            row == 0 and curr:col() + col or col + 1,
-          })
-        end)
-      end)
-    end
-
-    map({ "n", "x" }, "<leader>m<C-j>", add_cursor_down, { desc = "Add cursor down" })
-    map({ "n", "x" }, "<leader>m<C-k>", add_cursor_up, { desc = "Add cursor up" })
-    map({ "n", "x" }, "<leader>ma", match_all, { desc = "Add cursor to all matches" })
-
-    map("n", "<C-leftmouse>", mc.handleMouse, { desc = "Add cursor with mouse" })
-    map("n", "<C-leftdrag>", mc.handleMouseDrag, { desc = "Drag cursor with mouse" })
-    map("n", "<C-leftrelease>", mc.handleMouseRelease, { desc = "Release cursor with mouse" })
-    map("n", "<Esc>", function()
-      if mc.hasCursors() then
-        mc.clearCursors()
-      else
-        vim.cmd("nohlsearch")
-      end
-    end, { desc = "Clear search highlight or multicursors" })
-
-    mc.addKeymapLayer(function(layer_map)
-      layer_map("n", "A", append_at_line_end)
-      layer_map("n", "<C-j>", add_cursor_down)
-      layer_map("n", "<C-k>", add_cursor_up)
-      layer_map("x", "I", mc.insertVisual)
-      layer_map("x", "A", mc.appendVisual)
-      layer_map("n", "<Esc>", function()
-        if not mc.cursorsEnabled() then
-          mc.enableCursors()
-        else
-          mc.clearCursors()
-        end
+  local append_at_line_end = function()
+    mc.action(function(ctx)
+      ctx:forEachCursor(function(cursor)
+        cursor:feedkeys("$")
       end)
     end)
-  end,
-}
+    mc.feedkeys("a")
+  end
+
+  local add_cursor_down = function()
+    mc.lineAddCursor(1)
+  end
+
+  local add_cursor_up = function()
+    mc.lineAddCursor(-1)
+  end
+
+  local match_all = function()
+    local mode = vim.fn.mode()
+    local cursor = vim.fn.getpos(".")
+    local anchor = vim.fn.getpos("v")
+
+    mc.matchAllAddCursors()
+
+    if mode == "n" then
+      mc.feedkeys("e")
+      return
+    end
+
+    local cursor_before_anchor = cursor[2] < anchor[2] or (cursor[2] == anchor[2] and cursor[3] < anchor[3])
+    local start = cursor_before_anchor and cursor or anchor
+    local row = cursor[2] - start[2]
+    local col = cursor[3] - (row == 0 and start[3] or 1)
+
+    mc.action(function(ctx)
+      ctx:forEachCursor(function(curr)
+        curr:setPos({
+          curr:line() + row,
+          row == 0 and curr:col() + col or col + 1,
+        })
+      end)
+    end)
+  end
+
+  map({ "n", "x" }, "<leader>m<C-j>", add_cursor_down, { desc = "Add cursor down" })
+  map({ "n", "x" }, "<leader>m<C-k>", add_cursor_up, { desc = "Add cursor up" })
+  map({ "n", "x" }, "<leader>ma", match_all, { desc = "Add cursor to all matches" })
+
+  map("n", "<C-leftmouse>", mc.handleMouse, { desc = "Add cursor with mouse" })
+  map("n", "<C-leftdrag>", mc.handleMouseDrag, { desc = "Drag cursor with mouse" })
+  map("n", "<C-leftrelease>", mc.handleMouseRelease, { desc = "Release cursor with mouse" })
+  map("n", "<Esc>", function()
+    if mc.hasCursors() then
+      mc.clearCursors()
+    else
+      vim.cmd("nohlsearch")
+    end
+  end, { desc = "Clear search highlight or multicursors" })
+
+  mc.addKeymapLayer(function(layer_map)
+    layer_map("n", "A", append_at_line_end)
+    layer_map("n", "<C-j>", add_cursor_down)
+    layer_map("n", "<C-k>", add_cursor_up)
+    layer_map("x", "I", mc.insertVisual)
+    layer_map("x", "A", mc.appendVisual)
+    layer_map("n", "<Esc>", function()
+      if not mc.cursorsEnabled() then
+        mc.enableCursors()
+      else
+        mc.clearCursors()
+      end
+    end)
+  end)
+end)
 
 -- #############################
 -- # Panels                    #
@@ -2933,10 +2814,8 @@ local function trouble_filter(position)
   end
 end
 
-plugins[#plugins + 1] = {
-  "so1ve/panels.nvim",
-  event = "VeryLazy",
-  opts = {
+load_plugins("later", "panels.nvim", function()
+  require("panels").setup({
     panels = {
       ["grug-far"] = {
         title = "Search & Replace",
@@ -2983,319 +2862,194 @@ plugins[#plugins + 1] = {
         end,
       },
     },
-  },
-}
+  })
+end)
 
 -- #############################
 -- # Refactoring               #
 -- #############################
 
-plugins[#plugins + 1] = {
-  "ThePrimeagen/refactoring.nvim",
-  dependencies = {
-    "lewis6991/async.nvim",
-  },
-  opts = {},
-  keys = {
-    {
-      "<leader>rf",
-      function()
-        return require("refactoring").extract_func()
-      end,
-      mode = "x",
-      expr = true,
-      desc = "Extract function",
-    },
-    {
-      "<leader>rF",
-      function()
-        return require("refactoring").extract_func_to_file()
-      end,
-      mode = "x",
-      expr = true,
-      desc = "Extract function to file",
-    },
-    {
-      "<leader>rv",
-      function()
-        return require("refactoring").extract_var()
-      end,
-      mode = "x",
-      expr = true,
-      desc = "Extract variable",
-    },
-    {
-      "<leader>ri",
-      function()
-        return require("refactoring").inline_var()
-      end,
-      mode = { "n", "x" },
-      expr = true,
-      desc = "Inline variable",
-    },
-    {
-      "<leader>rI",
-      function()
-        return require("refactoring").inline_func()
-      end,
-      mode = { "n", "x" },
-      expr = true,
-      desc = "Inline function",
-    },
-    {
-      "<leader>rs",
-      function()
-        require("refactoring").select_refactor()
-      end,
-      mode = { "n", "x" },
-      desc = "Select refactor",
-    },
-  },
-}
+load_plugins("later", { "async.nvim", "refactoring.nvim" }, function()
+  require("refactoring").setup()
+end)
+
+map("x", "<leader>rf", function()
+  return require("refactoring").extract_func()
+end, { expr = true, desc = "Extract function" })
+
+map("x", "<leader>rF", function()
+  return require("refactoring").extract_func_to_file()
+end, { expr = true, desc = "Extract function to file" })
+
+map("x", "<leader>rv", function()
+  return require("refactoring").extract_var()
+end, { expr = true, desc = "Extract variable" })
+
+map({ "n", "x" }, "<leader>ri", function()
+  return require("refactoring").inline_var()
+end, { expr = true, desc = "Inline variable" })
+
+map({ "n", "x" }, "<leader>rI", function()
+  return require("refactoring").inline_func()
+end, { expr = true, desc = "Inline function" })
+
+map({ "n", "x" }, "<leader>rs", function()
+  require("refactoring").select_refactor()
+end, { desc = "Select refactor" })
 
 -- #############################
 -- # Snacks                    #
 -- #############################
 
-vim.list_extend(plugins, {
-  {
-    "folke/snacks.nvim",
-    priority = 1000,
-    lazy = false,
-    opts = {
-      bigfile = {},
-      dashboard = { enabled = false },
-      quickfile = {},
-      picker = {
-        sources = {
-          files = {
-            hidden = true,
-          },
-          lsp_symbols = {
-            filter = {
-              default = lsp_symbol_kinds,
-              help = true,
-              markdown = true,
-            },
-          },
-          lsp_workspace_symbols = {
-            filter = {
-              default = lsp_symbol_kinds,
-              help = true,
-              markdown = true,
-            },
+safely("now", function()
+  require("snacks").setup({
+    bigfile = {},
+    dashboard = { enabled = false },
+    quickfile = {},
+    picker = {
+      sources = {
+        files = {
+          hidden = true,
+        },
+        lsp_symbols = {
+          filter = {
+            default = lsp_symbol_kinds,
+            help = true,
+            markdown = true,
           },
         },
-        actions = {
-          trouble_open = function(picker)
-            require("trouble.sources.snacks").open(picker)
-          end,
-          trouble_open_selected = function(picker)
-            require("trouble.sources.snacks").open(picker, { type = "selected" })
-          end,
-          trouble_open_all = function(picker)
-            require("trouble.sources.snacks").open(picker, { type = "all" })
-          end,
-        },
-        win = {
-          input = {
-            keys = {
-              ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
-            },
+        lsp_workspace_symbols = {
+          filter = {
+            default = lsp_symbol_kinds,
+            help = true,
+            markdown = true,
           },
         },
       },
-      input = {},
-      notifier = {
-        height = { min = 1, max = 0.4 },
+      actions = {
+        trouble_open = function(picker)
+          require("trouble.sources.snacks").open(picker)
+        end,
+        trouble_open_selected = function(picker)
+          require("trouble.sources.snacks").open(picker, { type = "selected" })
+        end,
+        trouble_open_all = function(picker)
+          require("trouble.sources.snacks").open(picker, { type = "all" })
+        end,
       },
-      styles = {
-        notification = {
-          ft = "snacks_notif",
+      win = {
+        input = {
+          keys = {
+            ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
+          },
         },
-      },
-      statuscolumn = {},
-      gh = {},
-      rename = {},
-      words = { enabled = false },
-    },
-    keys = {
-      {
-        "<leader>gb",
-        function()
-          Snacks.picker.git_branches()
-        end,
-        desc = "Git branches",
-      },
-      {
-        "<leader>gi",
-        function()
-          Snacks.picker.gh_issue()
-        end,
-        desc = "GitHub Issues (open)",
-      },
-      {
-        "<leader>gI",
-        function()
-          Snacks.picker.gh_issue({ state = "all" })
-        end,
-        desc = "GitHub Issues (all)",
-      },
-      {
-        "<leader>gp",
-        function()
-          Snacks.picker.gh_pr()
-        end,
-        desc = "GitHub Pull Requests (open)",
-      },
-      {
-        "<leader>gP",
-        function()
-          Snacks.picker.gh_pr({ state = "all" })
-        end,
-        desc = "GitHub Pull Requests (all)",
-      },
-      {
-        "<leader>ff",
-        function()
-          Snacks.picker.files()
-        end,
-        desc = "Find files",
-      },
-      {
-        "<leader>fg",
-        function()
-          Snacks.picker.grep()
-        end,
-        desc = "Live grep",
-      },
-      {
-        "<leader>fb",
-        function()
-          Snacks.picker.buffers()
-        end,
-        desc = "Buffers",
-      },
-      {
-        "<leader>fr",
-        function()
-          Snacks.picker.registers()
-        end,
-        desc = "Registers",
-      },
-      {
-        "<leader>fu",
-        function()
-          Snacks.picker.undo()
-        end,
-        desc = "Undo history",
-      },
-      {
-        "<leader>fd",
-        function()
-          Snacks.picker.diagnostics_buffer()
-        end,
-        desc = "Buffer diagnostics",
-      },
-      {
-        "<leader>fD",
-        function()
-          Snacks.picker.diagnostics()
-        end,
-        desc = "Workspace diagnostics",
-      },
-      {
-        "<leader>fk",
-        function()
-          Snacks.picker.keymaps()
-        end,
-        desc = "Keymaps",
-      },
-      {
-        "<leader>fc",
-        function()
-          Snacks.picker.commands()
-        end,
-        desc = "Commands",
-      },
-      {
-        "<leader>f:",
-        function()
-          Snacks.picker.command_history()
-        end,
-        desc = "Command history",
-      },
-      {
-        "<leader>fl",
-        function()
-          local buf = vim.api.nvim_get_current_buf()
-
-          Snacks.picker.pick({
-            finder = function()
-              local extmarks = require("snacks.picker.util.highlight").get_highlights({ buf = buf, extmarks = true })
-              local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-              local items = {}
-
-              for lnum, line in ipairs(lines) do
-                items[#items + 1] = {
-                  buf = buf,
-                  text = line,
-                  pos = { lnum, (line:find("%S") or 1) - 1 },
-                  highlights = extmarks[lnum],
-                }
-              end
-
-              return items
-            end,
-            format = "lines",
-            title = "Buffer Lines",
-            layout = {
-              layout = {
-                backdrop = 60,
-              },
-            },
-          })
-        end,
-        desc = "Search current buffer",
-      },
-      {
-        "<leader>f/",
-        function()
-          Snacks.picker.search_history()
-        end,
-        desc = "Search history",
-      },
-      {
-        "<leader>nh",
-        function()
-          Snacks.picker.notifications()
-        end,
-        desc = "Notification history",
-      },
-      {
-        "<leader>nd",
-        function()
-          Snacks.notifier.hide()
-        end,
-        desc = "Dismiss notifications",
-      },
-      {
-        "<leader>fG",
-        function()
-          Snacks.picker.git_status()
-        end,
-        desc = "Git status",
-      },
-      {
-        "<leader>cR",
-        function()
-          Snacks.rename.rename_file()
-        end,
-        desc = "Rename file",
       },
     },
-  },
-})
+    input = {},
+    notifier = {
+      height = { min = 1, max = 0.4 },
+    },
+    styles = {
+      notification = {
+        ft = "snacks_notif",
+      },
+    },
+    statuscolumn = {},
+    gh = {},
+    rename = {},
+    words = { enabled = false },
+  })
+end)
+
+map("n", "<leader>gb", function()
+  Snacks.picker.git_branches()
+end, { desc = "Git branches" })
+map("n", "<leader>gi", function()
+  Snacks.picker.gh_issue()
+end, { desc = "GitHub Issues (open)" })
+map("n", "<leader>gI", function()
+  Snacks.picker.gh_issue({ state = "all" })
+end, { desc = "GitHub Issues (all)" })
+map("n", "<leader>gp", function()
+  Snacks.picker.gh_pr()
+end, { desc = "GitHub Pull Requests (open)" })
+map("n", "<leader>gP", function()
+  Snacks.picker.gh_pr({ state = "all" })
+end, { desc = "GitHub Pull Requests (all)" })
+map("n", "<leader>ff", function()
+  Snacks.picker.files()
+end, { desc = "Find files" })
+map("n", "<leader>fg", function()
+  Snacks.picker.grep()
+end, { desc = "Live grep" })
+map("n", "<leader>fb", function()
+  Snacks.picker.buffers()
+end, { desc = "Buffers" })
+map("n", "<leader>fr", function()
+  Snacks.picker.registers()
+end, { desc = "Registers" })
+map("n", "<leader>fu", function()
+  Snacks.picker.undo()
+end, { desc = "Undo history" })
+map("n", "<leader>fd", function()
+  Snacks.picker.diagnostics_buffer()
+end, { desc = "Buffer diagnostics" })
+map("n", "<leader>fD", function()
+  Snacks.picker.diagnostics()
+end, { desc = "Workspace diagnostics" })
+map("n", "<leader>fk", function()
+  Snacks.picker.keymaps()
+end, { desc = "Keymaps" })
+map("n", "<leader>fc", function()
+  Snacks.picker.commands()
+end, { desc = "Commands" })
+map("n", "<leader>f:", function()
+  Snacks.picker.command_history()
+end, { desc = "Command history" })
+map("n", "<leader>fl", function()
+  local buf = vim.api.nvim_get_current_buf()
+
+  Snacks.picker.pick({
+    finder = function()
+      local extmarks = require("snacks.picker.util.highlight").get_highlights({ buf = buf, extmarks = true })
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      local items = {}
+
+      for lnum, line in ipairs(lines) do
+        items[#items + 1] = {
+          buf = buf,
+          text = line,
+          pos = { lnum, (line:find("%S") or 1) - 1 },
+          highlights = extmarks[lnum],
+        }
+      end
+
+      return items
+    end,
+    format = "lines",
+    title = "Buffer Lines",
+    layout = {
+      layout = {
+        backdrop = 60,
+      },
+    },
+  })
+end, { desc = "Search current buffer" })
+map("n", "<leader>f/", function()
+  Snacks.picker.search_history()
+end, { desc = "Search history" })
+map("n", "<leader>nh", function()
+  Snacks.picker.notifications()
+end, { desc = "Notification history" })
+map("n", "<leader>nd", function()
+  Snacks.notifier.hide()
+end, { desc = "Dismiss notifications" })
+map("n", "<leader>fG", function()
+  Snacks.picker.git_status()
+end, { desc = "Git status" })
+map("n", "<leader>cR", function()
+  Snacks.rename.rename_file()
+end, { desc = "Rename file" })
 
 -- #############################
 -- # Treesitter                #
@@ -3312,157 +3066,102 @@ local parser_overrides = {
   ["yaml.github-actions"] = "yaml",
 }
 
-vim.list_extend(plugins, {
-  {
-    "so1ve/tiny-treesitter.nvim",
-    lazy = false,
-    opts = {
-      ensure_installed = {
-        "bib",
-        "c",
-        "cpp",
-        "css",
-        "dockerfile",
-        "go",
-        "gomod",
-        "gosum",
-        "gotmpl",
-        "gowork",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "latex",
-        "powershell",
-        "python",
-        "rust",
-        "scss",
-        "toml",
-        "typescript",
-        "tsx",
-        "typst",
-        "vue",
-        "yaml",
-        "zig",
-        "bash",
-        "diff",
-        "gitcommit",
-        "markdown_inline",
-        "regex",
-        "vim",
-      },
-      auto_install = true,
+safely("now", function()
+  require("tiny-treesitter").setup({
+    ensure_installed = {
+      "bib",
+      "c",
+      "cpp",
+      "css",
+      "dockerfile",
+      "go",
+      "gomod",
+      "gosum",
+      "gotmpl",
+      "gowork",
+      "html",
+      "javascript",
+      "json",
+      "lua",
+      "markdown",
+      "latex",
+      "powershell",
+      "python",
+      "rust",
+      "scss",
+      "toml",
+      "typescript",
+      "tsx",
+      "typst",
+      "vue",
+      "yaml",
+      "zig",
+      "bash",
+      "diff",
+      "gitcommit",
+      "markdown_inline",
+      "regex",
+      "vim",
     },
-    config = function(_, opts)
-      require("tiny-treesitter").setup(opts)
+    auto_install = true,
+  })
 
-      for filetype, parser in pairs(parser_overrides) do
-        vim.treesitter.language.register(parser, filetype)
+  for filetype, parser in pairs(parser_overrides) do
+    vim.treesitter.language.register(parser, filetype)
+  end
+
+  autocmd("FileType", {
+    callback = function(event)
+      local filetype = vim.bo[event.buf].filetype
+      local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
+      if parser and vim.treesitter.language.add(parser) == true then
+        vim.treesitter.start(event.buf, parser)
       end
-
-      autocmd("FileType", {
-        callback = function(event)
-          local filetype = vim.bo[event.buf].filetype
-          local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
-          if parser and vim.treesitter.language.add(parser) == true then
-            vim.treesitter.start(event.buf, parser)
-          end
-        end,
-      })
     end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      max_lines = 4,
-      mode = "topline",
-      multiline_threshold = 4,
-    },
-    keys = {
-      {
-        "gC",
-        function()
-          require("treesitter-context").go_to_context(vim.v.count1)
-        end,
-        desc = "Go to sticky context",
-      },
-    },
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    keys = {
-      {
-        "]f",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Next function start",
-      },
-      {
-        "[f",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Previous function start",
-      },
-      {
-        "]F",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Next function end",
-      },
-      {
-        "[F",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Previous function end",
-      },
-      {
-        "]a",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_next_start("@parameter.inner")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Next parameter",
-      },
-      {
-        "[a",
-        function()
-          require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner")
-        end,
-        mode = { "n", "x", "o" },
-        desc = "Previous parameter",
-      },
-      {
-        "]A",
-        function()
-          require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
-        end,
-        desc = "Swap next parameter",
-      },
-      {
-        "[A",
-        function()
-          require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
-        end,
-        desc = "Swap previous parameter",
-      },
-    },
-  },
-  {
-    "windwp/nvim-ts-autotag",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {},
-  },
-})
+  })
+end)
+
+load_plugins("later", "nvim-treesitter-context", function()
+  require("treesitter-context").setup({
+    max_lines = 4,
+    mode = "topline",
+    multiline_threshold = 4,
+  })
+end)
+
+load_plugins("later", "nvim-treesitter-textobjects")
+
+map({ "n", "x", "o" }, "]f", function()
+  require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer")
+end, { desc = "Next function start" })
+map({ "n", "x", "o" }, "[f", function()
+  require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer")
+end, { desc = "Previous function start" })
+map({ "n", "x", "o" }, "]F", function()
+  require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer")
+end, { desc = "Next function end" })
+map({ "n", "x", "o" }, "[F", function()
+  require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer")
+end, { desc = "Previous function end" })
+map({ "n", "x", "o" }, "]a", function()
+  require("nvim-treesitter-textobjects.move").goto_next_start("@parameter.inner")
+end, { desc = "Next parameter" })
+map({ "n", "x", "o" }, "[a", function()
+  require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner")
+end, { desc = "Previous parameter" })
+map("n", "]A", function()
+  require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
+end, { desc = "Swap next parameter" })
+map("n", "[A", function()
+  require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
+end, { desc = "Swap previous parameter" })
+map("n", "gC", function()
+  require("treesitter-context").go_to_context(vim.v.count1)
+end, { desc = "Go to sticky context" })
+
+load_plugins("later", "nvim-ts-autotag", function()
+  require("nvim-ts-autotag").setup()
+end)
 
 -- #############################
 -- # Trouble                   #
@@ -3474,10 +3173,8 @@ local function panel(id, opener)
   end
 end
 
-plugins[#plugins + 1] = {
-  "folke/trouble.nvim",
-  cmd = "Trouble",
-  opts = {
+load_plugins("later", "trouble.nvim", function()
+  require("trouble").setup({
     modes = {
       symbols = {
         filter = {
@@ -3489,47 +3186,18 @@ plugins[#plugins + 1] = {
         },
       },
     },
-  },
-  keys = {
-    {
-      "<leader>xd",
-      panel("trouble.problems", "Trouble diagnostics toggle filter.buf=0"),
-      desc = "Buffer diagnostics",
-    },
-    {
-      "<leader>xD",
-      panel("trouble.problems", "Trouble diagnostics toggle"),
-      desc = "Workspace diagnostics",
-    },
-    {
-      "<leader>xs",
-      panel("trouble.lsp", "Trouble symbols toggle"),
-      desc = "Symbols",
-    },
-    {
-      "<leader>xl",
-      panel("trouble.problems", "Trouble loclist toggle"),
-      desc = "Location list",
-    },
-    {
-      "<leader>xq",
-      panel("trouble.problems", "Trouble qflist toggle"),
-      desc = "Quickfix list",
-    },
-  },
-}
+  })
+end)
 
--- #############################
--- # Plugin Setup              #
--- #############################
-
-require("zpack").setup({
-  spec = plugins,
-  defaults = {
-    lazy = true,
-    confirm = false,
-  },
+map("n", "<leader>xd", panel("trouble.problems", "Trouble diagnostics toggle filter.buf=0"), {
+  desc = "Buffer diagnostics",
 })
+map("n", "<leader>xD", panel("trouble.problems", "Trouble diagnostics toggle"), {
+  desc = "Workspace diagnostics",
+})
+map("n", "<leader>xs", panel("trouble.lsp", "Trouble symbols toggle"), { desc = "Symbols" })
+map("n", "<leader>xl", panel("trouble.problems", "Trouble loclist toggle"), { desc = "Location list" })
+map("n", "<leader>xq", panel("trouble.problems", "Trouble qflist toggle"), { desc = "Quickfix list" })
 
 -- #############################
 -- # Keymaps                   #
