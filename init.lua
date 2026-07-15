@@ -210,6 +210,7 @@ vim.pack.add({
   gh("mason-org/mason.nvim"),
   gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
   gh("so1ve/tiny-treesitter.nvim"),
+  gh("saghen/filler-begone.nvim"),
 }, { confirm = false, load = true })
 
 vim.pack.add({

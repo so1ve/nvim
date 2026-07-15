@@ -49,6 +49,10 @@
       "rev": "694357861ec9ebf12475ddcdd04ea45a0923c32d",
       "src": "https://github.com/Saecki/crates.nvim"
     },
+    "filler-begone.nvim": {
+      "rev": "122018c0f54519b9ee16fb0e31b96989a7682e1c",
+      "src": "https://github.com/saghen/filler-begone.nvim"
+    },
     "flatten.nvim": {
       "rev": "d92ca41e9c330f45c1b854a80c89c8488a9d730c",
       "src": "https://github.com/willothy/flatten.nvim"
