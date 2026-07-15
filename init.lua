@@ -306,7 +306,6 @@ vim.diagnostic.config({
   severity_sort = true,
   diagnostic_signs = { text = diagnostic_signs },
   virtual_text = true,
-  virtual_lines = { current_line = true },
 })
 
 -- #############################
