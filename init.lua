@@ -2372,7 +2372,7 @@ safely("later", function()
   })
 end)
 
-safely("later", function()
+safely("now", function()
   local trunc_width = 120
   local max_path_width = 100
 
@@ -2595,7 +2595,7 @@ safely("later", function()
   })
 end)
 
-safely("later", function()
+safely("now", function()
   local tabline = require("mini.tabline")
 
   tabline.setup({
