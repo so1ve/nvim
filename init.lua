@@ -221,7 +221,6 @@ vim.pack.add({
   gh("Wansmer/treesj"),
   gh("so1ve/tiny-comment.nvim"),
   gh("NeogitOrg/neogit"),
-  gh("nvim-lua/plenary.nvim"),
   gh("esmuellert/codediff.nvim"),
   gh("so1ve/copilot-ai-commit.nvim"),
   gh("niekdomi/conflict.nvim"),
@@ -995,8 +994,47 @@ end)
 -- # Git                       #
 -- #############################
 
-load_plugins("later", { "plenary.nvim", "codediff.nvim", "copilot-ai-commit.nvim", "neogit" }, function()
+load_plugins("later", { "codediff.nvim", "copilot-ai-commit.nvim", "neogit" }, function()
   require("copilot-ai-commit").setup()
+  require("codediff").setup({
+    diff = {
+      compute_moves = true,
+    },
+    explorer = {
+      initial_focus = "explorer",
+      visible_groups = {
+        staged = true,
+        unstaged = true,
+        conflicts = true,
+      },
+    },
+    keymaps = {
+      view = {
+        next_file = "<Tab>",
+        prev_file = "<S-Tab>",
+      },
+      explorer = {
+        refresh = "<c-r>",
+        stage_all = "S",
+        unstage_all = "U",
+        restore = "x",
+      },
+      conflict = {
+        next_conflict = "<leader>gcn",
+        prev_conflict = "<leader>gcp",
+        accept_incoming = "<leader>gci",
+        accept_current = "<leader>gcc",
+        accept_both = "<leader>gcb",
+        discard = "<leader>gcB",
+        accept_all_incoming = "<leader>gcI",
+        accept_all_current = "<leader>gcC",
+        accept_all_both = "<leader>gcA",
+        discard_all = "<leader>gcX",
+        diffget_incoming = "2do",
+        diffget_current = "3do",
+      },
+    },
+  })
   require("neogit").setup({
     treesitter_diff_highlight = true,
     disable_insert_on_commit = true,
@@ -1072,48 +1110,6 @@ load_plugins("later", "conflict.nvim", function()
   end, "Accept base")
   git_map("l", conflict.list, "Conflict files")
   git_map("Q", conflict.qflist, "Conflicts quickfix")
-end)
-
-load_plugins("later", "codediff.nvim", function()
-  require("codediff").setup({
-    diff = {
-      compute_moves = true,
-    },
-    explorer = {
-      initial_focus = "explorer",
-      visible_groups = {
-        staged = true,
-        unstaged = true,
-        conflicts = true,
-      },
-    },
-    keymaps = {
-      view = {
-        next_file = "<Tab>",
-        prev_file = "<S-Tab>",
-      },
-      explorer = {
-        refresh = "<c-r>",
-        stage_all = "S",
-        unstage_all = "U",
-        restore = "x",
-      },
-      conflict = {
-        next_conflict = "<leader>gcn",
-        prev_conflict = "<leader>gcp",
-        accept_incoming = "<leader>gci",
-        accept_current = "<leader>gcc",
-        accept_both = "<leader>gcb",
-        discard = "<leader>gcB",
-        accept_all_incoming = "<leader>gcI",
-        accept_all_current = "<leader>gcC",
-        accept_all_both = "<leader>gcA",
-        discard_all = "<leader>gcX",
-        diffget_incoming = "2do",
-        diffget_current = "3do",
-      },
-    },
-  })
 end)
 
 -- #############################
@@ -2839,7 +2835,6 @@ end, { desc = "Select refactor" })
 
 require("snacks").setup({
   bigfile = {},
-  dashboard = { enabled = false },
   quickfile = {},
   picker = {
     sources = {
@@ -2884,15 +2879,7 @@ require("snacks").setup({
   notifier = {
     height = { min = 1, max = 0.4 },
   },
-  styles = {
-    notification = {
-      ft = "snacks_notif",
-    },
-  },
   statuscolumn = {},
-  gh = {},
-  rename = {},
-  words = { enabled = false },
 })
 
 map("n", "<leader>gb", function()

@@ -109,10 +109,6 @@
       "rev": "61f9ffe29e84b8ea8b64ba130c6d0ab4b0ac314f",
       "src": "https://github.com/so1ve/panels.nvim"
     },
-    "plenary.nvim": {
-      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
-      "src": "https://github.com/nvim-lua/plenary.nvim"
-    },
     "refactoring.nvim": {
       "rev": "64e10d782ae5b9653558482910213b8946651456",
       "src": "https://github.com/ThePrimeagen/refactoring.nvim"
