@@ -445,14 +445,6 @@ autocmd("FileType", {
 -- # Autocommands              #
 -- #############################
 
-autocmd({ "BufEnter", "CursorHold", "FocusGained", "TermClose", "TermLeave" }, {
-  callback = function()
-    if vim.bo.buftype ~= "nofile" then
-      vim.cmd.checktime()
-    end
-  end,
-})
-
 autocmd("FileType", {
   pattern = { "css", "scss", "html", "vue", "svelte" },
   callback = function()
@@ -643,9 +635,6 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
         Variable = "",
       },
     },
-    snippets = {
-      preset = "mini_snippets",
-    },
     keymap = {
       preset = "none",
       ["<Tab>"] = {
@@ -758,7 +747,6 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
         },
         snippets = {
           opts = {
-            use_items_cache = true,
             use_label_description = true,
           },
         },
@@ -2285,50 +2273,6 @@ end, { desc = "Save session" })
 map("n", "<leader>ps", select_session, { desc = "Select session" })
 map("n", "<leader>pl", sessions.read, { desc = "Restore last session" })
 
-safely("later", function()
-  -- Keep MiniSnippets: nested sessions are required so snippets can expand inside active snippets.
-  -- TODO: could be replaced by native vim.snippet after upgrading to nvim 0.13
-  -- (that's why I move from mini.snippets -> vim.snippet and then back to mini.snippets btw)
-
-  local snippets = require("mini.snippets")
-  local gen_loader = snippets.gen_loader
-
-  snippets.setup({
-    snippets = {
-      gen_loader.from_lang({
-        lang_patterns = {
-          javascriptreact = { "**/javascript.json" },
-          typescript = { "**/javascript.json" },
-          typescriptreact = { "**/javascript.json" },
-          vue = { "**/vue.json", "**/javascript.json" },
-        },
-      }),
-    },
-    mappings = {
-      expand = "",
-      jump_next = "",
-      jump_prev = "",
-    },
-    expand = {
-      insert = function(snippet)
-        return snippets.default_insert(snippet, {
-          empty_tabstop = "",
-          empty_tabstop_final = "",
-        })
-      end,
-    },
-  })
-
-  autocmd("ModeChanged", {
-    pattern = "*:n",
-    callback = function()
-      while snippets.session.get() do
-        snippets.session.stop()
-      end
-    end,
-  })
-end)
-
 safely("now", function()
   local trunc_width = 120
   local max_path_width = 100
@@ -3042,8 +2986,8 @@ map("n", "Q", "q", { noremap = true, silent = true })
 map({ "i", "c" }, "jj", "<Esc>", { desc = "Exit insert or command-line mode" })
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
 map("i", "<C-y>", "<C-o><C-r>", { desc = "Redo" })
-map_multistep("i", "<C-l>", { "minisnippets_next", "jump_after_close" })
-map_multistep("i", "<C-h>", { "minisnippets_prev", "jump_before_open" })
+map_multistep({ "i", "s" }, "<C-l>", { "vimsnippet_next", "jump_after_close" })
+map_multistep({ "i", "s" }, "<C-h>", { "vimsnippet_prev", "jump_before_open" })
 
 -- Clipboard
 map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
