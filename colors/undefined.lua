@@ -229,6 +229,8 @@ local highlights = {
   WinSeparator = { fg = palette.border, bg = palette.bg },
   Visual = { bg = palette.selection },
   VisualNOS = { bg = palette.inactive_selection },
+  SnippetTabstop = { bg = palette.inactive_selection, underline = true, sp = palette.magenta },
+  SnippetTabstopActive = { bg = palette.selection, underline = true, sp = palette.blue },
   Search = styles.search,
   IncSearch = styles.inc_search,
   CurSearch = styles.search,
