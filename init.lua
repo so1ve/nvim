@@ -8,6 +8,8 @@ local command = vim.api.nvim_create_user_command
 g.mapleader = " "
 g.maplocalleader = " "
 
+vim.cmd.colorscheme("undefined")
+
 -- #############################
 -- # Options                   #
 -- #############################
@@ -3303,9 +3305,3 @@ command("TSReset", function()
     vim.notify("Treesitter reset for current buffer", vim.log.levels.INFO)
   end, 100)
 end, { desc = "Reset treesitter for current buffer" })
-
--- #############################
--- # Colorscheme               #
--- #############################
-
-vim.cmd.colorscheme("undefined")
