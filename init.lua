@@ -225,7 +225,6 @@ vim.pack.add({
   gh("so1ve/copilot-ai-commit.nvim"),
   gh("niekdomi/conflict.nvim"),
   gh("MagicDuck/grug-far.nvim"),
-  gh("folke/lazydev.nvim"),
   gh("DrKJeff16/wezterm-types"),
   gh("Saecki/crates.nvim"),
   gh("so1ve/code-action-menu.nvim"),
@@ -246,6 +245,10 @@ vim.pack.add({
 }, { confirm = false, load = false })
 
 local safely = require("mini.misc").safely
+
+local function plugin_path(name)
+  return vim.pack.get({ name }, { info = false })[1].path
+end
 
 local function load_plugins(when, names, configure)
   safely(when, function()
@@ -735,13 +738,7 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
       },
     },
     sources = {
-      default = { "lazydev", "lsp", "path", "snippets", "buffer" },
       providers = {
-        lazydev = {
-          name = "LazyDev",
-          module = "lazydev.integrations.blink",
-          score_offset = 100,
-        },
         lsp = {
           transform_items = function(ctx, items)
             if
@@ -1396,6 +1393,11 @@ local servers = {
         },
         workspace = {
           checkThirdParty = false,
+          library = {
+            vim.env.VIMRUNTIME,
+            plugin_path("snacks.nvim"),
+            plugin_path("wezterm-types"),
+          },
         },
         doc = {
           privateName = { "^_" },
@@ -1551,16 +1553,6 @@ local servers = {
     },
   },
 }
-
-load_plugins("filetype:lua", { "wezterm-types", "lazydev.nvim" }, function()
-  require("lazydev").setup({
-    library = {
-      { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      { path = "snacks.nvim", words = { "Snacks" } },
-      { path = "wezterm-types", mods = { "wezterm" } },
-    },
-  })
-end)
 
 load_plugins("later", "crates.nvim", function()
   require("crates").setup({
