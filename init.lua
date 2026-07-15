@@ -258,9 +258,7 @@ local function load_plugins(when, names, configure)
   end)
 end
 
-safely("now", function()
-  require("flatten").setup()
-end)
+require("flatten").setup()
 
 -- #############################
 -- # Diagnostics               #
@@ -779,37 +777,35 @@ end)
 -- # Project Settings          #
 -- #############################
 
-safely("now", function()
-  local Control = require("codesettings.extensions").Control
+local Control = require("codesettings.extensions").Control
 
-  require("codesettings").setup({
-    loader_extensions = {
-      "codesettings.extensions.vscode",
-      {
-        object = function(root, context)
-          local gopls = root.gopls
+require("codesettings").setup({
+  loader_extensions = {
+    "codesettings.extensions.vscode",
+    {
+      object = function(root, context)
+        local gopls = root.gopls
 
-          if #context.path ~= 0 or type(gopls) ~= "table" then
-            return Control.CONTINUE
-          end
+        if #context.path ~= 0 or type(gopls) ~= "table" then
+          return Control.CONTINUE
+        end
 
-          for _, source in pairs({ gopls.build, gopls.formatting, gopls.ui }) do
-            if type(source) == "table" then
-              for key, value in pairs(source) do
-                if gopls[key] == nil then
-                  gopls[key] = value
-                end
+        for _, source in pairs({ gopls.build, gopls.formatting, gopls.ui }) do
+          if type(source) == "table" then
+            for key, value in pairs(source) do
+              if gopls[key] == nil then
+                gopls[key] = value
               end
             end
           end
+        end
 
-          return Control.CONTINUE
-        end,
-      },
+        return Control.CONTINUE
+      end,
     },
-    live_reload = true,
-  })
-end)
+  },
+  live_reload = true,
+})
 
 -- #############################
 -- # Formatting                #
@@ -1689,45 +1685,43 @@ end)
 -- # Mason                     #
 -- #############################
 
-safely("now", function()
-  require("mason").setup()
-  require("mason-tool-installer").setup({
-    ensure_installed = {
-      "basedpyright",
-      "clangd",
-      "css-lsp",
-      "docker-compose-language-service",
-      "dockerfile-language-server",
-      "eslint-lsp",
-      "gofumpt",
-      "goimports",
-      "gopls",
-      "html-lsp",
-      "json-lsp",
-      "latexindent",
-      "lua-language-server",
-      "marksman",
-      "powershell-editor-services",
-      "prettier",
-      "prettierd",
-      "ruff",
-      "stylelint-language-server",
-      "stylua",
-      "texlab",
-      "tinymist",
-      "tombi",
-      "unocss-language-server",
-      "vtsls",
-      "vue-language-server",
-      "yaml-language-server",
-      "zls",
-    },
-    integrations = {
-      ["mason-null-ls"] = false,
-      ["mason-nvim-dap"] = false,
-    },
-  })
-end)
+require("mason").setup()
+require("mason-tool-installer").setup({
+  ensure_installed = {
+    "basedpyright",
+    "clangd",
+    "css-lsp",
+    "docker-compose-language-service",
+    "dockerfile-language-server",
+    "eslint-lsp",
+    "gofumpt",
+    "goimports",
+    "gopls",
+    "html-lsp",
+    "json-lsp",
+    "latexindent",
+    "lua-language-server",
+    "marksman",
+    "powershell-editor-services",
+    "prettier",
+    "prettierd",
+    "ruff",
+    "stylelint-language-server",
+    "stylua",
+    "texlab",
+    "tinymist",
+    "tombi",
+    "unocss-language-server",
+    "vtsls",
+    "vue-language-server",
+    "yaml-language-server",
+    "zls",
+  },
+  integrations = {
+    ["mason-null-ls"] = false,
+    ["mason-nvim-dap"] = false,
+  },
+})
 
 -- #############################
 -- # Mini                      #
@@ -1740,13 +1734,11 @@ local mini_excluded_filetypes = {
   "markdown",
 }
 
-safely("now", function()
-  require("mini.misc").setup_restore_cursor()
+require("mini.misc").setup_restore_cursor()
 
-  local icons = require("mini.icons")
-  icons.setup()
-  icons.mock_nvim_web_devicons()
-end)
+local icons = require("mini.icons")
+icons.setup()
+icons.mock_nvim_web_devicons()
 
 safely("later", function()
   local clue = require("mini.clue")
@@ -2845,65 +2837,63 @@ end, { desc = "Select refactor" })
 -- # Snacks                    #
 -- #############################
 
-safely("now", function()
-  require("snacks").setup({
-    bigfile = {},
-    dashboard = { enabled = false },
-    quickfile = {},
-    picker = {
-      sources = {
-        files = {
-          hidden = true,
-        },
-        lsp_symbols = {
-          filter = {
-            default = lsp_symbol_kinds,
-            help = true,
-            markdown = true,
-          },
-        },
-        lsp_workspace_symbols = {
-          filter = {
-            default = lsp_symbol_kinds,
-            help = true,
-            markdown = true,
-          },
+require("snacks").setup({
+  bigfile = {},
+  dashboard = { enabled = false },
+  quickfile = {},
+  picker = {
+    sources = {
+      files = {
+        hidden = true,
+      },
+      lsp_symbols = {
+        filter = {
+          default = lsp_symbol_kinds,
+          help = true,
+          markdown = true,
         },
       },
-      actions = {
-        trouble_open = function(picker)
-          require("trouble.sources.snacks").open(picker)
-        end,
-        trouble_open_selected = function(picker)
-          require("trouble.sources.snacks").open(picker, { type = "selected" })
-        end,
-        trouble_open_all = function(picker)
-          require("trouble.sources.snacks").open(picker, { type = "all" })
-        end,
-      },
-      win = {
-        input = {
-          keys = {
-            ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
-          },
+      lsp_workspace_symbols = {
+        filter = {
+          default = lsp_symbol_kinds,
+          help = true,
+          markdown = true,
         },
       },
     },
-    input = {},
-    notifier = {
-      height = { min = 1, max = 0.4 },
+    actions = {
+      trouble_open = function(picker)
+        require("trouble.sources.snacks").open(picker)
+      end,
+      trouble_open_selected = function(picker)
+        require("trouble.sources.snacks").open(picker, { type = "selected" })
+      end,
+      trouble_open_all = function(picker)
+        require("trouble.sources.snacks").open(picker, { type = "all" })
+      end,
     },
-    styles = {
-      notification = {
-        ft = "snacks_notif",
+    win = {
+      input = {
+        keys = {
+          ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
+        },
       },
     },
-    statuscolumn = {},
-    gh = {},
-    rename = {},
-    words = { enabled = false },
-  })
-end)
+  },
+  input = {},
+  notifier = {
+    height = { min = 1, max = 0.4 },
+  },
+  styles = {
+    notification = {
+      ft = "snacks_notif",
+    },
+  },
+  statuscolumn = {},
+  gh = {},
+  rename = {},
+  words = { enabled = false },
+})
 
 map("n", "<leader>gb", function()
   Snacks.picker.git_branches()
@@ -3010,60 +3000,58 @@ local parser_overrides = {
   ["yaml.github-actions"] = "yaml",
 }
 
-safely("now", function()
-  require("tiny-treesitter").setup({
-    ensure_installed = {
-      "bib",
-      "c",
-      "cpp",
-      "css",
-      "dockerfile",
-      "go",
-      "gomod",
-      "gosum",
-      "gotmpl",
-      "gowork",
-      "html",
-      "javascript",
-      "json",
-      "lua",
-      "markdown",
-      "latex",
-      "powershell",
-      "python",
-      "rust",
-      "scss",
-      "toml",
-      "typescript",
-      "tsx",
-      "typst",
-      "vue",
-      "yaml",
-      "zig",
-      "bash",
-      "diff",
-      "gitcommit",
-      "markdown_inline",
-      "regex",
-      "vim",
-    },
-    auto_install = true,
-  })
+require("tiny-treesitter").setup({
+  ensure_installed = {
+    "bib",
+    "c",
+    "cpp",
+    "css",
+    "dockerfile",
+    "go",
+    "gomod",
+    "gosum",
+    "gotmpl",
+    "gowork",
+    "html",
+    "javascript",
+    "json",
+    "lua",
+    "markdown",
+    "latex",
+    "powershell",
+    "python",
+    "rust",
+    "scss",
+    "toml",
+    "typescript",
+    "tsx",
+    "typst",
+    "vue",
+    "yaml",
+    "zig",
+    "bash",
+    "diff",
+    "gitcommit",
+    "markdown_inline",
+    "regex",
+    "vim",
+  },
+  auto_install = true,
+})
 
-  for filetype, parser in pairs(parser_overrides) do
-    vim.treesitter.language.register(parser, filetype)
-  end
+for filetype, parser in pairs(parser_overrides) do
+  vim.treesitter.language.register(parser, filetype)
+end
 
-  autocmd("FileType", {
-    callback = function(event)
-      local filetype = vim.bo[event.buf].filetype
-      local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
-      if parser and vim.treesitter.language.add(parser) == true then
-        vim.treesitter.start(event.buf, parser)
-      end
-    end,
-  })
-end)
+autocmd("FileType", {
+  callback = function(event)
+    local filetype = vim.bo[event.buf].filetype
+    local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
+    if parser and vim.treesitter.language.add(parser) == true then
+      vim.treesitter.start(event.buf, parser)
+    end
+  end,
+})
 
 load_plugins("later", "nvim-treesitter-context", function()
   require("treesitter-context").setup({
