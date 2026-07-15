@@ -2071,9 +2071,6 @@ safely("later", function()
       go_out_plus = "<C-h>",
       synchronize = "s",
     },
-    options = {
-      lsp_timeout = 0,
-    },
     windows = {
       preview = true,
       width_preview = 40,
@@ -2101,13 +2098,6 @@ safely("later", function()
     pattern = "RayGitIgnoreCacheUpdated",
     callback = function()
       files.refresh(opts)
-    end,
-  })
-
-  autocmd("User", {
-    pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
-    callback = function(event)
-      Snacks.rename.on_rename_file(vim.fs.normalize(event.data.from), vim.fs.normalize(event.data.to))
     end,
   })
 
