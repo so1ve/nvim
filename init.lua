@@ -8,6 +8,8 @@ local command = vim.api.nvim_create_user_command
 g.mapleader = " "
 g.maplocalleader = " "
 
+vim.loader.enable()
+
 vim.cmd.colorscheme("undefined")
 
 -- #############################
