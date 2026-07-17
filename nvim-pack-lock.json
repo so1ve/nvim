@@ -22,7 +22,7 @@
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "codesettings.nvim": {
-      "rev": "4f8c4ac27785da48dcb04cfcb232a70a4655f89d",
+      "rev": "cbb776c55ffcdb313b9210ffebffe0295d36a84a",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "conflict.nvim": {
@@ -62,7 +62,7 @@
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "markdown-plus.nvim": {
-      "rev": "59075587b4540abd5fac68232c39d5a46db6d44c",
+      "rev": "b85685dc8d3bd77c45a01f21651d51fe798bc318",
       "src": "https://github.com/YousefHadder/markdown-plus.nvim"
     },
     "mason-tool-installer.nvim": {
@@ -74,7 +74,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "05a80b0340a92136a93ab04346cf97de3f165948",
+      "rev": "9459d7f41ae77d909579dab0aea2bdd3210fac9f",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "multicursor.nvim": {
@@ -82,7 +82,7 @@
       "src": "https://github.com/jake-stewart/multicursor.nvim"
     },
     "neogit": {
-      "rev": "a0847c4bea5a5f92a36e3f3bf7da99d7d685d3ac",
+      "rev": "f8674ec894315c02449b61c9de9a116c5aafeb90",
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "noicelet.nvim": {
@@ -90,7 +90,7 @@
       "src": "https://github.com/so1ve/noicelet.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "d5b6e3db4c17b0146f63a2fc47e2027a754b2cb1",
+      "rev": "e7ca2c95ba316a8b846d3f3546d407908c5c4ccb",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter-context": {
@@ -118,7 +118,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "schemastore.nvim": {
-      "rev": "e954496f8ef22904e8a84f5078f4a110fdc7a0d3",
+      "rev": "0df41ab13b54151fcb6ab023cc2a761482070f76",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "snacks.nvim": {
