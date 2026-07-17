@@ -2728,12 +2728,6 @@ require("snacks").setup({
       trouble_open = function(picker)
         require("trouble.sources.snacks").open(picker)
       end,
-      trouble_open_selected = function(picker)
-        require("trouble.sources.snacks").open(picker, { type = "selected" })
-      end,
-      trouble_open_all = function(picker)
-        require("trouble.sources.snacks").open(picker, { type = "all" })
-      end,
     },
     win = {
       input = {
