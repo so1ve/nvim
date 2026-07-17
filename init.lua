@@ -445,10 +445,6 @@ autocmd("FileType", {
   end,
 })
 
--- #############################
--- # Autocommands              #
--- #############################
-
 autocmd("FileType", {
   pattern = { "css", "scss", "html", "vue", "svelte" },
   callback = function()
