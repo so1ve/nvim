@@ -635,6 +635,9 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
         Variable = "",
       },
     },
+    snippets = {
+      preset = "mini_snippets",
+    },
     keymap = {
       preset = "none",
       ["<Tab>"] = {
@@ -747,6 +750,7 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
         },
         snippets = {
           opts = {
+            use_items_cache = true,
             use_label_description = true,
           },
         },
@@ -2281,6 +2285,48 @@ end, { desc = "Save session" })
 map("n", "<leader>ps", select_session, { desc = "Select session" })
 map("n", "<leader>pl", sessions.read, { desc = "Restore last session" })
 
+-- TODO: reverted to `mini.snippets` again because builtin `vim.snippet` cannot exit session correctly
+-- when sessions are nested
+safely("later", function()
+  local snippets = require("mini.snippets")
+  local gen_loader = snippets.gen_loader
+
+  snippets.setup({
+    snippets = {
+      gen_loader.from_lang({
+        lang_patterns = {
+          javascriptreact = { "**/javascript.json" },
+          typescript = { "**/javascript.json" },
+          typescriptreact = { "**/javascript.json" },
+          vue = { "**/vue.json", "**/javascript.json" },
+        },
+      }),
+    },
+    mappings = {
+      expand = "",
+      jump_next = "",
+      jump_prev = "",
+    },
+    expand = {
+      insert = function(snippet)
+        return snippets.default_insert(snippet, {
+          empty_tabstop = "",
+          empty_tabstop_final = "",
+        })
+      end,
+    },
+  })
+
+  autocmd("ModeChanged", {
+    pattern = "*:n",
+    callback = function()
+      while snippets.session.get() do
+        snippets.session.stop()
+      end
+    end,
+  })
+end)
+
 safely("now", function()
   local trunc_width = 120
   local max_path_width = 100
@@ -2976,17 +3022,14 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "x", '"_x', { desc = "Delete without yanking" })
 map("n", "q", "<Nop>", { noremap = true, silent = true })
 map("n", "Q", "q", { noremap = true, silent = true })
-map({ "i", "s", "c" }, "jj", "<Esc>", { desc = "Exit" })
+map({ "i", "c" }, "jj", "<Esc>", { desc = "Exit insert or command-line mode" })
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
-map("s", "<C-z>", "<Esc>u<Cmd>lua vim.snippet.stop()<CR>i", { desc = "Undo" })
 map("i", "<C-y>", "<C-o><C-r>", { desc = "Redo" })
-map("s", "<C-y>", "<Esc><C-r>i", { desc = "Redo" })
-map_multistep({ "i", "s" }, "<C-l>", { "vimsnippet_next", "jump_after_close" })
-map_multistep({ "i", "s" }, "<C-h>", { "vimsnippet_prev", "jump_before_open" })
+map_multistep("i", "<C-l>", { "minisnippets_next", "jump_after_close" })
+map_multistep("i", "<C-h>", { "minisnippets_prev", "jump_before_open" })
 
 -- Clipboard
 map({ "c", "i" }, "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
-map("s", "<C-v>", '<C-g>"_c<C-r>+', { desc = "Paste from clipboard" })
 map("n", "<leader>yi", "i<C-r>0<Esc>", { desc = "Insert yanked text at cursor" })
 
 -- Line motions
@@ -3077,11 +3120,11 @@ map("n", "<leader>=", function()
   require("panels").equalize()
 end, { desc = "Equalize windows" })
 
--- Editing-mode navigation
-map({ "i", "s" }, "<A-h>", "<Left>", { desc = "Move left cursor" })
-map({ "i", "s" }, "<A-j>", "<Down>", { desc = "Move down cursor" })
-map({ "i", "s" }, "<A-k>", "<Up>", { desc = "Move up cursor" })
-map({ "i", "s" }, "<A-l>", "<Right>", { desc = "Move right cursor" })
+-- Insert-mode navigation
+map("i", "<A-h>", "<Left>", { desc = "Move left cursor" })
+map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
+map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
+map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
 
 -- Command-line navigation
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
