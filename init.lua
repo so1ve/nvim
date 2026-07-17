@@ -2720,15 +2720,6 @@ require("snacks").setup({
       lsp_symbols = {
         filter = {
           default = lsp_symbol_kinds,
-          help = true,
-          markdown = true,
-        },
-      },
-      lsp_workspace_symbols = {
-        filter = {
-          default = lsp_symbol_kinds,
-          help = true,
-          markdown = true,
         },
       },
     },
