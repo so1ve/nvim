@@ -2029,6 +2029,14 @@ safely("later", function()
   files.setup(opts)
 
   autocmd("User", {
+    pattern = "MiniFilesExplorerOpen",
+    callback = function()
+      files.set_bookmark("c", vim.fn.stdpath("config"), { desc = "Config" })
+      files.set_bookmark("w", vim.fn.getcwd, { desc = "Working directory" })
+    end,
+  })
+
+  autocmd("User", {
     pattern = "MiniFilesBufferCreate",
     callback = function(args)
       map("n", "<CR>", function()
@@ -2903,10 +2911,10 @@ end, { desc = "Next parameter" })
 map({ "n", "x", "o" }, "[a", function()
   require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner")
 end, { desc = "Previous parameter" })
-map("n", "]A", function()
+map("n", ")", function()
   require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
 end, { desc = "Swap next parameter" })
-map("n", "[A", function()
+map("n", "(", function()
   require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
 end, { desc = "Swap previous parameter" })
 map("n", "gC", function()
