@@ -1614,35 +1614,16 @@ safely("later", function()
   local clue = require("mini.clue")
   local gen_clues = clue.gen_clues
 
+  -- TODO: remove them after I remember what they are for
   local objects = {
     { "=", "assignment" },
     { "/", "comment" },
     { "B", "buffer" },
     { "F", "call" },
-    { "I", "indent" },
     { "a", "argument" },
     { "b", "block" },
-    { "c", "class" },
-    { "f", "function" },
     { "i", "conditional" },
     { "r", "return" },
-    { "s", "statement" },
-    { "(", "() block" },
-    { ")", "() block" },
-    { "[", "[] block" },
-    { "]", "[] block" },
-    { "{", "{} block" },
-    { "}", "{} block" },
-    { "<", "<> block" },
-    { ">", "<> block" },
-    { '"', '" string' },
-    { "'", "' string" },
-    { "`", "` string" },
-    { "q", "quote" },
-    { "t", "tag" },
-    { "w", "word" },
-    { "W", "WORD" },
-    { "p", "paragraph" },
   }
 
   local object_prefixes = {
@@ -1652,23 +1633,6 @@ safely("later", function()
     { "in", "inside next " },
     { "al", "around last " },
     { "il", "inside last " },
-  }
-
-  local operator_targets = {
-    { "w", "word" },
-    { "W", "WORD" },
-    { "$", "to line end" },
-    { "0", "to line start" },
-    { "^", "to first non-blank" },
-    { "gg", "to file start" },
-    { "G", "to file end" },
-    { "%", "matching pair" },
-    { "/", "search forward" },
-    { "?", "search backward" },
-    { "f", "find char forward" },
-    { "F", "find char backward" },
-    { "t", "till char forward" },
-    { "T", "till char backward" },
   }
 
   local generated_clues = {
@@ -1699,10 +1663,6 @@ safely("later", function()
 
     generated_clues[#generated_clues + 1] = { mode = "n", keys = key, desc = "+" .. action }
     generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. key, desc = "line" }
-
-    for _, target in ipairs(operator_targets) do
-      generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. target[1], desc = target[2] }
-    end
 
     for _, prefix in ipairs(object_prefixes) do
       generated_clues[#generated_clues + 1] =
