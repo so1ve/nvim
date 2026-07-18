@@ -1282,6 +1282,7 @@ local servers = {
           library = {
             vim.env.VIMRUNTIME,
             plugin_path("snacks.nvim"),
+            plugin_path("mini.nvim"),
             plugin_path("wezterm-types"),
           },
         },
