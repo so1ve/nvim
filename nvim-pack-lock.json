@@ -25,10 +25,6 @@
       "rev": "a723d24dc1747f1f907d475a8815bef2aaaa4c4c",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
-    "conflict.nvim": {
-      "rev": "fdc879c34c528aab90e1b90c5d408d141f31fef8",
-      "src": "https://github.com/niekdomi/conflict.nvim"
-    },
     "conform.nvim": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -60,10 +56,6 @@
     "grug-far.nvim": {
       "rev": "1cc080f55706b38aabfa97d40acb6adf59ac4a5a",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
-    },
-    "markdown-plus.nvim": {
-      "rev": "b85685dc8d3bd77c45a01f21651d51fe798bc318",
-      "src": "https://github.com/YousefHadder/markdown-plus.nvim"
     },
     "mason-tool-installer.nvim": {
       "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
