@@ -235,6 +235,7 @@ vim.pack.add({
   gh("lewis6991/async.nvim"),
   gh("nvim-treesitter/nvim-treesitter-context"),
   gh("windwp/nvim-ts-autotag"),
+  gh("folke/trouble.nvim"),
   gh("so1ve/tiny-md.nvim"),
   gh("so1ve/tiny-comment.nvim"),
   gh("so1ve/copilot-ai-commit.nvim"),
@@ -2501,6 +2502,11 @@ load_plugins("later", "panels.nvim", function()
         ft = "better_term",
         size = 15,
       },
+      ["trouble.problems"] = {
+        title = "Problems",
+        position = "bottom",
+        ft = "trouble",
+      },
       help = {
         title = "Help",
         position = "bottom",
@@ -2764,26 +2770,24 @@ load_plugins("later", "nvim-ts-autotag", function()
 end)
 
 -- #############################
--- # Lists                     #
+-- # Trouble                   #
 -- #############################
 
-local function toggle_list(loclist)
-  local list = loclist and vim.fn.getloclist(0, { winid = 0 }) or vim.fn.getqflist({ winid = 0 })
-  local cmd = loclist and "l" or "c"
-  vim.cmd(cmd .. (list.winid == 0 and "open" or "close"))
-end
+load_plugins("later", "trouble.nvim", function()
+  require("trouble").setup()
+end)
 
 map("n", "<leader>xd", function()
-  vim.diagnostic.setloclist()
+  require("panels").open("trouble.problems", "Trouble diagnostics toggle filter.buf=0")
 end, { desc = "Buffer diagnostics" })
 map("n", "<leader>xD", function()
-  vim.diagnostic.setqflist()
+  require("panels").open("trouble.problems", "Trouble diagnostics toggle")
 end, { desc = "Workspace diagnostics" })
 map("n", "<leader>xl", function()
-  toggle_list(true)
+  require("panels").open("trouble.problems", "Trouble loclist toggle")
 end, { desc = "Loclist" })
 map("n", "<leader>xq", function()
-  toggle_list(false)
+  require("panels").open("trouble.problems", "Trouble qflist toggle")
 end, { desc = "Quickfix" })
 
 -- #############################
