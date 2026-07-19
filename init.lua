@@ -44,7 +44,6 @@ opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.laststatus = 3
-opt.showtabline = 2
 opt.showcmdloc = "statusline"
 opt.showmode = false
 opt.title = true
@@ -61,8 +60,7 @@ opt.keywordprg = ":RayKeywordPrg"
 
 if vim.fn.has("win32") == 1 then
   opt.shell = "pwsh -NoLogo"
-  opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
-  opt.shellquote = ""
+  opt.shellcmdflag = "-NoProfile -ExecutionPolicy RemoteSigned -Command"
   opt.shellxquote = ""
   opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
   opt.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
@@ -182,7 +180,6 @@ opt.sessionoptions = { "buffers", "curdir", "folds", "help", "tabpages", "winsiz
 opt.updatetime = 250
 opt.timeoutlen = 500
 opt.ttimeoutlen = 10
-opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- messages
 opt.messagesopt = "wait:1000,history:500,progress:c"
