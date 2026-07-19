@@ -2879,7 +2879,12 @@ map({ "n", "x" }, "<leader>", "<Nop>", { desc = "Leader", silent = true })
 
 -- Files
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write file" })
-map("n", "<leader>W", "<cmd>wall<CR>", { desc = "Write all files" })
+map("n", "<leader>W", function()
+  local prev = vim.b.disable_autoformat
+  vim.b.disable_autoformat = true
+  vim.cmd.write()
+  vim.b.disable_autoformat = prev
+end, { desc = "Write without formatting" })
 
 -- Buffers
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
