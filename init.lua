@@ -1599,7 +1599,7 @@ safely("later", function()
       { mode = "n", keys = "<Leader>s", desc = "+Search" },
       { mode = "n", keys = "<Leader>t", desc = "+Terminal" },
       { mode = "n", keys = "<Leader>u", desc = "+UI" },
-      { mode = "n", keys = "<Leader>x", desc = "+Lists" },
+      { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
       { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
       { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
 
