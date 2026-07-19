@@ -2946,7 +2946,7 @@ end, { desc = "Refresh ignored files" })
 -- # Commands                  #
 -- #############################
 
-command("RayFormatToggle", function(args)
+command("ToggleFormat", function(args)
   if args.bang then
     vim.g.disable_autoformat = not vim.g.disable_autoformat
     vim.notify("Global format-on-save: " .. (vim.g.disable_autoformat and "disabled" or "enabled"))
