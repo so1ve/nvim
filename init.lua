@@ -1483,13 +1483,7 @@ load_plugins("filetype:markdown", "render-markdown.nvim", function()
     },
   })
 
-  require("tiny-md").setup({
-    render_markdown = {
-      bullet = {
-        enabled = true,
-      },
-    },
-  })
+  require("tiny-md").setup()
 end)
 
 -- #############################
