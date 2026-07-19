@@ -315,10 +315,12 @@ vim.filetype.add({
 
 autocmd("FileType", {
   pattern = { "markdown", "tex", "typst" },
-  callback = function()
+  callback = function(event)
     vim.opt_local.conceallevel = 2
-    vim.opt_local.formatoptions:remove("r")
-    vim.opt_local.formatoptions:append("o")
+    if event.match ~= "markdown" then
+      vim.opt_local.formatoptions:remove("r")
+      vim.opt_local.formatoptions:append("o")
+    end
   end,
 })
 
