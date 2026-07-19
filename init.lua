@@ -1476,17 +1476,17 @@ load_plugins("filetype:markdown", "render-markdown.nvim", function()
     bullet = {
       enabled = false,
     },
+    html = {
+      comment = {
+        conceal = false,
+      },
+    },
   })
 
   require("tiny-md").setup({
     render_markdown = {
       bullet = {
         enabled = true,
-      },
-      html = {
-        comment = {
-          conceal = false,
-        },
       },
     },
   })
