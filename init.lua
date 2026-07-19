@@ -1556,78 +1556,9 @@ safely("later", function()
   local clue = require("mini.clue")
   local gen_clues = clue.gen_clues
 
-  -- TODO: remove them after I remember what they are for
-  local objects = {
-    { "=", "assignment" },
-    { "/", "comment" },
-    { "B", "buffer" },
-    { "F", "call" },
-    { "a", "argument" },
-    { "b", "block" },
-    { "i", "conditional" },
-    { "r", "return" },
-  }
-
-  local object_prefixes = {
-    { "a", "around " },
-    { "i", "inside " },
-    { "an", "around next " },
-    { "in", "inside next " },
-    { "al", "around last " },
-    { "il", "inside last " },
-  }
-
-  local generated_clues = {
-    { mode = { "o", "x" }, keys = "a", desc = "+Around" },
-    { mode = { "o", "x" }, keys = "i", desc = "+Inside" },
-    { mode = { "o", "x" }, keys = "an", desc = "+Around next" },
-    { mode = { "o", "x" }, keys = "in", desc = "+Inside next" },
-    { mode = { "o", "x" }, keys = "al", desc = "+Around last" },
-    { mode = { "o", "x" }, keys = "il", desc = "+Inside last" },
-  }
-
-  for _, prefix in ipairs(object_prefixes) do
-    for _, object in ipairs(objects) do
-      generated_clues[#generated_clues + 1] =
-        { mode = { "o", "x" }, keys = prefix[1] .. object[1], desc = prefix[2] .. object[2] }
-    end
-  end
-
-  local operators = {
-    { "d", "Delete" },
-    { "y", "Yank" },
-    { "c", "Change" },
-  }
-
-  for _, operator in ipairs(operators) do
-    local key = operator[1]
-    local action = operator[2]
-
-    generated_clues[#generated_clues + 1] = { mode = "n", keys = key, desc = "+" .. action }
-    generated_clues[#generated_clues + 1] = { mode = "n", keys = key .. key, desc = "line" }
-
-    for _, prefix in ipairs(object_prefixes) do
-      generated_clues[#generated_clues + 1] =
-        { mode = "n", keys = key .. prefix[1], desc = "+" .. prefix[2] .. "textobject" }
-
-      for _, object in ipairs(objects) do
-        generated_clues[#generated_clues + 1] = {
-          mode = "n",
-          keys = key .. prefix[1] .. object[1],
-          desc = prefix[2] .. object[2],
-        }
-      end
-    end
-  end
-
   clue.setup({
     triggers = {
       { mode = { "n", "x" }, keys = "<Leader>" },
-      { mode = "n", keys = "d" },
-      { mode = "n", keys = "y" },
-      { mode = "n", keys = "c" },
-      { mode = { "o", "x" }, keys = "a" },
-      { mode = { "o", "x" }, keys = "i" },
       { mode = { "n", "x" }, keys = "g" },
       { mode = { "n", "x" }, keys = "z" },
       { mode = "n", keys = "<C-w>" },
@@ -1673,7 +1604,6 @@ safely("later", function()
       { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
 
       gen_clues.builtin_completion(),
-      generated_clues,
       gen_clues.g(),
       gen_clues.marks(),
       gen_clues.registers(),
