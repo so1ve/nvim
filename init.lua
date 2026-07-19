@@ -262,7 +262,11 @@ local function load_plugins(when, names, configure)
   end)
 end
 
-require("flatten").setup()
+require("flatten").setup({
+  window = {
+    open = "alternate",
+  },
+})
 
 -- #############################
 -- # Diagnostics               #
