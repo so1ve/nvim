@@ -235,8 +235,6 @@ vim.pack.add({
   gh("lewis6991/async.nvim"),
   gh("nvim-treesitter/nvim-treesitter-context"),
   gh("windwp/nvim-ts-autotag"),
-  gh("folke/trouble.nvim"),
-
   gh("so1ve/tiny-md.nvim"),
   gh("so1ve/tiny-comment.nvim"),
   gh("so1ve/copilot-ai-commit.nvim"),
@@ -422,30 +420,6 @@ autocmd("BufWritePost", {
   pattern = { ".gitignore", "*/.gitignore", ".git/info/exclude", "*/.git/info/exclude" },
   callback = refresh_ignored,
 })
-
--- #############################
--- # Symbols                   #
--- #############################
-
-local lsp_symbol_kinds = {
-  "Class",
-  "Constant",
-  "Constructor",
-  "Enum",
-  "EnumMember",
-  "Field",
-  "Function",
-  "Interface",
-  "Method",
-  "Module",
-  "Namespace",
-  "Package",
-  "Property",
-  "Struct",
-  "Trait",
-  "TypeParameter",
-  "Variable",
-}
 
 -- #############################
 -- # Terminal                  #
@@ -1693,7 +1667,7 @@ safely("later", function()
       { mode = "n", keys = "<Leader>s", desc = "+Search" },
       { mode = "n", keys = "<Leader>t", desc = "+Terminal" },
       { mode = "n", keys = "<Leader>u", desc = "+UI" },
-      { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
+      { mode = "n", keys = "<Leader>x", desc = "+Lists" },
       { mode = { "n", "x" }, keys = "<Leader>y", desc = "+Yank/Paste" },
       { mode = { "n", "x" }, keys = "s", desc = "+Surround" },
 
@@ -2510,16 +2484,8 @@ end)
 -- # Panels                    #
 -- #############################
 
-local function trouble_filter(position)
-  return function(_, win)
-    local trouble = vim.w[win].trouble
-
-    return trouble
-      and trouble.position == position
-      and trouble.type == "split"
-      and trouble.relative == "editor"
-      and not vim.w[win].trouble_preview
-  end
+local function is_loclist(_, win)
+  return vim.fn.getwininfo(win)[1].loclist == 1
 end
 
 load_plugins("later", "panels.nvim", function()
@@ -2535,18 +2501,6 @@ load_plugins("later", "panels.nvim", function()
         ft = "better_term",
         size = 15,
       },
-      ["trouble.lsp"] = {
-        title = "LSP",
-        position = "right",
-        ft = "trouble",
-        filter = trouble_filter("right"),
-      },
-      ["trouble.problems"] = {
-        title = "Problems",
-        position = "bottom",
-        ft = "trouble",
-        filter = trouble_filter("bottom"),
-      },
       help = {
         title = "Help",
         position = "bottom",
@@ -2560,6 +2514,15 @@ load_plugins("later", "panels.nvim", function()
         title = "Quickfix",
         position = "bottom",
         ft = "qf",
+        filter = function(buf, win)
+          return not is_loclist(buf, win)
+        end,
+      },
+      loclist = {
+        title = "Loclist",
+        position = "bottom",
+        ft = "qf",
+        filter = is_loclist,
       },
       terminal = {
         title = "Terminal Buffer",
@@ -2613,19 +2576,25 @@ require("snacks").setup({
       },
       lsp_symbols = {
         filter = {
-          default = lsp_symbol_kinds,
-        },
-      },
-    },
-    actions = {
-      trouble_open = function(picker)
-        require("trouble.sources.snacks").open(picker)
-      end,
-    },
-    win = {
-      input = {
-        keys = {
-          ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
+          default = {
+            "Class",
+            "Constant",
+            "Constructor",
+            "Enum",
+            "EnumMember",
+            "Field",
+            "Function",
+            "Interface",
+            "Method",
+            "Module",
+            "Namespace",
+            "Package",
+            "Property",
+            "Struct",
+            "Trait",
+            "TypeParameter",
+            "Variable",
+          },
         },
       },
     },
@@ -2795,40 +2764,27 @@ load_plugins("later", "nvim-ts-autotag", function()
 end)
 
 -- #############################
--- # Trouble                   #
+-- # Lists                     #
 -- #############################
 
-local function panel(id, opener)
-  return function()
-    require("panels").open(id, opener)
-  end
+local function toggle_list(loclist)
+  local list = loclist and vim.fn.getloclist(0, { winid = 0 }) or vim.fn.getqflist({ winid = 0 })
+  local cmd = loclist and "l" or "c"
+  vim.cmd(cmd .. (list.winid == 0 and "open" or "close"))
 end
 
-load_plugins("later", "trouble.nvim", function()
-  require("trouble").setup({
-    modes = {
-      symbols = {
-        filter = {
-          ["not"] = { ft = "lua", kind = "Package" },
-          any = {
-            ft = { "help", "markdown" },
-            kind = lsp_symbol_kinds,
-          },
-        },
-      },
-    },
-  })
-end)
-
-map("n", "<leader>xd", panel("trouble.problems", "Trouble diagnostics toggle filter.buf=0"), {
-  desc = "Buffer diagnostics",
-})
-map("n", "<leader>xD", panel("trouble.problems", "Trouble diagnostics toggle"), {
-  desc = "Workspace diagnostics",
-})
-map("n", "<leader>xs", panel("trouble.lsp", "Trouble symbols toggle"), { desc = "Symbols" })
-map("n", "<leader>xl", panel("trouble.problems", "Trouble loclist toggle"), { desc = "Location list" })
-map("n", "<leader>xq", panel("trouble.problems", "Trouble qflist toggle"), { desc = "Quickfix list" })
+map("n", "<leader>xd", function()
+  vim.diagnostic.setloclist()
+end, { desc = "Buffer diagnostics" })
+map("n", "<leader>xD", function()
+  vim.diagnostic.setqflist()
+end, { desc = "Workspace diagnostics" })
+map("n", "<leader>xl", function()
+  toggle_list(true)
+end, { desc = "Loclist" })
+map("n", "<leader>xq", function()
+  toggle_list(false)
+end, { desc = "Quickfix" })
 
 -- #############################
 -- # Keymaps                   #
