@@ -2745,17 +2745,6 @@ end, { desc = "Notification history" })
 -- # Treesitter                #
 -- #############################
 
-local parser_overrides = {
-  javascriptreact = "javascript",
-  jsonc = "json",
-  plaintex = "latex",
-  ps1 = "powershell",
-  tex = "latex",
-  typescriptreact = "tsx",
-  ["yaml.docker-compose"] = "yaml",
-  ["yaml.github-actions"] = "yaml",
-}
-
 require("tiny-treesitter").setup({
   ensure_installed = {
     "bib",
@@ -2795,14 +2784,9 @@ require("tiny-treesitter").setup({
   auto_install = true,
 })
 
-for filetype, parser in pairs(parser_overrides) do
-  vim.treesitter.language.register(parser, filetype)
-end
-
 autocmd("FileType", {
   callback = function(event)
-    local filetype = vim.bo[event.buf].filetype
-    local parser = parser_overrides[filetype] or vim.treesitter.language.get_lang(filetype)
+    local parser = vim.treesitter.language.get_lang(vim.bo[event.buf].filetype)
     if parser and vim.treesitter.language.add(parser) == true then
       vim.treesitter.start(event.buf, parser)
     end
