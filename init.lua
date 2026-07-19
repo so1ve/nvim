@@ -2548,6 +2548,18 @@ require("snacks").setup({
         },
       },
     },
+    actions = {
+      trouble_open = function(picker)
+        require("trouble.sources.snacks").open(picker)
+      end,
+    },
+    win = {
+      input = {
+        keys = {
+          ["<C-t>"] = { "trouble_open", mode = { "n", "i" } },
+        },
+      },
+    },
   },
   input = {},
   notifier = {
