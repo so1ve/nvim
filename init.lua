@@ -203,7 +203,6 @@ vim.pack.add({
   gh("folke/snacks.nvim"),
   gh("mrjones2014/codesettings.nvim"),
   gh("mason-org/mason.nvim"),
-  gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
   gh("saghen/filler-begone.nvim"),
   gh("so1ve/tiny-treesitter.nvim"),
 }, { confirm = false, load = true })
@@ -1498,42 +1497,57 @@ end)
 -- #############################
 
 require("mason").setup()
-require("mason-tool-installer").setup({
-  ensure_installed = {
-    "basedpyright",
-    "clangd",
-    "css-lsp",
-    "docker-compose-language-service",
-    "dockerfile-language-server",
-    "eslint-lsp",
-    "gofumpt",
-    "goimports",
-    "gopls",
-    "html-lsp",
-    "json-lsp",
-    "latexindent",
-    "lua-language-server",
-    "marksman",
-    "powershell-editor-services",
-    "prettier",
-    "prettierd",
-    "ruff",
-    "stylelint-language-server",
-    "stylua",
-    "texlab",
-    "tinymist",
-    "tombi",
-    "unocss-language-server",
-    "vtsls",
-    "vue-language-server",
-    "yaml-language-server",
-    "zls",
-  },
-  integrations = {
-    ["mason-null-ls"] = false,
-    ["mason-nvim-dap"] = false,
-  },
-})
+
+local mason_tools = {
+  "basedpyright",
+  "clangd",
+  "css-lsp",
+  "docker-compose-language-service",
+  "dockerfile-language-server",
+  "eslint-lsp",
+  "gofumpt",
+  "goimports",
+  "gopls",
+  "html-lsp",
+  "json-lsp",
+  "latexindent",
+  "lua-language-server",
+  "marksman",
+  "powershell-editor-services",
+  "prettier",
+  "prettierd",
+  "ruff",
+  "stylelint-language-server",
+  "stylua",
+  "texlab",
+  "tinymist",
+  "tombi",
+  "unocss-language-server",
+  "vtsls",
+  "vue-language-server",
+  "yaml-language-server",
+  "zls",
+}
+
+local mason_registry = require("mason-registry")
+local mason_notify = vim.schedule_wrap(function(message, level)
+  vim.notify(message, level, { title = "Mason" })
+end)
+
+mason_registry.refresh(function()
+  for _, name in ipairs(mason_tools) do
+    local tool = mason_registry.get_package(name)
+    if not tool:is_installed() then
+      mason_notify(name .. ": installing", vim.log.levels.INFO)
+      tool:install({}, function(success)
+        mason_notify(
+          name .. (success and ": successfully installed" or ": failed to install"),
+          success and vim.log.levels.INFO or vim.log.levels.ERROR
+        )
+      end)
+    end
+  end
+end)
 
 -- #############################
 -- # Mini                      #
