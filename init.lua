@@ -2920,13 +2920,11 @@ map("n", "<leader>=", function()
   require("panels").equalize()
 end, { desc = "Equalize windows" })
 
--- Insert-mode navigation
+-- Navigation
 map("i", "<A-h>", "<Left>", { desc = "Move left cursor" })
 map("i", "<A-j>", "<Down>", { desc = "Move down cursor" })
 map("i", "<A-k>", "<Up>", { desc = "Move up cursor" })
 map("i", "<A-l>", "<Right>", { desc = "Move right cursor" })
-
--- Command-line navigation
 map("c", "<A-h>", "<Left>", { desc = "Move left in command line" })
 map("c", "<A-l>", "<Right>", { desc = "Move right in command line" })
 
