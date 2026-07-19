@@ -22,7 +22,7 @@
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "codesettings.nvim": {
-      "rev": "cbb776c55ffcdb313b9210ffebffe0295d36a84a",
+      "rev": "a723d24dc1747f1f907d475a8815bef2aaaa4c4c",
       "src": "https://github.com/mrjones2014/codesettings.nvim"
     },
     "conflict.nvim": {
@@ -42,7 +42,7 @@
       "src": "https://github.com/copilotlsp-nvim/copilot-lsp"
     },
     "copilot.lua": {
-      "rev": "d521d3959f81f4fa58870ed329754f1dd5057511",
+      "rev": "2a849bc7bec4d175524c332c20d48ca9ece735df",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "crates.nvim": {
@@ -134,7 +134,7 @@
       "src": "https://github.com/so1ve/tiny-md.nvim"
     },
     "tiny-treesitter.nvim": {
-      "rev": "e6b2c6825a64ca37525d680fdb6699e0e38bb1e4",
+      "rev": "4f86e341783cb67a2c79989d67ffcdc340fa7c52",
       "src": "https://github.com/so1ve/tiny-treesitter.nvim"
     },
     "treesj": {
@@ -150,7 +150,7 @@
       "src": "https://github.com/wakatime/vim-wakatime"
     },
     "wezterm-types": {
-      "rev": "d8b1671db6de96e3c4e44ce5cfd1c9c31d3828bf",
+      "rev": "4d1caf27e61b4fb87ed855e2036a651a7db07b46",
       "src": "https://github.com/DrKJeff16/wezterm-types"
     },
     "yanky.nvim": {
