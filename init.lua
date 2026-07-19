@@ -16,7 +16,6 @@ vim.cmd.colorscheme("undefined")
 -- # Options                   #
 -- #############################
 
-g.loaded_python_provider = 0
 g.loaded_python3_provider = 0
 g.loaded_node_provider = 0
 g.loaded_ruby_provider = 0
@@ -340,21 +339,8 @@ vim.filetype.add({
 -- #############################
 
 autocmd("FileType", {
-  pattern = "markdown",
+  pattern = { "markdown", "tex", "typst" },
   callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.linebreak = true
-    vim.opt_local.conceallevel = 2
-    vim.opt_local.formatoptions:remove("r")
-    vim.opt_local.formatoptions:append("o")
-  end,
-})
-
-autocmd("FileType", {
-  pattern = { "tex", "typst" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.linebreak = true
     vim.opt_local.conceallevel = 2
     vim.opt_local.formatoptions:remove("r")
     vim.opt_local.formatoptions:append("o")
@@ -1507,13 +1493,16 @@ end)
 
 autocmd("BufWinEnter", {
   callback = function(event)
+    -- WORKAROUND: render-markdown.nvim attaches to Snacks preview first,
+    -- so we need to attach it again when the buffer is opened
+    -- otherwise the file buffer will not be rendered correctly
     if vim.bo[event.buf].filetype == "markdown" then
       require("render-markdown.core.manager").attach(event.buf)
     end
   end,
 })
 
-load_plugins("filetype:markdown", { "render-markdown.nvim", "tiny-md.nvim" }, function()
+load_plugins("filetype:markdown", "render-markdown.nvim", function()
   require("render-markdown").setup({
     heading = {
       backgrounds = {
@@ -1755,17 +1744,13 @@ end)
 
 safely("later", function()
   local function disable_buffer_modules(buf)
-    if not vim.api.nvim_buf_is_valid(buf) then
-      return
-    end
-
     if vim.bo[buf].buftype ~= "" or vim.tbl_contains(mini_excluded_filetypes, vim.bo[buf].filetype) then
       vim.b[buf].miniindentscope_disable = true
       vim.b[buf].minicursorword_disable = true
     end
   end
 
-  autocmd({ "BufReadPost", "BufNewFile", "BufWinEnter", "FileType" }, {
+  autocmd({ "BufWinEnter", "FileType" }, {
     callback = function(event)
       disable_buffer_modules(event.buf)
     end,
@@ -2885,10 +2870,9 @@ for mode, keys in pairs({
   i = { "<C-S>" },
   v = { "<C-S>" },
   x = { "gra" },
-  s = { "<C-S>" },
 }) do
   for _, lhs in ipairs(keys) do
-    pcall(vim.keymap.del, mode, lhs)
+    vim.keymap.del(mode, lhs)
   end
 end
 
