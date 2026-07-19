@@ -2206,47 +2206,6 @@ safely("now", function()
     return statusline_escape(workspace:upper())
   end
 
-  local function statusline_pretty_path()
-    local path = vim.api.nvim_buf_get_name(0)
-
-    if path == "" then
-      return ""
-    end
-
-    path = vim.fs.normalize(vim.fn.fnamemodify(path, ":p"))
-
-    local cwd = vim.fs.normalize(vim.fn.getcwd(0))
-    local relative = vim.fs.relpath(cwd, path)
-
-    relative = (relative or path):gsub("\\", "/")
-
-    if vim.fn.strdisplaywidth(relative) <= max_path_width then
-      return relative
-    end
-
-    local parts = vim.split(relative, "/", { plain = true })
-
-    if #parts <= 2 then
-      return relative
-    end
-
-    for tail_start = 3, #parts do
-      local shortened = { parts[1], "…" }
-
-      for index = tail_start, #parts do
-        table.insert(shortened, parts[index])
-      end
-
-      relative = table.concat(shortened, "/")
-
-      if vim.fn.strdisplaywidth(relative) <= max_path_width then
-        break
-      end
-    end
-
-    return relative
-  end
-
   local function statusline_show_fileinfo()
     return not MiniStatusline.is_truncated(trunc_width) and vim.bo.buftype == ""
   end
@@ -2328,6 +2287,47 @@ safely("now", function()
     end
 
     return table.concat(parts, " ") .. "%#MiniStatuslineDiagnostics#"
+  end
+
+  local function statusline_pretty_path()
+    local path = vim.api.nvim_buf_get_name(0)
+
+    if path == "" then
+      return ""
+    end
+
+    path = vim.fs.normalize(vim.fn.fnamemodify(path, ":p"))
+
+    local cwd = vim.fs.normalize(vim.fn.getcwd(0))
+    local relative = vim.fs.relpath(cwd, path)
+
+    relative = (relative or path):gsub("\\", "/")
+
+    if vim.fn.strdisplaywidth(relative) <= max_path_width then
+      return relative
+    end
+
+    local parts = vim.split(relative, "/", { plain = true })
+
+    if #parts <= 2 then
+      return relative
+    end
+
+    for tail_start = 3, #parts do
+      local shortened = { parts[1], "…" }
+
+      for index = tail_start, #parts do
+        table.insert(shortened, parts[index])
+      end
+
+      relative = table.concat(shortened, "/")
+
+      if vim.fn.strdisplaywidth(relative) <= max_path_width then
+        break
+      end
+    end
+
+    return relative
   end
 
   local function statusline_file()
