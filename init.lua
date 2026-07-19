@@ -269,24 +269,6 @@ require("flatten").setup()
 -- # Diagnostics               #
 -- #############################
 
-local diagnostic_names = {
-  [vim.diagnostic.severity.ERROR] = "Error",
-  [vim.diagnostic.severity.WARN] = "Warn",
-  [vim.diagnostic.severity.INFO] = "Info",
-  [vim.diagnostic.severity.HINT] = "Hint",
-}
-
-local diagnostic_signs = {
-  [vim.diagnostic.severity.ERROR] = "",
-  [vim.diagnostic.severity.WARN] = "",
-  [vim.diagnostic.severity.INFO] = "",
-  [vim.diagnostic.severity.HINT] = "󰌵",
-}
-
-local function diagnostic_sign(severity)
-  return diagnostic_signs[severity] or "•"
-end
-
 vim.diagnostic.config({
   float = {
     border = "rounded",
@@ -296,17 +278,12 @@ vim.diagnostic.config({
     end,
     header = "",
     max_width = 80,
-    prefix = function(diagnostic)
-      return " " .. diagnostic_sign(diagnostic.severity) .. " ",
-        "DiagnosticFloating" .. (diagnostic_names[diagnostic.severity] or "Info")
-    end,
     source = "if_many",
     suffix = function(diagnostic)
       return diagnostic.code and (" [" .. diagnostic.code .. "] ") or "", "Comment"
     end,
   },
   severity_sort = true,
-  diagnostic_signs = { text = diagnostic_signs },
   virtual_text = true,
 })
 
@@ -1840,10 +1817,6 @@ safely("later", function()
   local diff = require("mini.diff")
 
   diff.setup({
-    view = {
-      style = "sign",
-      signs = { add = "▌", change = "▌", delete = "▌" },
-    },
     mappings = {
       apply = "gh",
       reset = "gH",
@@ -2345,7 +2318,8 @@ safely("now", function()
       local count = counts[severity] or 0
 
       if count > 0 then
-        table.insert(parts, statusline_highlight(group, diagnostic_sign(severity) .. " " .. count))
+        local label = vim.diagnostic.severity[severity]:sub(1, 1)
+        table.insert(parts, statusline_highlight(group, label .. " " .. count))
       end
     end
 
