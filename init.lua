@@ -64,6 +64,8 @@ if vim.fn.has("win32") == 1 then
   opt.shellxquote = ""
   opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
   opt.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  -- remove this after https://github.com/neovim/neovim/issues/40832 fixed
+  opt.shellslash = false
 end
 
 -- scrolling
