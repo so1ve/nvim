@@ -224,7 +224,6 @@ vim.pack.add({
   gh("Saecki/crates.nvim"),
   gh("neovim/nvim-lspconfig"),
   gh("b0o/schemastore.nvim"),
-  gh("MeanderingProgrammer/render-markdown.nvim"),
   gh("nvim-treesitter/nvim-treesitter-textobjects"),
   gh("wakatime/vim-wakatime"),
   gh("jake-stewart/multicursor.nvim"),
@@ -233,7 +232,6 @@ vim.pack.add({
   gh("nvim-treesitter/nvim-treesitter-context"),
   gh("windwp/nvim-ts-autotag"),
   gh("folke/trouble.nvim"),
-  gh("so1ve/tiny-md.nvim"),
   gh("so1ve/tiny-comment.nvim"),
   gh("so1ve/copilot-ai-commit.nvim"),
   gh("so1ve/code-action-menu.nvim"),
@@ -316,13 +314,17 @@ vim.filetype.add({
 -- #############################
 
 autocmd("FileType", {
-  pattern = { "markdown", "tex", "typst" },
-  callback = function(event)
-    vim.opt_local.conceallevel = 2
-    if event.match ~= "markdown" then
-      vim.opt_local.formatoptions:remove("r")
-      vim.opt_local.formatoptions:append("o")
-    end
+  pattern = { "tex", "typst" },
+  callback = function()
+    vim.opt_local.formatoptions:remove("r")
+    vim.opt_local.formatoptions:append("o")
+  end,
+})
+
+autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.conceallevel = 0
   end,
 })
 
@@ -474,7 +476,7 @@ end, { desc = "Rename terminal" })
 -- # Completion                #
 -- #############################
 
-load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
+load_plugins("now", "blink.cmp", function()
   require("blink.cmp").setup({
     appearance = {
       kind_icons = {
@@ -594,9 +596,6 @@ load_plugins("now", { "blink.cmp", "tiny-md.nvim" }, function()
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 0,
-        draw = function(opts)
-          require("tiny-md.blink").draw(opts)
-        end,
         window = {
           desired_min_width = 24,
           desired_min_height = 5,
@@ -1021,9 +1020,7 @@ local function configure_lsp_buffer(event)
     map("n", lhs, rhs, { buffer = bufnr, desc = desc })
   end
 
-  buf_map("K", function()
-    require("tiny-md.hover").hover()
-  end, "Hover documentation")
+  buf_map("K", vim.lsp.buf.hover, "Hover documentation")
   buf_map("gd", Snacks.picker.lsp_definitions, "Go to definition")
   buf_map("gD", Snacks.picker.lsp_declarations, "Go to declaration")
   buf_map("gi", Snacks.picker.lsp_implementations, "Go to implementation")
@@ -1439,54 +1436,6 @@ load_plugins("now", { "schemastore.nvim", "nvim-lspconfig" }, function()
   autocmd("LspAttach", {
     callback = configure_lsp_buffer,
   })
-end)
-
--- #############################
--- # Markdown                  #
--- #############################
-
-autocmd("BufWinEnter", {
-  callback = function(event)
-    -- WORKAROUND: render-markdown.nvim attaches to Snacks preview first,
-    -- so we need to attach it again when the buffer is opened
-    -- otherwise the file buffer will not be rendered correctly
-    if vim.bo[event.buf].filetype == "markdown" then
-      require("render-markdown.core.manager").attach(event.buf)
-    end
-  end,
-})
-
-load_plugins("filetype:markdown", "render-markdown.nvim", function()
-  require("render-markdown").setup({
-    heading = {
-      backgrounds = {
-        "RenderMarkdownH1Bg",
-        "RenderMarkdownH2Bg",
-        "RenderMarkdownH3Bg",
-        "RenderMarkdownH4Bg",
-        "RenderMarkdownH5Bg",
-        "RenderMarkdownH6Bg",
-      },
-      foregrounds = {
-        "RenderMarkdownH1",
-        "RenderMarkdownH2",
-        "RenderMarkdownH3",
-        "RenderMarkdownH4",
-        "RenderMarkdownH5",
-        "RenderMarkdownH6",
-      },
-    },
-    bullet = {
-      enabled = false,
-    },
-    html = {
-      comment = {
-        conceal = false,
-      },
-    },
-  })
-
-  require("tiny-md").setup()
 end)
 
 -- #############################
